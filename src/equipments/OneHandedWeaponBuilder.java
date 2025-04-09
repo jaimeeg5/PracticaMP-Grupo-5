@@ -2,7 +2,7 @@ package equipments;
 
 public class OneHandedWeaponBuilder {
 
-    private OneHandedWeapon equipment
+    private OneHandedWeapon equipment;
 
 
 }

@@ -2,17 +2,17 @@ package equipments;
 
 public class Director {
 
-    private Builder builder
+    private Builder builder;
 
     public Director(Builder builder) {
-        this.builder = builder
+        this.builder = builder;
     }
 
-    public changeBuilder(Builder builder) {
+    public void changeBuilder(Builder builder) {
 
     }
 
-    public build() {
+    public void build() {
 
     }
 }
