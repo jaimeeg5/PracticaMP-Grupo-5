@@ -1,5 +1,7 @@
 package characters;
 
+import java.util.List;
+
 public abstract class Character {
     private String name;
     private SpecialAbility specialAbility;
