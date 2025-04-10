@@ -1,8 +1,8 @@
-package users;
+package game;
 
 import java.nio.file.Path;
 
-public class Operator extends User{
+public class Operator extends User {
     @Override
     public void operate(){
 

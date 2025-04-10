@@ -1,8 +1,8 @@
-package users;
+package game;
 
 import java.nio.file.Path;
 
-public class Player extends User{
+public class Player extends User {
     private String registerNumber;
     private int goldWon;
     private int goldLost;

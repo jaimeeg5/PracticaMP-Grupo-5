@@ -1,6 +1,5 @@
-package users;
+package game;
 
-import game.FileSystemEventNotifier;
 import java.nio.file.Path;
 import java.util.List;
 
