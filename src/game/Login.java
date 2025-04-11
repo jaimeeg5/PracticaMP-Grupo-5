@@ -34,7 +34,6 @@ public class Login {
 
     protected String waitForInput(String inputText, Predicate<String> condition, String errorText) {
         Scanner input = new Scanner(System.in);
-        GameData data = GameData.getInstance();
         boolean validInput = false;
         String str;
         do {
