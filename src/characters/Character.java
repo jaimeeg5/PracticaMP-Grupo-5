@@ -1,6 +1,8 @@
 package characters;
 
 import equipments.Armor;
+import equipments.Equipment;
+
 import java.util.List;
 
 public abstract class Character {
@@ -8,7 +10,7 @@ public abstract class Character {
     private SpecialAbility specialAbility;
     private List  availableWeapons;
     private List<Armor> availableArmors;
-    private Weapon[] Weapons= new Weapon[2];
+    private Equipment[] Weapons= new Equipment[2];
     private Armor activeArmor;
     private List<Minion> minions;
     private int gold;
