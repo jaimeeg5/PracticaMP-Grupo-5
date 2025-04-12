@@ -3,6 +3,10 @@ package game;
 import java.nio.file.Path;
 
 public class Operator extends User {
+    public Operator(String nick, String name) {
+        super(nick, name);
+    }
+
     @Override
     public void operate(){
 
