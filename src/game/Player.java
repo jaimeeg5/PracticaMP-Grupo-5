@@ -8,6 +8,11 @@ public class Player extends User {
     private int goldLost;
     private Character character;
 
+    public Player(String nick, String name, String registerNumber) {
+        super(nick, name);
+        this.registerNumber = registerNumber;
+    }
+
     @Override
     public void operate(){
 
