@@ -1,4 +1,4 @@
 package equipments;
 
-public class OneHandedWeapon {
+public class OneHandedWeapon extends Equipment{
 }

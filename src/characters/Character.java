@@ -1,11 +1,12 @@
 package characters;
 
+import equipments.Armor;
 import java.util.List;
 
 public abstract class Character {
     private String name;
     private SpecialAbility specialAbility;
-    private List<Weapon>  availableWeapons;
+    private List  availableWeapons;
     private List<Armor> availableArmors;
     private Weapon[] Weapons= new Weapon[2];
     private Armor activeArmor;

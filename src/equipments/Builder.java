@@ -1,20 +1,11 @@
 package equipments;
 
-public class Builder {
+public interface Builder {
+    void reset();
 
-    public void reset() {
+    void buildName(String name);
 
-    }
+    void buildAttack(int attackValue);
 
-    public void buildName(String name) {
-
-    }
-
-    public void buildAttack(int attackValue) {
-
-    }
-
-    public void buildDefense(int defenseValue) {
-
-    }
+    void buildDefense(int defenseValue);
 }

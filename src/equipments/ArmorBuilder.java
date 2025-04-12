@@ -1,10 +1,6 @@
 package equipments;
 
-public class OneHandedWeaponBuilder implements Builder{
-
-    private OneHandedWeapon equipment;
-
-
+public class ArmorBuilder implements Builder{
     @Override
     public void reset() {
 
@@ -25,7 +21,7 @@ public class OneHandedWeaponBuilder implements Builder{
 
     }
 
-    public OneHandedWeapon build(){
+    public Armor build(){
 
         return null;
     }
