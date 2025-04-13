@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.List;
 
-public class FileSystemEventNotifier extends Thread{
+public abstract class FileSystemEventNotifier extends Thread{
     private List<WebSocket.Listener> listeners;
 
     public void subscribe(FileSystemEventListener listener){
@@ -28,7 +28,5 @@ public class FileSystemEventNotifier extends Thread{
 
     }
 
-    protected void processEvent(WatchEvent event){
-
-    }
+    protected abstract void processEvent(WatchEvent event);
 }
