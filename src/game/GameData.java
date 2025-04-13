@@ -1,19 +1,25 @@
 package game;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.*;
 
 public class GameData implements FileSystemEventListener {
     private static volatile GameData instance = null;
-    private final String filename = "/gamedata";
+    private final String path = "/gamedata";
     private final Map<String, String> passwords;
     private final Set<String> bannedUsers;
-    private final Set<String> registerNumbers;
+    private final Set<String> registeredNumbers;
 
     private GameData() {
         passwords = new HashMap<>();
         bannedUsers = new TreeSet<>();
-        registerNumbers = new HashSet<>();
+        registeredNumbers = new HashSet<>();
         loadFromDisk();
     }
 
@@ -52,11 +58,47 @@ public class GameData implements FileSystemEventListener {
     }
 
     public void loadFromDisk() {
-        // TODO: cargar GameData del fichero correspondiente
+        JSONObject obj;
+        try {
+            obj = new JSONObject(new JSONTokener(new FileInputStream(path)));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        JSONArray arr = obj.getJSONArray("passwords");
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray pw = arr.getJSONArray(i);
+            passwords.put(pw.getString(0), pw.getString(1));
+        }
+        arr = obj.getJSONArray("bannedUsers");
+        for (int i = 0; i < arr.length(); i++) {
+            bannedUsers.add(arr.getString(i));
+        }
+        arr = obj.getJSONArray("registeredNumbers");
+        for (int i = 0; i< arr.length(); i++) {
+            registeredNumbers.add(arr.getString(i));
+        }
     }
 
     public void saveToDisk() {
-        // TODO: guardar GameData al fichero correspondiente
+        JSONObject obj = new JSONObject();
+        JSONArray passwordsArray = new JSONArray();
+        for (String key: passwords.keySet()) {
+            JSONArray pw =  new JSONArray();
+            pw.put(0, key);
+            pw.put(1, key);
+            passwordsArray.put(pw);
+        }
+        JSONArray bannedUsersArray = new JSONArray();
+        for (String user: bannedUsers) {
+            bannedUsersArray.put(0, user);
+        }
+        JSONArray registeredNumbersArray = new JSONArray();
+        for (String num: registeredNumbers) {
+            registeredNumbersArray.put(0, num);
+        }
+        obj.put("passwords", passwordsArray);
+        obj.put("bannedUsers", bannedUsersArray);
+        obj.put("registeredNumbers", registeredNumbersArray);
     }
 
     public void update(Path file) {
@@ -70,7 +112,7 @@ public class GameData implements FileSystemEventListener {
         if (type == UserType.PLAYER) {
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
-            registerNumbers.add(num);
+            registeredNumbers.add(num);
         }
         passwords.put(nick, password);
         // TODO: save user to disk
@@ -95,7 +137,7 @@ public class GameData implements FileSystemEventListener {
                 str.append(l);
             }
             result = str.toString();
-        } while (!registerNumbers.contains(result));
+        } while (!registeredNumbers.contains(result));
         return result;
     }
 }
