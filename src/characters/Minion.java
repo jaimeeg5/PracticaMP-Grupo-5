@@ -11,4 +11,13 @@ public class Minion {
     public void setHealth(int health) {
         this.health = health;
     }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public boolean takeDamage(){
+        this.health -= 1;
+        return true;
+    }
 }

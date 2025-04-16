@@ -7,7 +7,8 @@ public class Human extends Minion{
         this.loyalty = loyalty;
     }
 
-    public void takeDamage(int damage){
-
+    @Override
+    public boolean takeDamage(){
+        return super.takeDamage();
     }
 }
