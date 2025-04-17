@@ -117,7 +117,7 @@ public abstract class Character {
             minionsHealth += minion.getHealth();
         }
         if (minionsHealth != 0) {
-            while (attackValue != 0){
+            while ((attackValue != 0) && (!minions.isEmpty())){
                 minions.getFirst().takeDamage();
                 if (minions.getFirst().getHealth() <= 0) {
                     minions.removeFirst();
