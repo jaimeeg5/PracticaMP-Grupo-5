@@ -18,15 +18,23 @@ public abstract class Character {
     private List<PowerUp> powerUps;
     private List<Weakness> weaknesses;
     private CharacterType type;
-    private int attackValue = 0;
-    private int defenseValue = 0;
+    private int powerupValue = 0;
+    private int weaknessValue = 0;
 
-    public int getAttackValue() {
-        return attackValue;
+    public void setPowerupValue(int powerupValue) {
+        this.powerupValue = powerupValue;
     }
 
-    public int getDefenseValue() {
-        return defenseValue;
+    public void setWeaknessValue(int weaknessValue) {
+        this.weaknessValue = weaknessValue;
+    }
+
+    public int getPowerupValue() {
+        return powerupValue;
+    }
+
+    public int getWeaknessValue() {
+        return weaknessValue;
     }
 
     public List<PowerUp> getPowerUps() {
@@ -134,7 +142,10 @@ public abstract class Character {
         return result;
     }
 
-    public int calculatePower(int value, char letter){
+    public abstract int calculateAttackPoints(int powerupValue, int weaknessValue);
+    public abstract int calculateDefensePoints(int powerupValue, int weaknessValue);
+
+    public int calculatePower(int value){
         int i;
         int successes = 0;
         for (i = 0; i < value; i++){
@@ -142,11 +153,6 @@ public abstract class Character {
             if ((randomNumber == 5) || (randomNumber == 6)){
                 successes += 1;
             }
-        }
-        if (letter == 'a'){
-            this.attackValue = successes;
-        } else {
-            this.defenseValue = successes;
         }
         return successes;
     }

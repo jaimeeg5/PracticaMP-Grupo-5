@@ -15,32 +15,59 @@ public class Werewolf extends Character{
 
     @Override
     public void attack(Character enemy) {
-        int attackPower = 0;
-        int defensePower = 0;
-        int weaponsDamage = 0;
-        int weaponsDefense = 0;
         int powerupValue = 0;
-        int weaknessValue = 0;
-        for (Equipment weapon : super.getWeapons()){
-            weaponsDamage += weapon.getAttackValue();
-            weaponsDefense += weapon.getDefenseValue();
-        }
         for (PowerUp powerup : super.getPowerUps()){
             powerupValue += powerup.getValue();
         }
+        super.setPowerupValue(powerupValue);
+        int weaknessValue = 0;
         for (Weakness weakness : super.getWeaknesses()){
             weaknessValue += weakness.getValue();
         }
+        super.setWeaknessValue(weaknessValue);
+        int powerupEnemyValue = 0;
+        for (PowerUp powerup : enemy.getPowerUps()){
+            powerupEnemyValue += powerup.getValue();
+        }
+        enemy.setPowerupValue(powerupEnemyValue);
+        int weaknessEnemyValue = 0;
+        for (Weakness weakness : enemy.getWeaknesses()){
+            weaknessEnemyValue += weakness.getValue();
+        }
+        enemy.setWeaknessValue(weaknessEnemyValue);
+        int attackPower = calculateAttackPoints(super.getPowerupValue(), super.getWeaknessValue());
+        int defensePower = enemy.calculateDefensePoints(enemy.getPowerupValue(), enemy.getWeaknessValue());
+        enemy.takeDamage(attackPower, defensePower);
+    }
+
+    @Override
+    public int calculateAttackPoints(int powerupValue, int weaknessValue) {
+        int attackPower = 0;
+        int weaponsDamage = 0;
+        for (Equipment weapon : super.getWeapons()){
+            weaponsDamage += weapon.getAttackValue();
+        }
         attackPower = super.getPower() + super.getActiveArmor().getAttackValue() + weaponsDamage + this.rage + powerupValue - weaknessValue;
-        defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense + this.rage + powerupValue - weaknessValue;
         Don ability = (Don) super.getSpecialAbility();
         if (rage >= ability.getRageValue()){
             attackPower += ability.getAttack();
+        }
+        return super.calculatePower(attackPower);
+    }
+
+    @Override
+    public int calculateDefensePoints(int powerupValue, int weaknessValue) {
+        int defensePower = 0;
+        int weaponsDefense = 0;
+        for (Equipment weapon : super.getWeapons()){
+            weaponsDefense += weapon.getDefenseValue();
+        }
+        defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense+ this.rage + powerupValue - weaknessValue;
+        Don ability = (Don) super.getSpecialAbility();
+        if (rage >= ability.getRageValue()){
             defensePower += ability.getDefense();
         }
-        int attack = super.calculatePower(attackPower, 'a');
-        int defense = super.calculatePower(defensePower, 'd');
-        enemy.takeDamage(attack, enemy.getDefenseValue());
+        return super.calculatePower(defensePower);
     }
 
     @Override
