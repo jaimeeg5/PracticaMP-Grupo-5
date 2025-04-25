@@ -28,14 +28,16 @@ public class GameManager {
                     user.operate();
                 }
                 break;
-            default:
-                return;
         }
     }
 
     private User login() {
         GameData data = GameData.getInstance();
         String user = waitForInput("Intoduce apodo.", data::userExists, "Este usuario no existe");
+        if (data.isBanned(user)) {
+            System.out.println("Usuario baneado");
+            return null;
+        }
         if (user.isEmpty()) {
             return null;
         }
@@ -86,7 +88,7 @@ public class GameManager {
     }
 
     private String waitForInput(String inputText) {
-        return waitForInput(inputText, s -> true, null);
+        return waitForInput(inputText, _ -> true, null);
     }
 
     private String waitForInput(String inputText, Predicate<String> condition, String errorText) {

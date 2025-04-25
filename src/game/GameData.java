@@ -43,6 +43,7 @@ public class GameData implements FileSystemEventListener {
     }
 
     public User getUser(String user) {
+        // TODO
         UserBuilder builder = new UserBuilder(UserType.PLAYER);
         return builder.build();
     }
@@ -55,6 +56,10 @@ public class GameData implements FileSystemEventListener {
     public void unbanUser(String user) {
         bannedUsers.remove(user);
         saveToDisk();
+    }
+
+    public boolean isBanned(String user) {
+        return bannedUsers.contains(user);
     }
 
     public void loadFromDisk() {
