@@ -1,4 +1,4 @@
-package game;
+package fileEvents;
 
 import java.nio.file.Path;
 

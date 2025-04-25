@@ -1,5 +1,6 @@
 package game;
 
+import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -15,6 +16,7 @@ public class GameData implements FileSystemEventListener {
     private final Map<String, String> passwords;
     private final Set<String> bannedUsers;
     private final Set<String> registeredNumbers;
+    private boolean updated;
 
     private GameData() {
         passwords = new HashMap<>();
@@ -82,6 +84,7 @@ public class GameData implements FileSystemEventListener {
         for (int i = 0; i< arr.length(); i++) {
             registeredNumbers.add(arr.getString(i));
         }
+        updated = false;
     }
 
     public void saveToDisk() {
@@ -107,7 +110,7 @@ public class GameData implements FileSystemEventListener {
     }
 
     public void update(Path file) {
-        loadFromDisk();
+        updated = true;
     }
 
     public User newUser(UserType type, String nick, String name, String password) {

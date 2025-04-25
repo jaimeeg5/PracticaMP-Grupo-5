@@ -1,5 +1,7 @@
 package game;
 
+import fileEvents.FileSystemEventNotifier;
+
 import java.nio.file.Path;
 import java.util.List;
 
