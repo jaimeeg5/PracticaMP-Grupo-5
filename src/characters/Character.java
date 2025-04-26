@@ -21,6 +21,10 @@ public abstract class Character {
     private int powerupValue = 0;
     private int weaknessValue = 0;
 
+    public int getHealth() {
+        return health;
+    }
+
     public void setPowerupValue(int powerupValue) {
         this.powerupValue = powerupValue;
     }

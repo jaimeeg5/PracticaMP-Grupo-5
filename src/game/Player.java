@@ -1,6 +1,7 @@
 package game;
 
 import java.nio.file.Path;
+import characters.Character;
 
 public class Player extends User {
     private String registerNumber;
@@ -23,12 +24,13 @@ public class Player extends User {
 
     }
 
-    private void challengeUser(User player){
+    public void challengeUser(User player){
 
     }
 
-    private void pay(Player player, int amount){
-
+    public void pay(Player player, int amount){
+        player.goldWon += amount;
+        this.goldLost -= amount;
     }
 
     public void registerCharacter(Character character){
@@ -37,5 +39,9 @@ public class Player extends User {
 
     public void dropoutCharacter(){
 
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 }
