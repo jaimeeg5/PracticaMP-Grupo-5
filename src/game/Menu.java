@@ -21,9 +21,9 @@ public class Menu {
         int n = options.length + 1;
         do {
             for (int i = 1; i < n; i++) {
-                System.out.print("[" + i + "] " + options[i]);
+                System.out.println("[" + i + "] " + options[i-1]);
             }
-            System.out.print("[" + n + "] Salir");
+            System.out.println("[" + n + "] Salir");
             try {
                 choice = Integer.parseInt(input.nextLine());
             } catch (NumberFormatException e) {
