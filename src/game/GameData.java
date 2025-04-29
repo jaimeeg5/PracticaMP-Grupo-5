@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.*;
@@ -78,36 +79,38 @@ public class GameData implements FileSystemEventListener {
     }
 
     private void loadFromDisk() {
-        String s;
         try {
-            s = Files.readString(Paths.get("data/gamedata.json"));
+            Path path = Paths.get("data/gamedata.json");
+            if (Files.exists(path)) {
+                String s = Files.readString(path);
+                JSONObject obj = new JSONObject(s);
+                JSONArray arr = obj.getJSONArray("passwords");
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONArray pw = arr.getJSONArray(i);
+                    passwords.put(pw.getString(0), pw.getString(1));
+                }
+                arr = obj.getJSONArray("bannedUsers");
+                for (int i = 0; i < arr.length(); i++) {
+                    bannedUsers.add(arr.getString(i));
+                }
+                arr = obj.getJSONArray("registeredNumbers");
+                for (int i = 0; i< arr.length(); i++) {
+                    registeredNumbers.add(arr.getString(i));
+                }
+                updated = false;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JSONObject obj = new JSONObject(s);
-        JSONArray arr = obj.getJSONArray("passwords");
-        for (int i = 0; i < arr.length(); i++) {
-            JSONArray pw = arr.getJSONArray(i);
-            passwords.put(pw.getString(0), pw.getString(1));
-        }
-        arr = obj.getJSONArray("bannedUsers");
-        for (int i = 0; i < arr.length(); i++) {
-            bannedUsers.add(arr.getString(i));
-        }
-        arr = obj.getJSONArray("registeredNumbers");
-        for (int i = 0; i< arr.length(); i++) {
-            registeredNumbers.add(arr.getString(i));
-        }
-        updated = false;
     }
 
     private void saveToDisk() {
-        JSONObject obj = new JSONObject();
+        JSONObject json = new JSONObject();
         JSONArray passwordsArray = new JSONArray();
         for (String key: passwords.keySet()) {
             JSONArray pw =  new JSONArray();
             pw.put(0, key);
-            pw.put(1, key);
+            pw.put(1, passwords.get(key));
             passwordsArray.put(pw);
         }
         JSONArray bannedUsersArray = new JSONArray();
@@ -118,9 +121,24 @@ public class GameData implements FileSystemEventListener {
         for (String num: registeredNumbers) {
             registeredNumbersArray.put(0, num);
         }
-        obj.put("passwords", passwordsArray);
-        obj.put("bannedUsers", bannedUsersArray);
-        obj.put("registeredNumbers", registeredNumbersArray);
+        json.put("passwords", passwordsArray);
+        json.put("bannedUsers", bannedUsersArray);
+        json.put("registeredNumbers", registeredNumbersArray);
+
+        String pathStr = "data/gameData.json";
+        Path path = Paths.get(pathStr);
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try (FileWriter file = new FileWriter(pathStr)) {
+            json.write(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void update(WatchEvent<?> event) {
@@ -153,7 +171,16 @@ public class GameData implements FileSystemEventListener {
         passwords.put(nick, password);
         User u = builder.build();
 
-        try (FileWriter file = new FileWriter("data/users/" + nick + ".json")) {
+        String pathStr = "data/users/" + nick + ".json";
+        Path path = Paths.get(pathStr);
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try (FileWriter file = new FileWriter(pathStr)) {
             json.write(file);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -201,7 +228,7 @@ public class GameData implements FileSystemEventListener {
                 str.append(l);
             }
             result = str.toString();
-        } while (!registeredNumbers.contains(result));
+        } while (registeredNumbers.contains(result));
         return result;
     }
 }

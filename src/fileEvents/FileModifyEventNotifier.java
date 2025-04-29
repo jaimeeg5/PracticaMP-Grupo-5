@@ -12,6 +12,7 @@ public class FileModifyEventNotifier extends FileSystemEventNotifier {
     protected void registerDirectory(WatchService watcher) {
         Path path = getPath();
         try {
+            path.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
             path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
         } catch (IOException e) {
             throw new RuntimeException(e);

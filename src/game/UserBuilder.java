@@ -33,4 +33,10 @@ public class UserBuilder {
             return new Player(nick, name, registerNumber);
         }
     }
+
+    public void reset() {
+        name = null;
+        nick = null;
+        registerNumber = null;
+    }
 }

@@ -13,22 +13,25 @@ public class GameManager {
                 "Registrarse"
         };
         menu.setOptions(menuOptions);
-        int choice = menu.showMenu();
+        int choice;
         User user;
-        switch (choice) {
-            case 1:
-                user = login();
-                if (user != null) {
-                    user.operate();
-                }
-                break;
-            case 2:
-                user = register();
-                if (user != null) {
-                    user.operate();
-                }
-                break;
-        }
+        do {
+            choice = menu.showMenu();
+            switch (choice) {
+                case 1:
+                    user = login();
+                    if (user != null) {
+                        user.operate();
+                    }
+                    break;
+                case 2:
+                    user = register();
+                    if (user != null) {
+                        user.operate();
+                    }
+                    break;
+            }
+        } while (choice != 3);
     }
 
     private User login() {
@@ -101,7 +104,9 @@ public class GameManager {
             if (str.isEmpty() || condition.test(str)) {
                 validInput = true;
             }
-            System.out.println(errorText);
+            else {
+                System.out.println(errorText);
+            }
         } while (!validInput);
         return str;
     }
