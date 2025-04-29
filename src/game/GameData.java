@@ -3,16 +3,15 @@ package game;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.*;
 
 public class GameData implements FileSystemEventListener {
     private static volatile GameData instance = null;
-    private final String path = "/gamedata";
     private final Map<String, String> passwords;
     private final Set<String> bannedUsers;
     private final Set<String> registeredNumbers;
@@ -52,15 +51,6 @@ public class GameData implements FileSystemEventListener {
         return passwords.get(user).equals(password);
     }
 
-    public User getUser(String user) {
-        if (updated) {
-            loadFromDisk();
-            updated = false;
-        }
-        UserBuilder builder = new UserBuilder(UserType.PLAYER);
-        return builder.build();
-    }
-
     public void banUser(String user) {
         if (updated) {
             loadFromDisk();
@@ -88,12 +78,13 @@ public class GameData implements FileSystemEventListener {
     }
 
     private void loadFromDisk() {
-        JSONObject obj;
+        String s;
         try {
-            obj = new JSONObject(new JSONTokener(new FileInputStream(path)));
-        } catch (FileNotFoundException e) {
+            s = Files.readString(Paths.get("data/gamedata.json"));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        JSONObject obj = new JSONObject(s);
         JSONArray arr = obj.getJSONArray("passwords");
         for (int i = 0; i < arr.length(); i++) {
             JSONArray pw = arr.getJSONArray(i);
@@ -141,19 +132,56 @@ public class GameData implements FileSystemEventListener {
             loadFromDisk();
             updated = false;
         }
+
+        JSONObject json = new JSONObject();
         UserBuilder builder = new UserBuilder(type);
+        json.put("type", type);
+
         builder.buildNick(nick);
+        json.put("nick", nick);
+
         builder.buildName(name);
+        json.put("name", name);
+
         if (type == UserType.PLAYER) {
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
+            json.put("registerNumber", num);
             registeredNumbers.add(num);
         }
+
         passwords.put(nick, password);
         User u = builder.build();
-        JSONObject json = new JSONObject(u);
+
+        try (FileWriter file = new FileWriter("data/users/" + nick + ".json")) {
+            json.write(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         saveToDisk();
         return u;
+    }
+
+    public User getUser(String nick) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
+        String s;
+        try {
+            s = Files.readString(Paths.get("data/users/" + nick + ".json"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        JSONObject json = new JSONObject(s);
+        UserType type = UserType.valueOf(json.getString("type"));
+        UserBuilder builder = new UserBuilder(type);
+        builder.buildNick(json.getString("nick"));
+        builder.buildName(json.getString("name"));
+        if (type == UserType.PLAYER) {
+            builder.buildRegisterNumber(json.getString("registerNumber"));
+        }
+        return builder.build();
     }
 
     private String generateRegisterNumber() {
