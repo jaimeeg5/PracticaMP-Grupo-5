@@ -7,20 +7,19 @@ import java.util.List;
 
 public abstract class FileSystemEventNotifier extends Thread{
     private final List<FileSystemEventListener> listeners;
-    private String dir;
-    private boolean stopped;
+    private final Path path;
 
     public List<FileSystemEventListener> getListeners() {
         return listeners;
     }
 
-    public String getDir() {
-        return dir;
+    public Path getPath() {
+        return path;
     }
 
-    public FileSystemEventNotifier(String dir) {
+    public FileSystemEventNotifier(String path) {
         listeners = new LinkedList<>();
-        this.dir = dir;
+        this.path = Paths.get(path);
     }
 
     public void subscribe(FileSystemEventListener listener){
@@ -31,9 +30,9 @@ public abstract class FileSystemEventNotifier extends Thread{
         listeners.remove(listener);
     }
 
-    public void notify(Path file){
+    public void notify(WatchEvent<?> event) {
         for (FileSystemEventListener l: listeners) {
-            l.update(file);
+            l.update(event);
         }
     }
 
@@ -57,10 +56,7 @@ public abstract class FileSystemEventNotifier extends Thread{
             WatchKey key = watcher.take();
             for (WatchEvent<?> event: key.pollEvents()) {
                 if (processEvent(event)) {
-                    for (FileSystemEventListener l: listeners) {
-                        Path path = null;  // TODO: event -> path
-                        l.update(path);
-                    }
+                    notify(event);
                 }
             }
             return key.reset(); // devuelve false si key ya no es valida

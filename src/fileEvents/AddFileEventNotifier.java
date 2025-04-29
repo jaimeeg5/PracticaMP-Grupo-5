@@ -2,18 +2,18 @@ package fileEvents;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchService;
 import java.nio.file.StandardWatchEventKinds;
 
 public class AddFileEventNotifier extends FileSystemEventNotifier {
-    public AddFileEventNotifier(String dir) {
-        super(dir);
+
+    public AddFileEventNotifier(String path) {
+        super(path);
     }
 
     protected void registerDirectory(WatchService watcher) {
-        Path path = Paths.get(getDir());
+        Path path = getPath();
         try {
             path.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
         } catch (IOException e) {
@@ -21,8 +21,7 @@ public class AddFileEventNotifier extends FileSystemEventNotifier {
         }
     }
 
-    protected boolean processEvent(WatchEvent<?> event){
-        // TODO
+    protected boolean processEvent(WatchEvent<?> event) {
         return true;
     }
 

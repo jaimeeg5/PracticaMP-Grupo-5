@@ -7,7 +7,7 @@ import org.json.JSONTokener;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 import java.util.*;
 
 public class GameData implements FileSystemEventListener {
@@ -37,34 +37,57 @@ public class GameData implements FileSystemEventListener {
     }
 
     public boolean userExists(String user) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         return passwords.containsKey(user);
     }
 
     public boolean checkPassword(String user, String password) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         return passwords.get(user).equals(password);
     }
 
     public User getUser(String user) {
-        // TODO
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         UserBuilder builder = new UserBuilder(UserType.PLAYER);
         return builder.build();
     }
 
     public void banUser(String user) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         bannedUsers.add(user);
         saveToDisk();
     }
 
     public void unbanUser(String user) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         bannedUsers.remove(user);
         saveToDisk();
     }
 
     public boolean isBanned(String user) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         return bannedUsers.contains(user);
     }
 
-    public void loadFromDisk() {
+    private void loadFromDisk() {
         JSONObject obj;
         try {
             obj = new JSONObject(new JSONTokener(new FileInputStream(path)));
@@ -87,7 +110,7 @@ public class GameData implements FileSystemEventListener {
         updated = false;
     }
 
-    public void saveToDisk() {
+    private void saveToDisk() {
         JSONObject obj = new JSONObject();
         JSONArray passwordsArray = new JSONArray();
         for (String key: passwords.keySet()) {
@@ -109,11 +132,15 @@ public class GameData implements FileSystemEventListener {
         obj.put("registeredNumbers", registeredNumbersArray);
     }
 
-    public void update(Path file) {
+    public void update(WatchEvent<?> event) {
         updated = true;
     }
 
     public User newUser(UserType type, String nick, String name, String password) {
+        if (updated) {
+            loadFromDisk();
+            updated = false;
+        }
         UserBuilder builder = new UserBuilder(type);
         builder.buildNick(nick);
         builder.buildName(name);
@@ -123,9 +150,10 @@ public class GameData implements FileSystemEventListener {
             registeredNumbers.add(num);
         }
         passwords.put(nick, password);
-        // TODO: save user to disk
+        User u = builder.build();
+        JSONObject json = new JSONObject(u);
         saveToDisk();
-        return builder.build();
+        return u;
     }
 
     private String generateRegisterNumber() {

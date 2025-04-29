@@ -1,7 +1,7 @@
 package fileEvents;
 
-import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 
 public interface FileSystemEventListener {
-    void update(Path file);
+    void update(WatchEvent<?> event);
 }

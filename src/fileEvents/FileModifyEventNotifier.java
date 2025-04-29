@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.nio.file.*;
 
 public class FileModifyEventNotifier extends FileSystemEventNotifier {
-    private String dir;
-    private String path;
 
-    public FileModifyEventNotifier(String dir) {
-        super(dir);
+    public FileModifyEventNotifier(String path) {
+        super(path);
     }
 
     protected void registerDirectory(WatchService watcher) {
-        Path path = Paths.get(getDir());
+        Path path = getPath();
         try {
             path.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
         } catch (IOException e) {
@@ -20,8 +18,8 @@ public class FileModifyEventNotifier extends FileSystemEventNotifier {
         }
     }
 
-    protected boolean processEvent(WatchEvent<?> event){
-        // TODO
-        return true;
+    protected boolean processEvent(WatchEvent<?> event) {
+        Path path = (Path) event.context();
+        return path.equals(getPath());
     }
 }
