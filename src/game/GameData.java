@@ -3,11 +3,6 @@ package game;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.*;
 
@@ -39,7 +34,6 @@ public class GameData implements FileSystemEventListener {
     public boolean userExists(String user) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
         return passwords.containsKey(user);
     }
@@ -47,7 +41,6 @@ public class GameData implements FileSystemEventListener {
     public boolean checkPassword(String user, String password) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
         return passwords.get(user).equals(password);
     }
@@ -55,7 +48,6 @@ public class GameData implements FileSystemEventListener {
     public void banUser(String user) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
         bannedUsers.add(user);
         saveToDisk();
@@ -64,7 +56,6 @@ public class GameData implements FileSystemEventListener {
     public void unbanUser(String user) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
         bannedUsers.remove(user);
         saveToDisk();
@@ -73,34 +64,28 @@ public class GameData implements FileSystemEventListener {
     public boolean isBanned(String user) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
         return bannedUsers.contains(user);
     }
 
     private void loadFromDisk() {
-        try {
-            Path path = Paths.get("data/gamedata.json");
-            if (Files.exists(path)) {
-                String s = Files.readString(path);
-                JSONObject obj = new JSONObject(s);
-                JSONArray arr = obj.getJSONArray("passwords");
-                for (int i = 0; i < arr.length(); i++) {
-                    JSONArray pw = arr.getJSONArray(i);
-                    passwords.put(pw.getString(0), pw.getString(1));
-                }
-                arr = obj.getJSONArray("bannedUsers");
-                for (int i = 0; i < arr.length(); i++) {
-                    bannedUsers.add(arr.getString(i));
-                }
-                arr = obj.getJSONArray("registeredNumbers");
-                for (int i = 0; i< arr.length(); i++) {
-                    registeredNumbers.add(arr.getString(i));
-                }
-                updated = false;
+        FileManager manager = new FileManager();
+        JSONObject json = manager.load("data/gamedata.json");
+        if (json != null) {
+            JSONArray arr = json.getJSONArray("passwords");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONArray pw = arr.getJSONArray(i);
+                passwords.put(pw.getString(0), pw.getString(1));
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            arr = json.getJSONArray("bannedUsers");
+            for (int i = 0; i < arr.length(); i++) {
+                bannedUsers.add(arr.getString(i));
+            }
+            arr = json.getJSONArray("registeredNumbers");
+            for (int i = 0; i< arr.length(); i++) {
+                registeredNumbers.add(arr.getString(i));
+            }
+            updated = false;
         }
     }
 
@@ -125,20 +110,8 @@ public class GameData implements FileSystemEventListener {
         json.put("bannedUsers", bannedUsersArray);
         json.put("registeredNumbers", registeredNumbersArray);
 
-        String pathStr = "data/gameData.json";
-        Path path = Paths.get(pathStr);
-        if (!Files.exists(path)) {
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        try (FileWriter file = new FileWriter(pathStr)) {
-            json.write(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileManager m = new FileManager();
+        m.save("data/gamedata.json", json);
     }
 
     public void update(WatchEvent<?> event) {
@@ -148,7 +121,6 @@ public class GameData implements FileSystemEventListener {
     public User newUser(UserType type, String nick, String name, String password) {
         if (updated) {
             loadFromDisk();
-            updated = false;
         }
 
         JSONObject json = new JSONObject();
@@ -171,36 +143,16 @@ public class GameData implements FileSystemEventListener {
         passwords.put(nick, password);
         User u = builder.build();
 
-        String pathStr = "data/users/" + nick + ".json";
-        Path path = Paths.get(pathStr);
-        if (!Files.exists(path)) {
-            try {
-                Files.createFile(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        try (FileWriter file = new FileWriter(pathStr)) {
-            json.write(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FileManager fileManager = new FileManager();
+        fileManager.save("data/users" + nick + ".json", json);
+
         saveToDisk();
         return u;
     }
 
     public User getUser(String nick) {
-        if (updated) {
-            loadFromDisk();
-            updated = false;
-        }
-        String s;
-        try {
-            s = Files.readString(Paths.get("data/users/" + nick + ".json"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        JSONObject json = new JSONObject(s);
+        FileManager manager = new FileManager();
+        JSONObject json = manager.load("data/users/" + nick + ".json");
         UserType type = UserType.valueOf(json.getString("type"));
         UserBuilder builder = new UserBuilder(type);
         builder.buildNick(json.getString("nick"));
