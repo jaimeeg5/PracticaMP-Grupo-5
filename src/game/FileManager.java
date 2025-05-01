@@ -14,6 +14,7 @@ public class FileManager {
             try {
                 Files.createDirectories(Paths.get("data/notifications/admin"));
                 Files.createDirectory(Paths.get("data/users"));
+                Files.createDirectory(Paths.get("data/combats"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
