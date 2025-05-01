@@ -34,6 +34,10 @@ public abstract class FileSystemEventNotifier extends Thread{
         listeners.remove(listener);
     }
 
+    public boolean hasListeners() {
+        return !listeners.isEmpty();
+    }
+
     public void notify(WatchEvent<?> event) {
         for (FileSystemEventListener l: listeners) {
             l.update(event);

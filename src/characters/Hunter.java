@@ -63,6 +63,11 @@ public class Hunter extends Character{
     }
 
     @Override
+    public void showStats() {
+
+    }
+
+    @Override
     public boolean takeDamage(int attackValue, int defenseValue){
         int minionsHealth = 0;
         for (Minion minion : super.getMinions()){
