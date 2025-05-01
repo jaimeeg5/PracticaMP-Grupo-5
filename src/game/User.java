@@ -6,7 +6,7 @@ import fileEvents.FileSystemEventNotifier;
 import java.nio.file.Path;
 import java.util.List;
 
-public abstract class User implements FileSystemEventListener {
+public abstract class User {
     private String name;
     private String nick;
     private FileSystemEventNotifier notifier;
@@ -21,17 +21,17 @@ public abstract class User implements FileSystemEventListener {
     }
 
     public void logout(){
-        notifier.unsubscribe(this);
-        if (!notifier.hasListeners()) {
-            notifier.interrupt();
+        if (pendingNotifications != null) {
+            pendingNotifications.clear();
         }
         System.out.println(nick + " se ha desconectado.");
     }
 
     public void dropout(){
         logout();
-        GameData data = GameData.getInstance();
-        data.deleteUser(this);
+        if (notifier != null) {
+            notifier.unsubscribe((FileSystemEventListener) this);
+        }
         System.out.println(nick + " se ha dado de baja.");
     }
 
@@ -45,6 +45,7 @@ public abstract class User implements FileSystemEventListener {
         return nick;
     }
 
+    public abstract void update(Path file);
     public FileSystemEventNotifier getNotifier() {
         return notifier;
     }
@@ -52,9 +53,5 @@ public abstract class User implements FileSystemEventListener {
     public User(String nick, String name){
         this.nick = nick;
         this.name = name;
-    }
-
-    public List<Path> getNotifications() {
-        return pendingNotifications;
     }
 }

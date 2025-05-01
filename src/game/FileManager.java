@@ -48,16 +48,4 @@ public class FileManager {
     public JSONObject load(String path) {
         return load(Paths.get(path));
     }
-
-    public void delete(Path path) {
-        try {
-            Files.delete(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void delete(String path) {
-        delete(Paths.get(path));
-    }
 }
