@@ -74,6 +74,10 @@ public class GameData implements FileSystemEventListener {
         saveToDisk();
     }
 
+    public Set<String> getBannedUsers() {
+        return bannedUsers;
+    }
+
     public boolean isBanned(String user) {
         if (updated) {
             loadFromDisk();

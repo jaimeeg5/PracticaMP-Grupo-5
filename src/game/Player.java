@@ -76,7 +76,9 @@ public class Player extends User {
                     character.selectEquipment();
                     break;
                 case 3:
-                    // TODO: copiar a Jaime
+                    if (Menu.showConfirmationMenu()) {
+                        dropout();
+                    }
                     break;
             }
         } while (choice != 4);
