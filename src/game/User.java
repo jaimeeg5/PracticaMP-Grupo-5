@@ -24,7 +24,7 @@ public abstract class User {
         if (pendingNotifications != null) {
             pendingNotifications.clear();
         }
-        System.out.println(nick + " has logged out.");
+        System.out.println(nick + " se ha desconectado.");
     }
 
     public void dropout(){
@@ -32,7 +32,7 @@ public abstract class User {
         if (notifier != null) {
             notifier.unsubscribe((FileSystemEventListener) this);
         }
-        System.out.println(nick + " has dropped out.");
+        System.out.println(nick + " se ha dado de baja.");
     }
 
     public abstract void operate();
