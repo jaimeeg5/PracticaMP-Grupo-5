@@ -2,7 +2,12 @@ package game;
 
 import characters.Modifier;
 import characters.Character;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -30,12 +35,44 @@ public class Combat {
     }
 
     public static Combat loadFromDisk(int id){
-
-        return null;
+        ObjectInputStream in = null;
+        try {
+            FileInputStream fileIn = new FileInputStream("data/combats/combat_" + id + ".dat");
+            in = new ObjectInputStream(fileIn);
+            Combat combat = (Combat) in.readObject();
+            return combat;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error al cargar el combate: " + e.getMessage());
+            return null;
+        } finally {
+            if (in != null){
+                try{
+                    in.close();
+                } catch (IOException e) {
+                    System.out.println("Error al cerrar el archivo: " + e.getMessage());
+                }
+            }
+        }
     }
 
-    public void saveToDisk(){
-
+    public void saveToDisk() {
+        ObjectOutputStream out = null;
+        try {
+            FileOutputStream fileOut = new FileOutputStream("data/combats/combat_" + id + ".dat");
+            out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            System.out.println("Combate guardado correctamente en data/combats/combat_" + id + ".dat");
+        } catch (IOException e) {
+            System.out.println("Error al guardar el combate: " + e.getMessage());
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    System.out.println("Error al cerrar el archivo: " + e.getMessage());
+                }
+            }
+        }
     }
 
     public void fight(){
