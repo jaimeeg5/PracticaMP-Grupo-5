@@ -5,10 +5,18 @@ public class Modifier {
     private int value;
     private ModifierType type;
 
-    public Modifier(String name, int value, ModifierType type){
+    public Modifier(String name, int value, String type){
         this.name = name;
         this.value = value;
-        this.type = type;
+        if (type.equals("Fortaleza")){
+            this.type = ModifierType.Strength;
+        } else {
+            this.type = ModifierType.Weakness;
+        }
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getValue() {

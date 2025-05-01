@@ -84,11 +84,11 @@ public class Combat {
             this.rounds += 1;
             this.turnSummary.add("Turno " + this.rounds + ":\nSalud del jugador 1 = " + character1.getHealth() + "\nSalud del jugador 2 = " + character2.getHealth() + "\n-------------------------");
         }
-        if ((character1.getHealth() > 0) && (character2.getHealth() == 0)) {
+        if ((character1.getHealth() > 0) && (character2.getHealth() <= 0)) {
             winner = "Jugador 1";
             loser = "Jugador 2";
             challenged.pay(challenger, gold);
-        } else if ((character1.getHealth() == 0) && (character2.getHealth() > 0)) {
+        } else if ((character1.getHealth() <= 0) && (character2.getHealth() > 0)) {
             winner = "Jugador 2";
             loser = "Jugador 1";
             challenger.pay(challenged, gold);
@@ -106,5 +106,17 @@ public class Combat {
             System.out.println("Los jugadores han empatado");
             System.out.println("Ninguno de los dos jugadores paga oro a su rival");
         }
+    }
+
+    public List<Modifier> getActiveModifiers() {
+        return activeModifiers;
+    }
+
+    public void addModifier(Modifier modifier){
+        this.activeModifiers.add(modifier);
+    }
+
+    public void removeModifier(Modifier modifier){
+        this.activeModifiers.remove(modifier);
     }
 }
