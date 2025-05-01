@@ -20,6 +20,7 @@ public abstract class Character {
     private CharacterType type;
     private int powerupValue = 0;
     private int weaknessValue = 0;
+    private int gold;
 
     public int getHealth() {
         return health;
@@ -159,5 +160,15 @@ public abstract class Character {
             }
         }
         return successes;
+    }
+
+    public abstract void showStats();
+
+    public void selectEquipment() {
+
+    }
+
+    public int getGold() {
+        return gold;
     }
 }
