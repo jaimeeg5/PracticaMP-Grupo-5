@@ -20,9 +20,9 @@ public class Combat {
     private List<String> turnSummary;
     private List<Modifier> activeModifiers;
     private int id;
-    private ChallengeNotification notification;
+    private Notification notification;
 
-    public Combat(ChallengeNotification notification) {
+    public Combat(Notification notification) {
         this.notification = notification;
         this.calcDate = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
