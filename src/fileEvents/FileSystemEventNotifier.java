@@ -18,8 +18,12 @@ public abstract class FileSystemEventNotifier extends Thread{
     }
 
     public FileSystemEventNotifier(String path) {
+        this(Paths.get(path));
+    }
+
+    public FileSystemEventNotifier(Path path) {
         listeners = new LinkedList<>();
-        this.path = Paths.get(path);
+        this.path = path;
     }
 
     public void subscribe(FileSystemEventListener listener){

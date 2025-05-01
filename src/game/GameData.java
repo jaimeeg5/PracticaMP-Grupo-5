@@ -1,22 +1,35 @@
 package game;
 
+import fileEvents.FileModifyEventNotifier;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.*;
 
 public class GameData implements FileSystemEventListener {
+    public final Path gameDataPath = Paths.get("data/gameData.json");
     private static volatile GameData instance = null;
     private final Map<String, String> passwords;
     private final Set<String> bannedUsers;
     private final Set<String> registeredNumbers;
     private boolean updated;
+    private final FileModifyEventNotifier notifier;
 
     private GameData() {
+        FileManager.setup();
         passwords = new HashMap<>();
         bannedUsers = new TreeSet<>();
         registeredNumbers = new HashSet<>();
+        notifier = new FileModifyEventNotifier(gameDataPath);
+        notifier.subscribe(this);
+        notifier.start();
         loadFromDisk();
     }
 
@@ -70,7 +83,7 @@ public class GameData implements FileSystemEventListener {
 
     private void loadFromDisk() {
         FileManager manager = new FileManager();
-        JSONObject json = manager.load("data/gamedata.json");
+        JSONObject json = manager.load(gameDataPath);
         if (json != null) {
             JSONArray arr = json.getJSONArray("passwords");
             for (int i = 0; i < arr.length(); i++) {
@@ -90,28 +103,35 @@ public class GameData implements FileSystemEventListener {
     }
 
     private void saveToDisk() {
-        JSONObject json = new JSONObject();
-        JSONArray passwordsArray = new JSONArray();
-        for (String key: passwords.keySet()) {
-            JSONArray pw =  new JSONArray();
-            pw.put(0, key);
-            pw.put(1, passwords.get(key));
-            passwordsArray.put(pw);
-        }
-        JSONArray bannedUsersArray = new JSONArray();
-        for (String user: bannedUsers) {
-            bannedUsersArray.put(0, user);
-        }
-        JSONArray registeredNumbersArray = new JSONArray();
-        for (String num: registeredNumbers) {
-            registeredNumbersArray.put(0, num);
-        }
-        json.put("passwords", passwordsArray);
-        json.put("bannedUsers", bannedUsersArray);
-        json.put("registeredNumbers", registeredNumbersArray);
+        try (FileChannel fc = FileChannel.open(gameDataPath)) {
+            try (FileLock lock = fc.lock()) {
+                JSONObject json = new JSONObject();
+                JSONArray passwordsArray = new JSONArray();
+                for (String key: passwords.keySet()) {
+                    JSONArray pw =  new JSONArray();
+                    pw.put(0, key);
+                    pw.put(1, passwords.get(key));
+                    passwordsArray.put(pw);
+                }
+                JSONArray bannedUsersArray = new JSONArray();
+                for (String user: bannedUsers) {
+                    bannedUsersArray.put(0, user);
+                }
+                JSONArray registeredNumbersArray = new JSONArray();
+                for (String num: registeredNumbers) {
+                    registeredNumbersArray.put(0, num);
+                }
+                json.put("passwords", passwordsArray);
+                json.put("bannedUsers", bannedUsersArray);
+                json.put("registeredNumbers", registeredNumbersArray);
 
-        FileManager m = new FileManager();
-        m.save("data/gamedata.json", json);
+                FileManager m = new FileManager();
+                m.save(gameDataPath, json);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        updated = false;
     }
 
     public void update(WatchEvent<?> event) {

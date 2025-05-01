@@ -12,6 +12,10 @@ public class AddFileEventNotifier extends FileSystemEventNotifier {
         super(path);
     }
 
+    public AddFileEventNotifier(Path path) {
+        super(path);
+    }
+
     protected void registerDirectory(WatchService watcher) {
         Path path = getPath();
         try {

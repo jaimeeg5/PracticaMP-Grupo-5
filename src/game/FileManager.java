@@ -8,19 +8,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileManager {
-    private static boolean directoriesChecked = false;
 
-    public FileManager() {
-        if (!directoriesChecked) {
-            if (!Files.exists(Paths.get("data"))) {
-                try {
-                    Files.createDirectories(Paths.get("data/notifications/admin"));
-                    Files.createDirectory(Paths.get("data/users"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+    public static void setup() {
+        if (!Files.exists(Paths.get("data"))) {
+            try {
+                Files.createDirectories(Paths.get("data/notifications/admin"));
+                Files.createDirectory(Paths.get("data/users"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            directoriesChecked = true;
         }
     }
 
