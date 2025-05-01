@@ -18,7 +18,7 @@ public class GameData implements FileSystemEventListener {
     private static volatile GameData instance = null;
     private final Map<String, String> passwords;
     private final Set<String> bannedUsers;
-    private final Set<String> registeredNumbers;
+    private final Map<String, String> registeredNumbers;
     private boolean updated;
     private final FileModifyEventNotifier notifier;
 
@@ -26,7 +26,7 @@ public class GameData implements FileSystemEventListener {
         FileManager.setup();
         passwords = new HashMap<>();
         bannedUsers = new TreeSet<>();
-        registeredNumbers = new HashSet<>();
+        registeredNumbers = new HashMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
         notifier.subscribe(this);
         notifier.start();
@@ -94,9 +94,10 @@ public class GameData implements FileSystemEventListener {
             for (int i = 0; i < arr.length(); i++) {
                 bannedUsers.add(arr.getString(i));
             }
-            arr = json.getJSONArray("registeredNumbers");
-            for (int i = 0; i< arr.length(); i++) {
-                registeredNumbers.add(arr.getString(i));
+            arr = json.getJSONArray("passwords");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONArray rn = arr.getJSONArray(i);
+                registeredNumbers.put(rn.getString(0), rn.getString(1));
             }
             updated = false;
         }
@@ -118,8 +119,11 @@ public class GameData implements FileSystemEventListener {
                     bannedUsersArray.put(0, user);
                 }
                 JSONArray registeredNumbersArray = new JSONArray();
-                for (String num: registeredNumbers) {
-                    registeredNumbersArray.put(0, num);
+                for (String key: registeredNumbers.keySet()) {
+                    JSONArray rn =  new JSONArray();
+                    rn.put(0, key);
+                    rn.put(1, registeredNumbers.get(key));
+                    passwordsArray.put(rn);
                 }
                 json.put("passwords", passwordsArray);
                 json.put("bannedUsers", bannedUsersArray);
@@ -157,7 +161,7 @@ public class GameData implements FileSystemEventListener {
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
             json.put("registerNumber", num);
-            registeredNumbers.add(num);
+            registeredNumbers.put(num, nick);
         }
 
         passwords.put(nick, password);
@@ -200,7 +204,32 @@ public class GameData implements FileSystemEventListener {
                 str.append(l);
             }
             result = str.toString();
-        } while (registeredNumbers.contains(result));
+        } while (registeredNumbers.containsKey(result));
         return result;
+    }
+
+    public List<String> getUserList() {
+        return registeredNumbers.values().stream().toList();
+    }
+
+    public void deleteUser(User user) {
+        if (updated) {
+            loadFromDisk();
+        }
+        String nick = user.getNick();
+        passwords.remove(nick);
+        bannedUsers.remove(nick);
+
+        FileManager fm = new FileManager();
+        fm.delete("data/users/" + nick + ".json");
+        for (Path path: user.getNotifications()) {
+            fm.delete(path);
+        }
+        fm.delete("data/notifications/" + nick);
+        saveToDisk();
+    }
+
+    public void removeRegisterNumber(String registerNumber) {
+        registeredNumbers.remove(registerNumber);
     }
 }
