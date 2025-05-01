@@ -47,7 +47,9 @@ public class Player extends User {
                     checkRanking();
                     break;
                 case 5:
-                    dropout();
+                    if (Menu.showConfirmationMenu()) {
+                        dropout();
+                    }
                     break;
                 case 6:
                     logout();
@@ -77,7 +79,7 @@ public class Player extends User {
                     break;
                 case 3:
                     if (Menu.showConfirmationMenu()) {
-                        dropout();
+                        dropoutCharacter();
                     }
                     break;
             }
