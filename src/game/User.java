@@ -1,5 +1,6 @@
 package game;
 
+import fileEvents.FileSystemEventListener;
 import fileEvents.FileSystemEventNotifier;
 
 import java.nio.file.Path;
@@ -20,11 +21,18 @@ public abstract class User {
     }
 
     public void logout(){
-
+        if (pendingNotifications != null) {
+            pendingNotifications.clear();
+        }
+        System.out.println(nick + " has logged out.");
     }
 
     public void dropout(){
-
+        logout();
+        if (notifier != null) {
+            notifier.unsubscribe((FileSystemEventListener) this);
+        }
+        System.out.println(nick + " has dropped out.");
     }
 
     public abstract void operate();
