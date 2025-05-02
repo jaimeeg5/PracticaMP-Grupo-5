@@ -1,7 +1,6 @@
 package game;
 import characters.*;
 
-import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.List;
 import java.util.Scanner;
@@ -52,7 +51,7 @@ public class Operator extends User {
 
     public void banUsers(){
         GameData gameData = GameData.getInstance();
-        List <String> users = gameData.getUserList();
+        Set <String> users = gameData.getUserSet();
         for (String user : users){
             System.out.println(user);
         }

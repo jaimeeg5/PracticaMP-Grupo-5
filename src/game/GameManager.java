@@ -32,6 +32,7 @@ public class GameManager {
                     break;
             }
         } while (choice != 3);
+        GameData.getInstance().stopUpdates();
     }
 
     private User login() {

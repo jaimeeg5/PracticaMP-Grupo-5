@@ -97,8 +97,11 @@ public class Player extends User {
         // TODO
     }
 
-    public void challengeUser(){
-        // TODO
+    public void challengeUser() {
+        GameData gd = GameData.getInstance();
+        for (String player: gd.getUserSet()) {
+
+        }
     }
 
     public void pay(Player player, int amount){

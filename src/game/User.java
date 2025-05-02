@@ -22,7 +22,7 @@ public abstract class User implements FileSystemEventListener {
 
     public void logout(){
         notifier.unsubscribe(this);
-        if (!notifier.hasListeners()) {
+        if (notifier.isEmpty()) {
             notifier.interrupt();
         }
         System.out.println(nick + " se ha desconectado.");
