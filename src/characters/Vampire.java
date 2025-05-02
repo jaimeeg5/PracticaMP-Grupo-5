@@ -79,6 +79,11 @@ public class Vampire extends Character{
     }
 
     @Override
+    public void showStats() {
+
+    }
+
+    @Override
     public boolean takeDamage(int attackValue, int defenseValue) {
         return super.takeDamage(attackValue, defenseValue);
     }

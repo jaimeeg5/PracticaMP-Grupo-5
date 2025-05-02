@@ -1,10 +1,11 @@
 package game;
-
 import characters.*;
 
 import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Operator extends User {
     public Operator(String nick, String name) {
@@ -27,10 +28,12 @@ public class Operator extends User {
         int choice = menu.showMenu();
         switch (choice) {
             case 1:
-                deleteOperator();
+                if (Menu.showConfirmationMenu()) {
+                    dropout();
+                }
                 break;
             case 2:
-                super.logout();
+                logout();
                 break;
             case 3:
                 modifyCharacter();
@@ -47,51 +50,32 @@ public class Operator extends User {
         }
     }
 
-    @Override
-    public void update(Path file){
-
-    }
-
     public void banUsers(){
         GameData gameData = GameData.getInstance();
-        // pillar y mostrar usuarios
-        // permitir eleccion de usuario y guardarlo en nick
+        List <String> users = gameData.getUserList();
+        for (String user : users){
+            System.out.println(user);
+        }
+        System.out.println("Elige el nick del usuario a bloquear");
+        Scanner input2 = new Scanner(System.in);
+        String nick = input2.nextLine();
         gameData.banUser(nick);
     }
 
     public void unbanUsers(){
         GameData gameData = GameData.getInstance();
-        // pillar y mostrar usuarios
-        // permitir eleccion de usuario y guardarlo en nick
-        gameData.banUser(nick);
-    }
-
-    public void deleteOperator(){
+        Set<String> users = gameData.getBannedUsers();
+        for (String user : users){
+            System.out.println(user);
+        }
+        System.out.println("Elige el nick del usuario a desbloquear");
         Scanner input2 = new Scanner(System.in);
-        int option;
-        do{
-            Menu menu = new Menu();
-            menu.setTitle("¿Seguro que quieres darte de baja?");
-            String[] menuOptions = {
-                    "Si",
-                    "No"
-            };
-            option = menu.showMenu();
-            if (option == 1) {
-                super.dropout();
-                System.out.println("Te has dado de baja con éxito");
-                break;
-            } else if (option == 2) {
-                break;
-            } else {
-                System.out.println("Pulsa una opcion valida");
-            }
-        } while ((option < 1) || (option > 2) );
+        String nick = input2.nextLine();
+        gameData.unbanUser(nick);
     }
 
     //TODO cambiar coso con todos los atributos
     public void modifyCharacter(){
-        Scanner input2 = new Scanner(System.in);
         int option;
         do{
             Menu menu = new Menu();
@@ -101,78 +85,84 @@ public class Operator extends User {
                     "Hombre Lobo",
                     "Cazador"
             };
+            menu.setOptions(menuOptions);
             option = menu.showMenu();
-            if (option == 1) {
-                Vampire vampire = new Vampire(100, CharacterType.Vampire);
-                System.out.println("Personaje modificado con éxito");
-                break;
-            } else if (option == 2) {
-                Werewolf werewolf = new Werewolf(2.0, 100,CharacterType.Werewolf);
-                System.out.println("Personaje modificado con éxito");
-                break;
-            } else if (option == 3){
-                Hunter hunter = new Hunter(CharacterType.Hunter);
-                System.out.println("Personaje modificado con éxito");
-                break;
-            } else {
-                System.out.println("Pulsa una opcion valida");
+            switch (option) {
+                case 1:
+                    Vampire vampire = new Vampire(100, CharacterType.Vampire);
+                    System.out.println("Personaje modificado con éxito");
+                    break;
+                case 2:
+                    Werewolf werewolf = new Werewolf(2.0, 100,CharacterType.Werewolf);
+                    System.out.println("Personaje modificado con éxito");
+                    break;
+                case 3:
+                    Hunter hunter = new Hunter(CharacterType.Hunter);
+                    System.out.println("Personaje modificado con éxito");
+                    break;
+                case 4:
+                    break;
+                default:
+                    System.out.println("Pulsa una opcion valida");
             }
-        } while ((option < 1) || (option > 3) );
+        } while ((option < 1) || (option > 4));
     }
 
-    public void manageCombat(){
+    public void manageCombat() {
         Notification notification = null;
         Combat combat = new Combat(notification);
-        Scanner input2 = new Scanner(System.in);
         int option;
-        do{
+        boolean choice;
+        do {
             Menu menu = new Menu();
-            menu.setTitle("¿Quieres añadir modificadores?");
+            menu.setTitle("¿Que accion quieres realizar?");
             String[] menuOptions = {
-                    "Si",
-                    "No"
+                    "Añadir modificador",
+                    "Eliminar modificador"
             };
+            menu.setOptions(menuOptions);
             option = menu.showMenu();
-            if (option == 1){
-                System.out.println("Introduzca el nombre del modificador");
-                String name = input2.nextLine();
-                System.out.println("Introduzca el valor del modificador");
-                int value = Integer.parseInt(input2.nextLine());
-                System.out.println("Introduzca el tipo del modificador (Fortaleza o debilidad)");
-                String type = input2.nextLine();
-                Modifier modifier = new Modifier(name, value, type);
-                combat.addModifier(modifier);
-                break;
-            } else if (option == 2) {
-                break;
-            }
-        } while((option > 2) || (option < 1));
-
-        do{
-            Menu menu = new Menu();
-            menu.setTitle("¿Quieres eliminar modificadores?");
-            String[] menuOptions = {
-                    "Si",
-                    "No"
-            };
-            option = menu.showMenu();
-            if (option == 1){
-                List<Modifier> activeModifiers = combat.getActiveModifiers();
-                for (Modifier modifier : activeModifiers){
-                    menu.setTitle("¿Quieres eliminar el modificador " + modifier.getName() + "?");
-                    String[] menuOpt = {
-                            "Si",
-                            "No"
-                    };
-                    int opt = menu.showMenu();
-                    if (opt == 1){
-                        combat.removeModifier(modifier);
+            switch (option) {
+                case 1:
+                    Scanner input2 = new Scanner(System.in);
+                    System.out.println("Introduzca el nombre del modificador");
+                    String name = input2.nextLine();
+                    System.out.println("Introduzca el valor del modificador");
+                    int value = Integer.parseInt(input2.nextLine());
+                    System.out.println("Introduzca el tipo del modificador ('Fortaleza' o 'Debilidad')");
+                    String type = input2.nextLine();
+                    choice = Menu.showConfirmationMenu();
+                    if (choice) {
+                        Modifier modifier = new Modifier(name, value, type);
+                        combat.addModifier(modifier);
                     }
-                }
-                break;
-            } else if (option == 2) {
-                break;
+                    break;
+                case 2:
+                    List<Modifier> activeModifiers = combat.getActiveModifiers();
+                    int i = 0;
+                    for (Modifier modifier : activeModifiers) {
+                        System.out.println("[" + i + "] " + modifier.getName());
+                        i += 1;
+
+                    }
+                    System.out.println("Escribe el número del modificador a eliminar del combate");
+                    Scanner input3= new Scanner(System.in);
+                    int modifierIndex = Integer.parseInt(input3.nextLine());
+                    choice = Menu.showConfirmationMenu();
+                    if (choice) {
+                        combat.removeModifier(activeModifiers.get(modifierIndex));
+                    }
+                    break;
+                case 3:
+                    break;
+                default:
+                    System.out.println("Pulsa una opcion valida");
             }
-        } while((option > 2) || (option < 1));
+        } while ((option < 1) || (option > 3));
+    }
+
+    @Override
+    public void update(WatchEvent<?> event) {
+
     }
 }
