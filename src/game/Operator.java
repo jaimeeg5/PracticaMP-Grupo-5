@@ -114,11 +114,31 @@ public class Operator extends User {
                     break;
                 case 2:
                     Werewolf werewolf = (Werewolf) characterFactory.registerCharacter(CharacterType.Werewolf);
-                    // Mostrar atributos de vampire
-                    // Preguntar cual quiere cambiar y permitir entrada de valores
-                    // Cambiar valor y guardar en lista de characters disponibles
+                    System.out.println("Altura: " + werewolf.getHeight());
+                    System.out.println("Peso: " + werewolf.getWeight());
+                    System.out.println("Rabia: " + werewolf.getRage());
+                    System.out.println("¿Que atributo quieres cambiar?");
+                    Scanner input2= new Scanner(System.in);
+                    String atribute = input2.nextLine();
+                    switch (atribute) {
+                        case "Altura":
+                            System.out.println("Introduzca la nueva altura");
+                            Scanner input3 = new Scanner(System.in);
+                            double height = Double.parseDouble(input3.nextLine());
+                            werewolf.setHeight(height);
+                        case "Peso":
+                            System.out.println("Introduzca el nuevo peso");
+                            Scanner input4 = new Scanner(System.in);
+                            int weight = Integer.parseInt(input4.nextLine());
+                            werewolf.setWeight(weight);
+                        case "Rabia":
+                            System.out.println("Introduzca la nueva rabia");
+                            Scanner input4 = new Scanner(System.in);
+                            int rage = Integer.parseInt(input4.nextLine());
+                            werewolf.setRage(rage);
+                    }
+                    // Sustituir en lista
                     System.out.println("Personaje modificado con éxito");
-                    break;
                 case 3:
                     Hunter hunter = (Hunter) characterFactory.registerCharacter(CharacterType.Hunter);
                     System.out.println("Voluntad: " + hunter.getWillPower());
