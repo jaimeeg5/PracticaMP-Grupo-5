@@ -1,6 +1,7 @@
 package game;
 import characters.*;
 import characters.Character;
+import org.json.JSONObject;
 
 import java.nio.file.WatchEvent;
 import java.util.ArrayList;
@@ -220,6 +221,23 @@ public class Operator extends User {
 
     @Override
     public void update(WatchEvent<?> event) {
+        //TODO
 
+        // System.out.println("Evento detectado: " + event.kind() + " en " + event.context());
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("type", UserType.OPERATOR.toString());
+        json.put("nick", getNick());
+        json.put("name", getName());
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        setNick(json.getString("nick"));
+        setName(json.getString("name"));
     }
 }

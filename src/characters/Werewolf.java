@@ -1,6 +1,7 @@
 package characters;
 
 import equipments.Equipment;
+import org.json.JSONObject;
 
 public class Werewolf extends Character{
     private double height;
@@ -113,5 +114,16 @@ public class Werewolf extends Character{
             this.rage += 1;
         }
         return status;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        super.fromJSONObject(json);
     }
 }

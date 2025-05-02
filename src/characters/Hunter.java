@@ -1,6 +1,7 @@
 package characters;
 
 import equipments.Equipment;
+import org.json.JSONObject;
 
 public class Hunter extends Character{
     private int willpower = 3;
@@ -87,5 +88,16 @@ public class Hunter extends Character{
             this.willpower -= 1;
         }
         return status;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        super.fromJSONObject(json);
     }
 }

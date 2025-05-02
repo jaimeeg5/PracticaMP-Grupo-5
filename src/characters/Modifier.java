@@ -1,5 +1,7 @@
 package characters;
 
+import org.json.JSONObject;
+
 public class Modifier {
     private String name;
     private int value;
@@ -21,5 +23,21 @@ public class Modifier {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("value", value);
+        json.put("type", type);
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        name = json.getString("name");
+        value = json.getInt("value");
+        type = ModifierType.valueOf(json.getString("type"));
     }
 }
