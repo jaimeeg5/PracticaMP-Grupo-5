@@ -141,9 +141,17 @@ public class Operator extends User {
                     System.out.println("Personaje modificado con éxito");
                 case 3:
                     Hunter hunter = (Hunter) characterFactory.registerCharacter(CharacterType.Hunter);
-                    // Mostrar atributos de vampire
-                    // Preguntar cual quiere cambiar y permitir entrada de valores
-                    // Cambiar valor y guardar en lista de characters disponibles
+                    System.out.println("Voluntad: " + hunter.getWillPower());
+                    System.out.println("¿Que atributo quieres cambiar?");
+                    Scanner input2= new Scanner(System.in);
+                    String atribute = input2.nextLine();
+                    switch (atribute){
+                        case "Voluntad":
+                            System.out.println("Introduzca la voluntad");
+                            Scanner input4= new Scanner(System.in);
+                            int willPower = Integer.parseInt(input4.nextLine());
+                            hunter.setWillPower(willPower);
+                    }
                     System.out.println("Personaje modificado con éxito");
                     break;
                 case 4:
