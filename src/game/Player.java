@@ -17,6 +17,7 @@ public class Player extends User {
 
     @Override
     public void operate(){
+        GameData data = GameData.getInstance();
         Menu menu = new Menu();
         menu.setTitle("Elige una opción");
         String[] menuOptions = {
@@ -44,7 +45,7 @@ public class Player extends User {
                     checkGold();
                     break;
                 case 4:
-                    checkRanking();
+                    data.printRanking();
                     break;
                 case 5:
                     if (Menu.showConfirmationMenu()) {
@@ -93,13 +94,10 @@ public class Player extends User {
         System.out.println("- Oro del personaje actual: " + character.getGold());
     }
 
-    private void checkRanking() {
-        // TODO
-    }
 
     public void challengeUser() {
         GameData gd = GameData.getInstance();
-        for (String player: gd.getUserSet()) {
+        for (String player: gd.getPlayerSet()) {
 
         }
     }

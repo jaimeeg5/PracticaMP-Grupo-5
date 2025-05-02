@@ -51,7 +51,7 @@ public class Operator extends User {
 
     public void banUsers(){
         GameData gameData = GameData.getInstance();
-        Set <String> users = gameData.getUserSet();
+        Set <String> users = gameData.getPlayerSet();
         for (String user : users){
             System.out.println(user);
         }
