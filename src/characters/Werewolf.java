@@ -13,6 +13,30 @@ public class Werewolf extends Character{
         super.setType(type);
     }
 
+    public double getHeight() {
+        return height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public int getRage() {
+        return rage;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public void setRage(int rage) {
+        this.rage = rage;
+    }
+
     @Override
     public void attack(Character enemy) {
         int powerupValue = 0;

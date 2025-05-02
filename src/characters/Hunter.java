@@ -9,6 +9,14 @@ public class Hunter extends Character{
         super.setType(type);
     }
 
+    public int getWillpower() {
+        return willpower;
+    }
+
+    public void setWillpower(int willpower) {
+        this.willpower = willpower;
+    }
+
     @Override
     public void attack(Character enemy) {
         int powerupValue = 0;

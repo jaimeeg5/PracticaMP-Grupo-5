@@ -15,8 +15,16 @@ public class Vampire extends Character{
         return bloodPoints;
     }
 
+    public int getAge() {
+        return age;
+    }
+
     public void setBloodPoints(int bloodPoints) {
         this.bloodPoints = bloodPoints;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override
@@ -106,11 +114,5 @@ public class Vampire extends Character{
         return super.takeDamage(attackValue, defenseValue);
     }
 
-    public int getAge() {
-        return age;
-    }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 }
