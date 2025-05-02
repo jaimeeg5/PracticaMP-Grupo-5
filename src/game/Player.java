@@ -3,8 +3,10 @@ package game;
 import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import characters.Character;
+import org.json.JSONObject;
 
 public class Player extends User {
     private final String registerNumber;
@@ -19,18 +21,17 @@ public class Player extends User {
 
     @Override
     public void operate(){
-        GameData data = GameData.getInstance();
         Menu menu = new Menu();
         menu.setTitle("Elige una opción");
-        String[] menuOptions = {
-                "Gestionar personaje",
-                "Desafiar usuario",
-                "Consultar oro",
-                "Consultar ranking",
-                "Darse de baja"
-        };
-        if (character != null) {
-            menuOptions[0] = "Registrar personaje";
+        String[] menuOptions = {};
+        if (character == null) {
+            menuOptions = new String[] {
+                    "Gestionar personaje",
+                    "Desafiar usuario",
+                    "Consultar oro",
+                    "Consultar ranking",
+                    "Darse de baja"
+            };
         }
         menu.setOptions(menuOptions);
         int choice;
@@ -47,7 +48,7 @@ public class Player extends User {
                     checkGold();
                     break;
                 case 4:
-                    data.printRanking();
+                    GameData.getInstance().printRanking();
                     break;
                 case 5:
                     if (Menu.showConfirmationMenu()) {
@@ -97,10 +98,49 @@ public class Player extends User {
     }
 
     public void challengeUser() {
-        GameData gd = GameData.getInstance();
-        for (String player: gd.getPlayerSet()) {
-
+        GameData data = GameData.getInstance();
+        System.out.println("Jugadores: ");
+        data.printPlayers();
+        boolean correctInput = false;
+        String player = "";
+        while (!correctInput) {
+            player = Menu.waitForInput("Escribe el nick del jugador al que quieras desafiar.",user -> (data.userExists(user) && !data.isBanned(user)), "Usuario incorrecto");
+            if (player.isEmpty()) {
+                return;
+            }
+            if (player.equals(getNick())) {
+                System.out.println("No puedes desafiarte a ti mismo");
+            } else {
+                correctInput = true;
+            }
         }
+        correctInput = false;
+        int gold = -1;
+        Scanner input = new Scanner(System.in);
+        while (!correctInput) {
+            try {
+                System.out.println("Introduce cantidad de oro para apostar. No introduzcas nada para salir.");
+                String str = input.nextLine();
+                if (str.isEmpty()) {
+                    return;
+                }
+                gold = Integer.parseInt(str);
+                if (character.getGold() < gold) {
+                    System.out.println("No tienes tanto oro");
+                } else if (gold <= 0) {
+                    System.out.println("No puedes introducir una cantidad de oro negativa o 0");
+                } else {
+                    correctInput = true;
+                }
+            }
+            catch (NumberFormatException _) {}
+        }
+
+        JSONObject challenge = new JSONObject();
+        challenge.put("challenger", getNick());
+        challenge.put("challenged", player);
+        challenge.put("gold", gold);
+        new FileManager().save("data/notifications/admin", challenge);
     }
 
     public void pay(Player player, int amount){

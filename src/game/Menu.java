@@ -1,9 +1,10 @@
 package game;
 
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class Menu {
-    private String title;
+    private String title = "";
     private String[] options;
 
     public static boolean showConfirmationMenu() {
@@ -22,12 +23,14 @@ public class Menu {
         return choice == 1;
     }
 
-    public void setOptions(String[] options) {
+    public Menu setOptions(String[] options) {
         this.options = options;
+        return this;
     }
 
-    public void setTitle(String title) {
+    public Menu setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public int showMenu() {
@@ -47,5 +50,26 @@ public class Menu {
             }
         } while (choice <= 0);
         return choice;
+    }
+
+    public static String waitForInput(String inputText) {
+        return waitForInput(inputText, _ -> true, null);
+    }
+
+    public static String waitForInput(String inputText, Predicate<String> condition, String errorText) {
+        Scanner input = new Scanner(System.in);
+        boolean validInput = false;
+        String str;
+        do {
+            System.out.println(inputText + " No introduzcas nada para salir.");
+            str = input.nextLine();
+            if (str.isEmpty() || condition.test(str)) {
+                validInput = true;
+            }
+            else {
+                System.out.println(errorText);
+            }
+        } while (!validInput);
+        return str;
     }
 }

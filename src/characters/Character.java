@@ -110,16 +110,43 @@ public abstract class Character {
         this.activeArmor = activeArmor;
     }
 
+    public List<Equipment> getAvailableWeapons() {
+        return availableWeapons;
+    }
+
+    public void setAvailableWeapons(List<Equipment> availableWeapons) {
+        if (availableWeapons.size() > 2){
+            System.out.println("No puedes tener más de dos armas disponibles.");
+        }
+        this.availableWeapons = availableWeapons;
+    }
+
     public void setHealth(int health) {
-        this.health = health;
+        if (health < 0){
+            this.health = health;
+        } else if (health > 5) {
+            this.health = 5;
+        } else {
+            this.health = health;
+        }
+
     }
 
     public void setPower(int power) {
-        this.power = power;
+        if (power < 1){
+            this.power = 1;
+        } else if (power > 5) {
+            this.power = 5;
+        } else {
+            this.power = power;
+        }
+
     }
 
     public void setWeapons(Equipment weapon0, Equipment weapon1) {
-        weapons[0] = weapon0;
+        if (weapon0 != null) {
+            weapons[0] = weapon0;
+        }
         if (weapon1 != null) {
             weapons[1] = weapon1;
         }
@@ -185,10 +212,23 @@ public abstract class Character {
     }
 
     public void selectEquipment() {
+        if (availableWeapons.size() > 0) {
+            setWeapons(availableWeapons.get(0), availableWeapons.size()> 1 ? availableWeapons.get(1) : null);
+        }
 
+        if (availableArmors.size() > 0) {
+            setActiveArmor(availableArmors.get(0));
+        }
     }
 
     public int getGold() {
         return gold;
+    }
+
+    public void setGold(int gold) {
+        if (gold < 0) {
+            gold = 0;
+        }
+        this.gold = gold;
     }
 }

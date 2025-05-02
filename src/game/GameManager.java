@@ -1,8 +1,5 @@
 package game;
 
-import java.util.Scanner;
-import java.util.function.Predicate;
-
 public class GameManager {
 
     public void start() {
@@ -37,7 +34,7 @@ public class GameManager {
 
     private User login() {
         GameData data = GameData.getInstance();
-        String user = waitForInput("Intoduce apodo.", data::userExists, "Este usuario no existe");
+        String user = Menu.waitForInput("Intoduce apodo.", data::userExists, "Este usuario no existe");
         if (data.isBanned(user)) {
             System.out.println("Usuario baneado");
             return null;
@@ -45,7 +42,7 @@ public class GameManager {
         if (user.isEmpty()) {
             return null;
         }
-        String password = waitForInput("Introduce contraseña.", p -> data.checkPassword(user, p), "Contraseña incorrecta");
+        String password = Menu.waitForInput("Introduce contraseña.", p -> data.checkPassword(user, p), "Contraseña incorrecta");
         if (password.isEmpty()) {
             return null;
         }
@@ -74,41 +71,22 @@ public class GameManager {
         }
         UserBuilder builder = new UserBuilder(type);
         GameData data = GameData.getInstance();
-        String nick = waitForInput("Intoduce apodo.", u -> !data.userExists(u), "Este apodo ya está en uso");
+        String nick = Menu.waitForInput("Intoduce apodo.", u -> !data.userExists(u), "Este apodo ya está en uso");
         if (nick.isEmpty()) {
             return null;
         }
         builder.buildNick(nick);
-        String name = waitForInput("Introduce nombre.");
+        String name = Menu.waitForInput("Introduce nombre.");
         if (name.isEmpty()) {
             return null;
         }
         builder.buildName(name);
-        String password = waitForInput("Introduce contraseña.");
+        String password = Menu.waitForInput("Introduce contraseña.");
         if (password.isEmpty()) {
             return null;
         }
         return data.newUser(type, nick, name, password);
     }
 
-    private String waitForInput(String inputText) {
-        return waitForInput(inputText, _ -> true, null);
-    }
 
-    private String waitForInput(String inputText, Predicate<String> condition, String errorText) {
-        Scanner input = new Scanner(System.in);
-        boolean validInput = false;
-        String str;
-        do {
-            System.out.println(inputText + " No introduzcas nada para salir.");
-            str = input.nextLine();
-            if (str.isEmpty() || condition.test(str)) {
-                validInput = true;
-            }
-            else {
-                System.out.println(errorText);
-            }
-        } while (!validInput);
-        return str;
-    }
 }
