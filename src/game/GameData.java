@@ -264,7 +264,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
             pl.put(1, ranking.get(key));
             rankingArray.put(pl);
         }
-        JSONArray modifiersArray = json.getJSONArray("modifiers");
+        JSONArray modifiersArray = new JSONArray();
         for (String user: bannedUsers) {
             bannedUsersArray.put(0, user);
         }
