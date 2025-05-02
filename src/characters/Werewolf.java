@@ -96,17 +96,10 @@ public class Werewolf extends Character{
 
     @Override
     public void showStats() {
-        System.out.println("Nombre: " + getName());
-        System.out.println("Tipo: " + getType());
-        System.out.println("Habilidad especial: " + getSpecialAbility());
-        System.out.println("Armas activas: " + );
-        System.out.println("Armadura activa: " );
-        System.out.println("Conjunto de esbirros: " );
-        System.out.println("Oro: " + getGold());
-        System.out.println("Salud: " + getHealth());
-        System.out.println("Poder: " + getPower());
-        System.out.println("Conjunto de debilidades: " + );
-        System.out.println("Conjunto de fortalezas: " + );
+        super.showStats();
+        System.out.println("Altura: " + getName());
+        System.out.println("Peso: " + getName());
+        System.out.println("Rabia: " + getName());
     }
 
     @Override

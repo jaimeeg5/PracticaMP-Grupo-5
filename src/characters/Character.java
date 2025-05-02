@@ -170,7 +170,19 @@ public abstract class Character {
         return successes;
     }
 
-    public abstract void showStats();
+    public void showStats() {
+        System.out.println("Nombre: " + getName());
+        System.out.println("Tipo: " + getType());
+        System.out.println("Habilidad especial: " + getSpecialAbility());
+        System.out.println("Armas activas: " + getWeapons() );
+        System.out.println("Armadura activa: "+ getActiveArmor() );
+        System.out.println("Conjunto de esbirros: " );
+        System.out.println("Oro: " + getGold());
+        System.out.println("Salud: " + getHealth());
+        System.out.println("Poder: " + getPower());
+        System.out.println("Conjunto de debilidades: " + getWeaknesses());
+        System.out.println("Conjunto de fortalezas: " + getPowerUps() );
+    }
 
     public void selectEquipment() {
 
