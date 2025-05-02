@@ -8,6 +8,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Operator extends User {
+
+    private List<Character> characters;
+
     public Operator(String nick, String name) {
         super(nick, name);
     }
@@ -15,7 +18,7 @@ public class Operator extends User {
     @Override
     public void operate(){
         Menu menu = new Menu();
-        menu.setTitle("Elija una opción:");
+        menu.setTitle("Elija una opcion:");
         String[] menuOptions = {
                 "Darse de baja",
                 "Salir del sistema",
@@ -71,92 +74,63 @@ public class Operator extends User {
         gameData.unbanUser(nick);
     }
 
-    //TODO cambiar coso con todos los atributos
     public void modifyCharacter(){
-        int option;
-        do{
-            CharacterFactory characterFactory = new CharacterFactory();
-            Menu menu = new Menu();
-            menu.setTitle("¿Qué personaje quieres modificar?");
-            String[] menuOptions = {
-                    "Vampiro",
-                    "Hombre Lobo",
-                    "Cazador"
-            };
-            menu.setOptions(menuOptions);
-            option = menu.showMenu();
-            // Mostrar todos los atributos de character
-            switch (option) {
-                case 1:
-                    Vampire vampire = (Vampire) characterFactory.registerCharacter(CharacterType.Vampire);
-                    System.out.println("Edad: " + vampire.getAge());
-                    System.out.println("Puntos de sangre: " + vampire.getBloodPoints());
-                    System.out.println("¿Que atributo quieres cambiar?");
-                    Scanner input2= new Scanner(System.in);
-                    String atribute = input2.nextLine();
-                    switch (atribute){
-                        case "Edad":
-                            System.out.println("Introduzca la nueva edad");
-                            Scanner input3= new Scanner(System.in);
-                            int age = Integer.parseInt(input3.nextLine());
-                            vampire.setAge(age);
-                        case "Puntos de sangre":
-                            System.out.println("Introduzca la nueva edad");
-                            Scanner input4= new Scanner(System.in);
-                            int bloodPoints = Integer.parseInt(input4.nextLine());
-                            vampire.setBloodPoints(bloodPoints);
-                    }
-                    // Sustituir en lista
-                    System.out.println("Personaje modificado con éxito");
+        Scanner input2 = new Scanner(System.in);
+        String atribute;
+        int i = 0;
+        for (Character character : characters){
+            String characterData = "[" + i + "]" + "Tipo: " + character.getType() + " Nombre: " + character.getName() + " Salud: " + character.getHealth();
+            characterData += " Poder: " + character.getPower() + " Fortalezas: " + character.getPowerUps() + " Debilidades: " + character.getWeaknesses();
+            characterData += " Oro: " + character.getGold();
+            System.out.println(characterData);
+            i += 1;
+        }
+        System.out.println("¿Que personaje quieres modificar?");
+        int index = Integer.parseInt(input2.nextLine());
+        Character characterToModify = characters.remove(index);
+        do {
+            System.out.println("Elija uno de los siguientes atributos para modificarlo o escriba 'SAVE' para guardar los cambios:");
+            System.out.println("Nombre, Salud, Poder, Fortalezas, Debilidades, Oro");
+            atribute = input2.nextLine();
+            switch(atribute){
+                case "Nombre":
+                    System.out.println("Introduzca el nuevo nombre");
+                    characterToModify.setName(input2.nextLine());
                     break;
-                case 2:
-                    Werewolf werewolf = (Werewolf) characterFactory.registerCharacter(CharacterType.Werewolf);
-                    System.out.println("Altura: " + werewolf.getHeight());
-                    System.out.println("Peso: " + werewolf.getWeight());
-                    System.out.println("Rabia: " + werewolf.getRage());
-                    System.out.println("¿Que atributo quieres cambiar?");
-                    Scanner input2= new Scanner(System.in);
-                    String atribute = input2.nextLine();
-                    switch (atribute) {
-                        case "Altura":
-                            System.out.println("Introduzca la nueva altura");
-                            Scanner input3 = new Scanner(System.in);
-                            double height = Double.parseDouble(input3.nextLine());
-                            werewolf.setHeight(height);
-                        case "Peso":
-                            System.out.println("Introduzca el nuevo peso");
-                            Scanner input4 = new Scanner(System.in);
-                            int weight = Integer.parseInt(input4.nextLine());
-                            werewolf.setWeight(weight);
-                        case "Rabia":
-                            System.out.println("Introduzca la nueva rabia");
-                            Scanner input4 = new Scanner(System.in);
-                            int rage = Integer.parseInt(input4.nextLine());
-                            werewolf.setRage(rage);
-                    }
-                    // Sustituir en lista
-                    System.out.println("Personaje modificado con éxito");
-                case 3:
-                    Hunter hunter = (Hunter) characterFactory.registerCharacter(CharacterType.Hunter);
-                    System.out.println("Voluntad: " + hunter.getWillPower());
-                    System.out.println("¿Que atributo quieres cambiar?");
-                    Scanner input2= new Scanner(System.in);
-                    String atribute = input2.nextLine();
-                    switch (atribute){
-                        case "Voluntad":
-                            System.out.println("Introduzca la voluntad");
-                            Scanner input4= new Scanner(System.in);
-                            int willPower = Integer.parseInt(input4.nextLine());
-                            hunter.setWillPower(willPower);
-                    }
-                    System.out.println("Personaje modificado con éxito");
+                case "Salud":
+                    System.out.println("Introduzca la nueva salud");
+                    characterToModify.setHealth(Integer.parseInt(input2.nextLine()));
                     break;
-                case 4:
+                case "Poder":
+                    System.out.println("Introduzca el nuevo poder");
+                    characterToModify.setPower(Integer.parseInt(input2.nextLine()));
+                    break;
+                case "Fotalezas":
+                    PowerUp powerUp = new PowerUp();
+                    System.out.println("Introduzca el nombre de la nueva fortaleza");
+                    powerUp.setName(input2.nextLine());
+                    System.out.println("Introduzca el valor de la nueva fortaleza");
+                    powerUp.setValue(Integer.parseInt(input2.nextLine()));
+                    characterToModify.addPowerUp(powerUp);
+                    break;
+                case "Debilidades":
+                    Weakness weakness = new Weakness();
+                    System.out.println("Introduzca el nombre de la nueva debilidad");
+                    weakness.setName(input2.nextLine());
+                    System.out.println("Introduzca el valor de la nueva debilidad");
+                    weakness.setValue(Integer.parseInt(input2.nextLine()));
+                    characterToModify.addWeakness(weakness);
+                    break;
+                case "Oro":
+                    System.out.println("Introduzca el nuevo oro");
+                    characterToModify.setGold(Integer.parseInt(input2.nextLine()));
                     break;
                 default:
-                    System.out.println("Pulsa una opcion valida");
+                    System.out.println("Elija una opcion valida");
+                    break;
             }
-        } while ((option < 1) || (option > 4));
+        } while(!atribute.equals("SAVE"));
+        characters.add(characterToModify);
     }
 
     public void manageCombat() {

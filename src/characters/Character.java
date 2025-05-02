@@ -2,6 +2,8 @@ package characters;
 
 import equipments.Armor;
 import equipments.Equipment;
+
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class Character {
@@ -201,9 +203,9 @@ public abstract class Character {
         System.out.println("Nombre: " + getName());
         System.out.println("Tipo: " + getType());
         System.out.println("Habilidad especial: " + getSpecialAbility());
-        System.out.println("Armas activas: " + getWeapons() );
-        System.out.println("Armadura activa: "+ getActiveArmor() );
-        System.out.println("Conjunto de esbirros: "+ getMinions() );
+        System.out.println("Armas activas: " + Arrays.toString(getWeapons()));
+        System.out.println("Armadura activa: " + getActiveArmor());
+        System.out.println("Conjunto de esbirros: " + getMinions());
         System.out.println("Oro: " + getGold());
         System.out.println("Salud: " + getHealth());
         System.out.println("Poder: " + getPower());
