@@ -94,7 +94,6 @@ public class Player extends User {
         System.out.println("- Oro del personaje actual: " + character.getGold());
     }
 
-
     public void challengeUser() {
         GameData gd = GameData.getInstance();
         for (String player: gd.getPlayerSet()) {
