@@ -22,6 +22,14 @@ public abstract class Character {
     private int weaknessValue = 0;
     private int gold;
 
+    public String getName(){
+        return name;
+    }
+
+    public CharacterType getType(){
+        return type;
+    }
+
     public int getHealth() {
         return health;
     }
