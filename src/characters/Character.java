@@ -203,7 +203,7 @@ public abstract class Character {
         System.out.println("Habilidad especial: " + getSpecialAbility());
         System.out.println("Armas activas: " + getWeapons() );
         System.out.println("Armadura activa: "+ getActiveArmor() );
-        System.out.println("Conjunto de esbirros: " );
+        System.out.println("Conjunto de esbirros: "+ getMinions() );
         System.out.println("Oro: " + getGold());
         System.out.println("Salud: " + getHealth());
         System.out.println("Poder: " + getPower());
