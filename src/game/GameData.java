@@ -22,7 +22,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private boolean updated;
     private final FileModifyEventNotifier notifier;
     private final Map<String, Integer> ranking;
-    private final List<String> modifiers; // TODO: guardar y tal
+    private final List<String> modifiers;
 
     private GameData() {
         FileManager.setup();
