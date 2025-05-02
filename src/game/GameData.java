@@ -240,7 +240,7 @@ public class GameData implements FileSystemEventListener {
         return result;
     }
 
-    public Set<String> getUserSet() {
+    public Set<String> getPlayerSet() {
         return ranking.keySet();
     }
 
