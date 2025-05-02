@@ -206,7 +206,7 @@ public class GameData implements FileSystemEventListener {
         ranking.put(user, ranking.get(user) + 1);
     }
 
-    public User getUser(String nick) {
+    public User getUser(String nick) {// TODO: cargar notificaciones
         FileManager manager = new FileManager();
         JSONObject json = manager.load("data/users/" + nick + ".json");
         UserType type = UserType.valueOf(json.getString("type"));
@@ -240,8 +240,10 @@ public class GameData implements FileSystemEventListener {
         return result;
     }
 
-    public Set<String> getPlayerSet() {
-        return ranking.keySet();
+    public void printPlayers() {
+        for (String player: ranking.keySet()) {
+            System.out.println(player);
+        }
     }
 
     public void deleteUser(User user) {

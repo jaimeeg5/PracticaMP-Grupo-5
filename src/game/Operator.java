@@ -51,10 +51,7 @@ public class Operator extends User {
 
     public void banUsers(){
         GameData gameData = GameData.getInstance();
-        Set <String> users = gameData.getPlayerSet();
-        for (String user : users){
-            System.out.println(user);
-        }
+        gameData.printPlayers();
         System.out.println("Elige el nick del usuario a bloquear");
         Scanner input2 = new Scanner(System.in);
         String nick = input2.nextLine();
