@@ -13,6 +13,30 @@ public class Werewolf extends Character{
         super.setType(type);
     }
 
+    public double getHeight() {
+        return height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public int getRage() {
+        return rage;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public void setRage(int rage) {
+        this.rage = rage;
+    }
+
     @Override
     public void attack(Character enemy) {
         int powerupValue = 0;
@@ -72,7 +96,17 @@ public class Werewolf extends Character{
 
     @Override
     public void showStats() {
-
+        System.out.println("Nombre: " + getName());
+        System.out.println("Tipo: " + getType());
+        System.out.println("Habilidad especial: " + getSpecialAbility());
+        System.out.println("Armas activas: " + );
+        System.out.println("Armadura activa: " );
+        System.out.println("Conjunto de esbirros: " );
+        System.out.println("Oro: " + getGold());
+        System.out.println("Salud: " + getHealth());
+        System.out.println("Poder: " + getPower());
+        System.out.println("Conjunto de debilidades: " + );
+        System.out.println("Conjunto de fortalezas: " + );
     }
 
     @Override

@@ -1,6 +1,8 @@
 package game;
 
 import java.nio.file.WatchEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import characters.Character;
@@ -147,7 +149,15 @@ public class Player extends User {
     }
 
     public void registerCharacter(Character character){
-        // TODO
+        List<String> registeredNumbersList = GameData.getInstance().getUserList();
+        List<Player> players = new ArrayList<>();
+
+        for(String registerNumber : registeredNumbersList){
+            User user = GameData.getInstance().getUser(registerNumber);
+            if (user instanceof Player){
+                players.add((Player) user);
+            }
+        }
     }
 
     public void dropoutCharacter(){

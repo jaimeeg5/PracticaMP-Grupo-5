@@ -11,6 +11,22 @@ public class Vampire extends Character{
         super.setType(type);
     }
 
+    public int getBloodPoints() {
+        return bloodPoints;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setBloodPoints(int bloodPoints) {
+        this.bloodPoints = bloodPoints;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     @Override
     public void attack(Character enemy) {
         int powerupValue = 0;
@@ -80,7 +96,17 @@ public class Vampire extends Character{
 
     @Override
     public void showStats() {
-
+        System.out.println("Nombre: " + getName());
+        System.out.println("Tipo: " + getType());
+        System.out.println("Habilidad especial: " + getSpecialAbility());
+        System.out.println("Armas activas: " + );
+        System.out.println("Armadura activa: " );
+        System.out.println("Conjunto de esbirros: " );
+        System.out.println("Oro: " + getGold());
+        System.out.println("Salud: " + getHealth());
+        System.out.println("Poder: " + getPower());
+        System.out.println("Conjunto de debilidades: " + );
+        System.out.println("Conjunto de fortalezas: " + );
     }
 
     @Override
@@ -88,7 +114,5 @@ public class Vampire extends Character{
         return super.takeDamage(attackValue, defenseValue);
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+
 }
