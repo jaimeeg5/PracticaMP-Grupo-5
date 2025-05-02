@@ -15,7 +15,7 @@ public class Operator extends User {
     @Override
     public void operate(){
         Menu menu = new Menu();
-        menu.setTitle("Elija una opcion:");
+        menu.setTitle("Elija una opción:");
         String[] menuOptions = {
                 "Darse de baja",
                 "Salir del sistema",

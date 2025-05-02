@@ -161,7 +161,7 @@ public class Player extends User {
     }
 
     public void dropoutCharacter(){
-        // TODO
+
     }
 
     public Character getCharacter() {
