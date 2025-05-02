@@ -97,9 +97,9 @@ public class Werewolf extends Character{
     @Override
     public void showStats() {
         super.showStats();
-        System.out.println("Altura: " + getName());
-        System.out.println("Peso: " + getName());
-        System.out.println("Rabia: " + getName());
+        System.out.println("Altura: " + getHeight());
+        System.out.println("Peso: " + getWeight());
+        System.out.println("Rabia: " + getRage());
     }
 
     @Override

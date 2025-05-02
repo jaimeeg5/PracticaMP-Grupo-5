@@ -97,8 +97,8 @@ public class Vampire extends Character{
     @Override
     public void showStats() {
         super.showStats();
-        System.out.println("Puntos de sangre: " + getName());
-        System.out.println("Edad: " + getName());
+        System.out.println("Puntos de sangre: " + getBloodPoints());
+        System.out.println("Edad: " + getAge());
 
     }
 
