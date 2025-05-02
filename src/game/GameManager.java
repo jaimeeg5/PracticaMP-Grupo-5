@@ -71,7 +71,7 @@ public class GameManager {
         }
         UserBuilder builder = new UserBuilder(type);
         GameData data = GameData.getInstance();
-        String nick = Menu.waitForInput("Intoduce apodo.", u -> !data.userExists(u), "Este apodo ya está en uso");
+        String nick = Menu.waitForInput("Introduce apodo.", u -> !data.userExists(u), "Este apodo ya está en uso");
         if (nick.isEmpty()) {
             return null;
         }
