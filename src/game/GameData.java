@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.*;
 
-public class GameData implements FileSystemEventListener {
+public class GameData implements FileSystemEventListener, Jsonable {
     public final Path gameDataPath = Paths.get("data/gameData.json");
     private static volatile GameData instance = null;
     private final Map<String, String> passwords;
@@ -21,7 +21,8 @@ public class GameData implements FileSystemEventListener {
     private final Map<String, String> registeredNumbers;
     private boolean updated;
     private final FileModifyEventNotifier notifier;
-    private final Map<String, Integer> ranking; // TODO
+    private final Map<String, Integer> ranking;
+    private final List<String> modifiers; // TODO: guardar y tal
 
     private GameData() {
         FileManager.setup();
@@ -30,6 +31,7 @@ public class GameData implements FileSystemEventListener {
         registeredNumbers = new HashMap<>();
         ranking = new TreeMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
+        modifiers = new ArrayList<String>();
         notifier.subscribe(this);
         notifier.start();
         loadFromDisk();
@@ -44,6 +46,14 @@ public class GameData implements FileSystemEventListener {
             }
         }
         return instance;
+    }
+
+    public List<String> getModifiers() {
+        return modifiers;
+    }
+
+    public void addModifier(String modifier) {
+        modifiers.add(modifier);
     }
 
     public boolean userExists(String user) {
@@ -91,63 +101,15 @@ public class GameData implements FileSystemEventListener {
         FileManager manager = new FileManager();
         JSONObject json = manager.load(gameDataPath);
         if (json != null) {
-            JSONArray arr = json.getJSONArray("passwords");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONArray pw = arr.getJSONArray(i);
-                passwords.put(pw.getString(0), pw.getString(1));
-            }
-            arr = json.getJSONArray("bannedUsers");
-            for (int i = 0; i < arr.length(); i++) {
-                bannedUsers.add(arr.getString(i));
-            }
-            arr = json.getJSONArray("registeredNumbers");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONArray rn = arr.getJSONArray(i);
-                registeredNumbers.put(rn.getString(0), rn.getString(1));
-            }
-            arr = json.getJSONArray("ranking");
-            for (int i = 0; i < arr.length(); i++) {
-                JSONArray pl = arr.getJSONArray(i);
-                ranking.put(pl.getString(0), pl.getInt(1));
-            }
-            updated = false;
+            fromJSONObject(json);
         }
+        updated = false;
     }
 
     private void saveToDisk() {
         try (FileChannel fc = FileChannel.open(gameDataPath)) {
             try (FileLock lock = fc.lock()) {
-                JSONObject json = new JSONObject();
-                JSONArray passwordsArray = new JSONArray();
-                for (String key: passwords.keySet()) {
-                    JSONArray pw =  new JSONArray();
-                    pw.put(0, key);
-                    pw.put(1, passwords.get(key));
-                    passwordsArray.put(pw);
-                }
-                JSONArray bannedUsersArray = new JSONArray();
-                for (String user: bannedUsers) {
-                    bannedUsersArray.put(0, user);
-                }
-                JSONArray registeredNumbersArray = new JSONArray();
-                for (String key: registeredNumbers.keySet()) {
-                    JSONArray rn =  new JSONArray();
-                    rn.put(0, key);
-                    rn.put(1, registeredNumbers.get(key));
-                    passwordsArray.put(rn);
-                }
-                JSONArray rankingArray = new JSONArray();
-                for (String key: ranking.keySet()) {
-                    JSONArray pl =  new JSONArray();
-                    pl.put(0, key);
-                    pl.put(1, ranking.get(key));
-                    rankingArray.put(pl);
-                }
-                json.put("passwords", passwordsArray);
-                json.put("bannedUsers", bannedUsersArray);
-                json.put("registeredNumbers", registeredNumbersArray);
-                json.put("rankingArray", rankingArray);
-
+                JSONObject json = toJSONObject();
                 FileManager m = new FileManager();
                 m.save(gameDataPath, json);
             }
@@ -271,6 +233,76 @@ public class GameData implements FileSystemEventListener {
         notifier.unsubscribe(this);
         if (notifier.isEmpty()) {
             notifier.interrupt();
+        }
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        JSONArray passwordsArray = new JSONArray();
+        for (String key: passwords.keySet()) {
+            JSONArray pw =  new JSONArray();
+            pw.put(0, key);
+            pw.put(1, passwords.get(key));
+            passwordsArray.put(pw);
+        }
+        JSONArray bannedUsersArray = new JSONArray();
+        for (String user: bannedUsers) {
+            bannedUsersArray.put(0, user);
+        }
+        JSONArray registeredNumbersArray = new JSONArray();
+        for (String key: registeredNumbers.keySet()) {
+            JSONArray rn =  new JSONArray();
+            rn.put(0, key);
+            rn.put(1, registeredNumbers.get(key));
+            passwordsArray.put(rn);
+        }
+        JSONArray rankingArray = new JSONArray();
+        for (String key: ranking.keySet()) {
+            JSONArray pl =  new JSONArray();
+            pl.put(0, key);
+            pl.put(1, ranking.get(key));
+            rankingArray.put(pl);
+        }
+        json.put("passwords", passwordsArray);
+        json.put("bannedUsers", bannedUsersArray);
+        json.put("registeredNumbers", registeredNumbersArray);
+        json.put("rankingArray", rankingArray);
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        JSONArray arr = json.getJSONArray("passwords");
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray pw = arr.getJSONArray(i);
+            passwords.put(pw.getString(0), pw.getString(1));
+        }
+
+        arr = json.getJSONArray("bannedUsers");
+        bannedUsers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            bannedUsers.add(arr.getString(i));
+        }
+
+        arr = json.getJSONArray("registeredNumbers");
+        registeredNumbers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray rn = arr.getJSONArray(i);
+            registeredNumbers.put(rn.getString(0), rn.getString(1));
+        }
+
+        arr = json.getJSONArray("ranking");
+        ranking.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray pl = arr.getJSONArray(i);
+            ranking.put(pl.getString(0), pl.getInt(1));
+        }
+
+        arr = json.getJSONArray("modifiers");
+        modifiers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            modifiers.add(arr.getString(i));
         }
     }
 }

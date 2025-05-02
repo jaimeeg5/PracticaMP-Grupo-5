@@ -4,9 +4,10 @@ import fileEvents.FileSystemEventListener;
 import fileEvents.FileSystemEventNotifier;
 
 import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 import java.util.List;
 
-public abstract class User implements FileSystemEventListener {
+public abstract class User implements FileSystemEventListener, Jsonable {
     private String name;
     private String nick;
     private FileSystemEventNotifier notifier;
@@ -56,5 +57,15 @@ public abstract class User implements FileSystemEventListener {
 
     public List<Path> getNotifications() {
         return pendingNotifications;
+    }
+
+    public void removeNotification(Path path) {
+        pendingNotifications.remove(path);
+    }
+
+    @Override
+    public void update(WatchEvent<?> event) {
+        Path path = (Path) event;
+        pendingNotifications.add(path);
     }
 }
