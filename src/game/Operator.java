@@ -1,5 +1,6 @@
 package game;
 import characters.*;
+import characters.Character;
 
 import java.nio.file.WatchEvent;
 import java.util.List;
@@ -77,6 +78,7 @@ public class Operator extends User {
     public void modifyCharacter(){
         int option;
         do{
+            CharacterFactory characterFactory = new CharacterFactory();
             Menu menu = new Menu();
             menu.setTitle("¿Qué personaje quieres modificar?");
             String[] menuOptions = {
@@ -86,17 +88,42 @@ public class Operator extends User {
             };
             menu.setOptions(menuOptions);
             option = menu.showMenu();
+            // Mostrar todos los atributos de character
             switch (option) {
                 case 1:
-                    Vampire vampire = new Vampire(100, CharacterType.Vampire);
+                    Vampire vampire = (Vampire) characterFactory.registerCharacter(CharacterType.Vampire);
+                    System.out.println("Edad: " + vampire.getAge());
+                    System.out.println("Puntos de sangre: " + vampire.getBloodPoints());
+                    System.out.println("¿Que atributo quieres cambiar?");
+                    Scanner input2= new Scanner(System.in);
+                    String atribute = input2.nextLine();
+                    switch (atribute){
+                        case "Edad":
+                            System.out.println("Introduzca la nueva edad");
+                            Scanner input3= new Scanner(System.in);
+                            int age = Integer.parseInt(input3.nextLine());
+                            vampire.setAge(age);
+                        case "Puntos de sangre":
+                            System.out.println("Introduzca la nueva edad");
+                            Scanner input4= new Scanner(System.in);
+                            int bloodPoints = Integer.parseInt(input4.nextLine());
+                            vampire.setBloodPoints(bloodPoints);
+                    }
+                    // Sustituir en lista
                     System.out.println("Personaje modificado con éxito");
                     break;
                 case 2:
-                    Werewolf werewolf = new Werewolf(2.0, 100,CharacterType.Werewolf);
+                    Werewolf werewolf = (Werewolf) characterFactory.registerCharacter(CharacterType.Werewolf);
+                    // Mostrar atributos de vampire
+                    // Preguntar cual quiere cambiar y permitir entrada de valores
+                    // Cambiar valor y guardar en lista de characters disponibles
                     System.out.println("Personaje modificado con éxito");
                     break;
                 case 3:
-                    Hunter hunter = new Hunter(CharacterType.Hunter);
+                    Hunter hunter = (Hunter) characterFactory.registerCharacter(CharacterType.Hunter);
+                    // Mostrar atributos de vampire
+                    // Preguntar cual quiere cambiar y permitir entrada de valores
+                    // Cambiar valor y guardar en lista de characters disponibles
                     System.out.println("Personaje modificado con éxito");
                     break;
                 case 4:
