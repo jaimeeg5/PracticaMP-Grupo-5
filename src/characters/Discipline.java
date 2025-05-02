@@ -7,10 +7,7 @@ public class Discipline extends SpecialAbility{
         super(name, attack, defense);
     }
 
-    @Override
-    public void use() {
-        // vampiro.bloodPoints - bloodCost
-    }
+
 
     public int getBloodCost() {
         return bloodCost;

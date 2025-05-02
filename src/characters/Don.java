@@ -11,8 +11,5 @@ public class Don extends SpecialAbility{
         return rageValue;
     }
 
-    @Override
-    public void use() {
 
-    }
 }

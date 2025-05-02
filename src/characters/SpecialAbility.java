@@ -5,8 +5,6 @@ public abstract class SpecialAbility {
     private int attack;
     private int defense;
 
-    public abstract void use();
-
     public SpecialAbility(String name, int attack, int defense){
         this.name = name;
         this.attack = attack;

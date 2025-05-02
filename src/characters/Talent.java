@@ -5,8 +5,5 @@ public class Talent extends SpecialAbility{
         super(name, attack, defense);
     }
 
-    @Override
-    public void use() {
 
-    }
 }
