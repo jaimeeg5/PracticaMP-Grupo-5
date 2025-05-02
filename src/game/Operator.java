@@ -3,13 +3,14 @@ import characters.*;
 import characters.Character;
 
 import java.nio.file.WatchEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Operator extends User {
 
-    private List<Character> characters;
+    private List<Character> characters = new ArrayList<>();
 
     public Operator(String nick, String name) {
         super(nick, name);
@@ -77,6 +78,8 @@ public class Operator extends User {
     public void modifyCharacter(){
         Scanner input2 = new Scanner(System.in);
         String atribute;
+        String opt;
+        int num;
         int i = 0;
         for (Character character : characters){
             String characterData = "[" + i + "]" + "Tipo: " + character.getType() + " Nombre: " + character.getName() + " Salud: " + character.getHealth();
@@ -106,27 +109,56 @@ public class Operator extends User {
                     characterToModify.setPower(Integer.parseInt(input2.nextLine()));
                     break;
                 case "Fotalezas":
-                    PowerUp powerUp = new PowerUp();
-                    System.out.println("Introduzca el nombre de la nueva fortaleza");
-                    powerUp.setName(input2.nextLine());
-                    System.out.println("Introduzca el valor de la nueva fortaleza");
-                    powerUp.setValue(Integer.parseInt(input2.nextLine()));
-                    characterToModify.addPowerUp(powerUp);
+                    System.out.println("¿'Añadir' o 'Eliminar'?");
+                    opt = input2.nextLine();
+                    switch(opt){
+                        case "Añadir":
+                            PowerUp powerUp = new PowerUp();
+                            System.out.println("Introduzca el nombre de la nueva fortaleza");
+                            powerUp.setName(input2.nextLine());
+                            System.out.println("Introduzca el valor de la nueva fortaleza");
+                            powerUp.setValue(Integer.parseInt(input2.nextLine()));
+                            characterToModify.addPowerUp(powerUp);
+                            break;
+                        case "Eliminar":
+                            int j = 0;
+                            for (PowerUp powerup : characterToModify.getPowerUps()){
+                                System.out.println("[" + j + "] Nombre: " + powerup.getName() + " Valor:" + powerup.getValue());
+                                j += 1;
+                            }
+                            System.out.println("¿Cual quieres eliminar?");
+                            num = Integer.parseInt(input2.nextLine());
+                            characterToModify.getPowerUps().remove(num);
+                            break;
+                    }
                     break;
                 case "Debilidades":
-                    Weakness weakness = new Weakness();
-                    System.out.println("Introduzca el nombre de la nueva debilidad");
-                    weakness.setName(input2.nextLine());
-                    System.out.println("Introduzca el valor de la nueva debilidad");
-                    weakness.setValue(Integer.parseInt(input2.nextLine()));
-                    characterToModify.addWeakness(weakness);
+                    System.out.println("¿'Añadir' o 'Eliminar'?");
+                    opt = input2.nextLine();
+                    switch(opt){
+                        case "Añadir":
+                            Weakness weakness = new Weakness();
+                            System.out.println("Introduzca el nombre de la nueva debilidad");
+                            weakness.setName(input2.nextLine());
+                            System.out.println("Introduzca el valor de la nueva debilidad");
+                            weakness.setValue(Integer.parseInt(input2.nextLine()));
+                            characterToModify.addWeakness(weakness);
+                            break;
+                        case "Eliminar":
+                            int j = 0;
+                            for (Weakness weaknessObj : characterToModify.getWeaknesses()){
+                                System.out.println("[" + j + "] Nombre: " + weaknessObj.getName() + " Valor:" + weaknessObj.getValue());
+                                j += 1;
+                            }
+                            System.out.println("¿Cual quieres eliminar?");
+                            num = Integer.parseInt(input2.nextLine());
+                            characterToModify.getWeaknesses().remove(num);
+                            break;
+                    }
                     break;
                 case "Oro":
-                    System.out.println("Introduzca el nuevo oro");
+                    System.out.println("Inidique la nueva cantidad de oro");
                     characterToModify.setGold(Integer.parseInt(input2.nextLine()));
-                    break;
-                default:
-                    System.out.println("Elija una opcion valida");
                     break;
             }
         } while(!atribute.equals("SAVE"));
