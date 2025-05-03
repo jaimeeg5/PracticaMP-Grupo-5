@@ -5,7 +5,7 @@ import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.*;
@@ -109,17 +109,17 @@ public class GameData implements FileSystemEventListener, Jsonable {
         JSONObject json = toJSONObject();
         if (!Files.exists(gameDataPath)) {
             FileManager.save(gameDataPath, json);
-        }
-        else {
-            try (FileChannel fc = FileChannel.open(gameDataPath, StandardOpenOption.WRITE)) {
-                try (FileLock lock = fc.lock()) {
-                    FileManager.save(gameDataPath, json);
+        } else {
+            try (FileOutputStream file = new FileOutputStream(gameDataPath.toString())) {
+                FileLock lock = file.getChannel().lock();
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(file))) {
+                    writer.write(json.toString(4));
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            updated = false;
         }
-        updated = false;
     }
 
     public void update(WatchEvent<?> event) {
