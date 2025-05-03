@@ -10,6 +10,9 @@ public class Hunter extends Character{
         super.setType(type);
     }
 
+    public Hunter() {
+    }
+
     public int getWillpower() {
         return willpower;
     }

@@ -14,6 +14,9 @@ public class Werewolf extends Character{
         super.setType(type);
     }
 
+    public Werewolf() {
+    }
+
     public double getHeight() {
         return height;
     }
