@@ -7,8 +7,6 @@ public class Discipline extends SpecialAbility{
         super(name, attack, defense);
     }
 
-
-
     public int getBloodCost() {
         return bloodCost;
     }

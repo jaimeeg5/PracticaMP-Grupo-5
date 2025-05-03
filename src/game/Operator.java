@@ -14,7 +14,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Operator extends User {
-
+    // TODO Quitar lista characters y pillar la de gamedata (Set)
     private List<Character> characters = new ArrayList<>();
 
     public Operator(String nick, String name) {
@@ -185,13 +185,43 @@ public class Operator extends User {
             String type = input2.nextLine();
             if (type.equals("Vampiro")){
                 Vampire vampire = new Vampire();
+                vampire.setType(CharacterType.Vampire);
                 System.out.println("Introduzca el nombre del personaje");
                 vampire.setName(input2.nextLine());
                 System.out.println("Introduzca la edad del personaje");
                 vampire.setAge(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduzca los puntos de sangre");
+                vampire.setBloodPoints(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce el nombre de la habilidad especial");
+                String name = input2.nextLine();
+                System.out.println("Introduce el ataque de la habilidad especial");
+                int attack = input2.nextInt();
+                System.out.println("Introduce defensa de la habilidad especial");
+                int defense = Integer.parseInt(input2.nextLine());
+                Discipline discipline = new Discipline(name, attack, defense);
+                vampire.setSpecialAbility(discipline);
+
                 characters.add(vampire);
             } else if (type.equals("Werewolf")) {
-
+                Werewolf werewolf = new Werewolf();
+                werewolf.setType(CharacterType.Werewolf);
+                System.out.println("Introduzca el nombre del personaje");
+                werewolf.setName(input2.nextLine());
+                System.out.println("Introduzca la rabia del personaje");
+                werewolf.setRage(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce el nombre del don");
+                String name = input2.nextLine();
+                System.out.println("Introduce el ataque del don");
+                int attack = input2.nextInt();
+                System.out.println("Introduce defensa del don");
+                int defense = Integer.parseInt(input2.nextLine());
+                Don don = new Don(name, attack, defense);
+                werewolf.setSpecialAbility(don);
+                System.out.println("Introduzca la altura del personaje");
+                werewolf.setHeight(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduzca el peso del personaje");
+                werewolf.setWeight(Integer.parseInt(input2.nextLine()));
+                characters.add(werewolf);
             } else {
 
             }
