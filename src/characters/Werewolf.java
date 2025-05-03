@@ -15,6 +15,7 @@ public class Werewolf extends Character{
     }
 
     public Werewolf() {
+
     }
 
     public double getHeight() {

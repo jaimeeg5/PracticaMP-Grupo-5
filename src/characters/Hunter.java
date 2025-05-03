@@ -11,6 +11,7 @@ public class Hunter extends Character{
     }
 
     public Hunter() {
+
     }
 
     public int getWillpower() {
