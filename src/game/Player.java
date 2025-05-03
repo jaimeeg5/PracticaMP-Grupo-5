@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Scanner;
 
 import characters.Character;
+import characters.Hunter;
+import characters.Vampire;
+import characters.Werewolf;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -150,20 +153,26 @@ public class Player extends User {
     }
 
     public void pay(Player player, int amount){
+        if (amount <= 0) {
+            System.out.println("La cantidad a pagar debe ser positiva.");
+            return;
+        }
+        if (this.goldLost < amount) {
+            System.out.println("No tienes suficiente oro para realizar el pago.");
+            return;
+        }
         player.goldWon += amount;
         this.goldLost -= amount;
+        System.out.println("Pago realizado correctamente.");
     }
 
     public void registerCharacter(Character character){
-        List<String> registeredNumbersList = GameData.getInstance().getUserList();
-        List<Player> players = new ArrayList<>();
-
-        for(String registerNumber : registeredNumbersList){
-            User user = GameData.getInstance().getUser(registerNumber);
-            if (user instanceof Player){
-                players.add((Player) user);
-            }
+        if (character == null) {
+            System.out.println("No se puede registrar un personaje que no existe.");
+            return;
         }
+        this.character = character;
+        System.out.println("Personaje registrado correctamente.");
     }
 
     public void dropoutCharacter(){
@@ -213,5 +222,48 @@ public class Player extends User {
     public void dropout() {
         GameData.getInstance().removeRegisterNumber(registerNumber);
         super.dropout();
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("nick", getNick());
+        json.put("name", getName());
+        json.put("type", "PLAYER");
+        json.put("registerNumber", registerNumber);
+        json.put("goldWon", goldWon);
+        json.put("goldLost", goldLost);
+
+        if (character != null) {
+            json.put("character", character.toJSONObject());  // Serializamos el character
+        }
+
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        setNick(json.getString("nick"));
+        setName(json.getString("name"));
+        goldWon = json.getInt("goldWon");
+        goldLost = json.getInt("goldLost");
+
+        // Cargar character desde el JSON
+        if (json.has("character")) {
+            JSONObject characterJson = json.getJSONObject("character");
+            String type = characterJson.getString("type");
+            switch (type) {
+                case "Vampire":
+                    character = new Vampire();
+                    break;
+                case "Werewolf":
+                    character = new Werewolf();
+                    break;
+                case "Hunter":
+                    character = new Hunter();
+                    break;
+            }
+            character.fromJSONObject(characterJson);
+        }
     }
 }

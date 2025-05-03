@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public class Combat {
+public class Combat implements Jsonable{
     private Player challenger;
     private Player challenged;
     private int rounds = 0;
@@ -34,8 +34,6 @@ public class Combat {
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
         this.turnSummary.add(this.date + "\n........................");
     }
-
-
 
     public static Combat loadFromDisk(int id){
         ObjectInputStream in = null;
@@ -114,4 +112,78 @@ public class Combat {
     public List<String> getActiveModifiers() {
         return activeModifiers;
     }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        JSONArray passwordsArray = new JSONArray();
+        for (String key: passwords.keySet()) {
+            JSONArray pw =  new JSONArray();
+            pw.put(0, key);
+            pw.put(1, passwords.get(key));
+            passwordsArray.put(pw);
+        }
+        JSONArray bannedUsersArray = new JSONArray();
+        for (String user: bannedUsers) {
+            bannedUsersArray.put(0, user);
+        }
+        JSONArray registeredNumbersArray = new JSONArray();
+        for (String key: registeredNumbers.keySet()) {
+            JSONArray rn =  new JSONArray();
+            rn.put(0, key);
+            rn.put(1, registeredNumbers.get(key));
+            passwordsArray.put(rn);
+        }
+        JSONArray rankingArray = new JSONArray();
+        for (String key: ranking.keySet()) {
+            JSONArray pl =  new JSONArray();
+            pl.put(0, key);
+            pl.put(1, ranking.get(key));
+            rankingArray.put(pl);
+        }
+        JSONArray modifiersArray = json.getJSONArray("modifiers");
+        for (String user: bannedUsers) {
+            bannedUsersArray.put(0, user);
+        }
+        json.put("passwords", passwordsArray);
+        json.put("bannedUsers", bannedUsersArray);
+        json.put("registeredNumbers", registeredNumbersArray);
+        json.put("ranking", rankingArray);
+        json.put("modifiers", modifiersArray);
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        JSONArray arr = json.getJSONArray("passwords");
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray pw = arr.getJSONArray(i);
+            passwords.put(pw.getString(0), pw.getString(1));
+        }
+
+        arr = json.getJSONArray("bannedUsers");
+        bannedUsers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            bannedUsers.add(arr.getString(i));
+        }
+
+        arr = json.getJSONArray("registeredNumbers");
+        registeredNumbers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray rn = arr.getJSONArray(i);
+            registeredNumbers.put(rn.getString(0), rn.getString(1));
+        }
+
+        arr = json.getJSONArray("rankingArray");
+        ranking.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONArray pl = arr.getJSONArray(i);
+            ranking.put(pl.getString(0), pl.getInt(1));
+        }
+
+        arr = json.getJSONArray("modifiers");
+        modifiers.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            modifiers.add(arr.getString(i));
+        }
 }

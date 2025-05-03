@@ -2,11 +2,15 @@ package characters;
 
 import equipments.Armor;
 import equipments.Equipment;
+import game.Jsonable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Character {
+public abstract class Character implements Jsonable {
     private String name;
     private SpecialAbility specialAbility;
     private List<Equipment>  availableWeapons;
@@ -200,25 +204,26 @@ public abstract class Character {
     }
 
     public void showStats() {
-        System.out.println("Nombre: " + getName());
-        System.out.println("Tipo: " + getType());
-        System.out.println("Habilidad especial: " + getSpecialAbility());
-        System.out.println("Armas activas: " + Arrays.toString(getWeapons()));
-        System.out.println("Armadura activa: " + getActiveArmor());
-        System.out.println("Conjunto de esbirros: " + getMinions());
-        System.out.println("Oro: " + getGold());
-        System.out.println("Salud: " + getHealth());
-        System.out.println("Poder: " + getPower());
-        System.out.println("Conjunto de debilidades: " + getWeaknesses());
-        System.out.println("Conjunto de fortalezas: " + getPowerUps() );
+        System.out.println("Nombre: " + name);
+        System.out.println("Tipo: " + type);
+        System.out.println("Habilidad especial: " + specialAbility);
+        System.out.println("Armas activas: " + Arrays.toString(weapons));
+        System.out.println("Armadura activa: " + activeArmor);
+        System.out.println("Esbirros: " + minions);
+        System.out.println("Oro: " + gold);
+        System.out.println("Salud: " + health);
+        System.out.println("Poder: " + power);
+        System.out.println("Fortalezas: " + powerUps);
+        System.out.println("Debilidades: " + weaknesses);
     }
 
     public void selectEquipment() {
-        if (availableWeapons.size() > 0) {
-            setWeapons(availableWeapons.get(0), availableWeapons.size()> 1 ? availableWeapons.get(1) : null);
+        if (!availableWeapons.isEmpty()) {
+            setWeapons(availableWeapons.get(0),
+                    availableWeapons.size() > 1 ? availableWeapons.get(1) : null);
         }
 
-        if (availableArmors.size() > 0) {
+        if (!availableArmors.isEmpty()) {
             setActiveArmor(availableArmors.get(0));
         }
     }
@@ -233,4 +238,35 @@ public abstract class Character {
         }
         this.gold = gold;
     }
+
+
+    public Character() {
+        this.specialAbility = new SpecialAbility("", 0, 0);  // Inicializamos con valores por defecto
+    }
+
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("type", type.toString());
+        json.put("health", health);
+        json.put("gold", gold);
+        json.put("specialAbility", specialAbility.toJSONObject());  // Guardamos la habilidad especial
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        this.type = CharacterType.valueOf(json.getString("type"));
+        this.health = json.getInt("health");
+        this.gold = json.getInt("gold");
+
+        // Cargar SpecialAbility desde el JSON
+        if (json.has("specialAbility")) {
+            JSONObject specialAbilityJson = json.getJSONObject("specialAbility");
+            this.specialAbility = new SpecialAbility("", 0, 0);  // Inicializamos por defecto
+            this.specialAbility.fromJSONObject(specialAbilityJson);
+        }
+    }
+
 }

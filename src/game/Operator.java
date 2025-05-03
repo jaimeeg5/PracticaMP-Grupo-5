@@ -229,4 +229,19 @@ public class Operator extends User {
             removeNotification(path);
         }
     }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("type", UserType.OPERATOR.toString());
+        json.put("nick", getNick());
+        json.put("name", getName());
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        setNick(json.getString("nick"));
+        setName(json.getString("name"));
+    }
 }

@@ -1,6 +1,7 @@
 package characters;
 
 import equipments.Equipment;
+import org.json.JSONObject;
 
 public class Vampire extends Character{
     private int bloodPoints = 0;
@@ -107,5 +108,14 @@ public class Vampire extends Character{
         return super.takeDamage(attackValue, defenseValue);
     }
 
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = super.toJSONObject();
+        return json;
+    }
 
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        super.fromJSONObject(json);
+    }
 }

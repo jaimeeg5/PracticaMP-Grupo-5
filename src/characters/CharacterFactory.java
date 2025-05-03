@@ -1,6 +1,7 @@
 package characters;
 
 public class CharacterFactory {
+
     public Character registerCharacter(CharacterType type){
         if (type == CharacterType.Vampire)
             return new Vampire(150, type);
