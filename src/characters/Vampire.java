@@ -12,6 +12,10 @@ public class Vampire extends Character{
         super.setType(type);
     }
 
+    public Vampire() {
+
+    }
+
     public int getBloodPoints() {
         return bloodPoints;
     }

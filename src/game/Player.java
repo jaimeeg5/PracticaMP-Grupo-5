@@ -5,6 +5,7 @@ import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import characters.*;
 import characters.Character;
@@ -50,7 +51,9 @@ public class Player extends User {
                     if (character == null) {
                         registerCharacter();
                     }
-                    manageCharacter();
+                    else {
+                        manageCharacter();
+                    }
                     break;
                 case 2:
                     if (character == null) {
@@ -171,14 +174,26 @@ public class Player extends User {
         FileManager.save("data/notifications/admin/" + System.currentTimeMillis() + ".json", challenge);
     }
 
-    public void registerCharacter(){
-        // TODO
-        if (character == null) {
-            System.out.println("No se puede registrar un personaje que no existe.");
-            return;
-        }
-        this.character = character;
-        System.out.println("Personaje registrado correctamente.");
+    public void registerCharacter() {
+        GameData data = GameData.getInstance();
+        Set<String> characters = data.getCharacters();
+        String[] characterArray = characters.toArray(new String[0]);
+        Menu menu = new Menu();
+        menu.setTitle("Selecciona un personaje");
+        menu.setOptions(characterArray);
+        int choice;
+        do {
+            choice = menu.showMenu();
+            if (choice <= characterArray.length) {
+                JSONObject json = FileManager.load("data/characters/" + characterArray[choice - 1]);
+                character = switch (CharacterType.valueOf(json.getString("type"))) {
+                    case Vampire -> new Vampire();
+                    case Werewolf -> new Werewolf();
+                    case Hunter -> new Hunter();
+                };
+                character.fromJSONObject(json);
+            }
+        } while (choice != characterArray.length + 1);
     }
 
     public void dropoutCharacter(){

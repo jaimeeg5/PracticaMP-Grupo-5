@@ -22,6 +22,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private final Map<String, Integer> ranking;
     private final List<String> modifiers;
     private int lastCombatId = -1;
+    private final Set<String> characters;
 
     private GameData() {
         passwords = new HashMap<>();
@@ -30,6 +31,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         ranking = new TreeMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
         modifiers = new ArrayList<String>();
+        characters = new TreeSet<>();
         notifier.subscribe(this);
         notifier.start();
         loadFromDisk();
@@ -234,6 +236,10 @@ public class GameData implements FileSystemEventListener, Jsonable {
         if (notifier.isEmpty()) {
             notifier.interrupt();
         }
+    }
+
+    public Set<String> getCharacters() {
+        return characters;
     }
 
     @Override
