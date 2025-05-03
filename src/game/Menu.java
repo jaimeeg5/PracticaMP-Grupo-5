@@ -8,10 +8,14 @@ public class Menu {
     private String[] options;
 
     public static boolean showConfirmationMenu() {
+        return showConfirmationMenu("¿Estas seguro?");
+    }
+
+    public static boolean showConfirmationMenu(String question) {
         int choice;
         Scanner input = new Scanner(System.in);
         do {
-            System.out.println("¿Estas seguro?");
+            System.out.println(question);
             System.out.println("[1] Si");
             System.out.println("[2] No");
             try {

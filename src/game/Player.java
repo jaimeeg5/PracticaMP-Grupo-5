@@ -1,16 +1,18 @@
 package game;
 
+import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import characters.Character;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Player extends User {
     private final String registerNumber;
-    private int goldWon;
+    private int goldWon; // TODO: quitar oro cuando desafias y tal
     private int goldLost;
     private Character character;
 
@@ -36,6 +38,9 @@ public class Player extends User {
         menu.setOptions(menuOptions);
         int choice;
         do {
+            if (!getNotifications().isEmpty()) {
+                handleNotifications();
+            }
             choice = menu.showMenu();
             switch (choice) {
                 case 1:
@@ -137,6 +142,7 @@ public class Player extends User {
         }
 
         JSONObject challenge = new JSONObject();
+        challenge.put("type", NotificationType.CHALLENGE_SENT);
         challenge.put("challenger", getNick());
         challenge.put("challenged", player);
         challenge.put("gold", gold);
@@ -161,7 +167,7 @@ public class Player extends User {
     }
 
     public void dropoutCharacter(){
-
+        character = null;
     }
 
     public Character getCharacter() {
@@ -170,7 +176,37 @@ public class Player extends User {
 
     @Override
     public void update(WatchEvent<?> event) {
-        // TODO
+        super.update(event);
+        // TODO: interrupt or some shi
+    }
+
+    private void handleNotifications() {
+        FileManager fm = new FileManager();
+        for (Path path: getNotifications()) {
+            JSONObject notification = fm.load(path);
+            NotificationType type = NotificationType.valueOf(notification.getString("type"));
+            switch (type) {
+                case CHALLENGE_SENT:
+                    String challenger = notification.getString("challenger");
+                    int gold = notification.getInt("gold");
+                    JSONArray modifiersArray = notification.getJSONArray("activeModifiers");
+                    List<String> activeModifiers = new ArrayList<>();
+                    for (int i = 0; i < modifiersArray.length(); i++) {
+                        activeModifiers.add(modifiersArray.getString(i));
+                    }
+                    System.out.println("Has sido desafiado por " + challenger);
+                    System.out.println("Oro apostado: " + gold);
+                    if (Menu.showConfirmationMenu("¿Aceptas el desafio?")) {
+                        Combat combat = new Combat((Player) GameData.getInstance().getUser(challenger), this, activeModifiers);
+                        combat.fight();
+                        // TODO
+                    }
+                    else {
+                        // TODO: mandar notificacion de rechazo
+                    }
+                    break;
+            }
+        }
     }
 
     @Override

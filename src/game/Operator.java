@@ -1,8 +1,11 @@
 package game;
 import characters.*;
 import characters.Character;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.nio.file.WatchEvent;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -166,60 +169,64 @@ public class Operator extends User {
     }
 
     public void manageCombat() {
-        Notification notification = null;
-        Combat combat = new Combat(notification);
-        int option;
-        boolean choice;
-        do {
+        FileManager fileManager = new FileManager();
+        GameData gd = GameData.getInstance();
+        for (Path path: getNotifications()) {
+            JSONObject notification = fileManager.load(path);
+            String challenger = notification.getString("challenger");
+            String challenged = notification.getString("challenged");
+            int gold = notification.getInt("gold");
+
+            System.out.println("Usuario desafiador: " + challenger);
+            System.out.println("Usuario desafiado: " + challenged);
+            System.out.println("Oro apostado: " + gold);
+            int choice;
+            List<String> activeModifiers = new LinkedList<>();
+            String[] existingModifiers = gd.getModifiers().toArray(new String[0]);
+            System.out.println("Modificadores actuales: " + activeModifiers);
             Menu menu = new Menu();
             menu.setTitle("¿Que accion quieres realizar?");
             String[] menuOptions = {
                     "Añadir modificador",
-                    "Eliminar modificador"
+                    "Eliminar modificador",
+                    "Aceptar desafío",
+                    "Rechazar desafío"
             };
             menu.setOptions(menuOptions);
-            option = menu.showMenu();
-            switch (option) {
-                case 1:
-                    Scanner input2 = new Scanner(System.in);
-                    System.out.println("Introduzca el nombre del modificador");
-                    String name = input2.nextLine();
-                    System.out.println("Introduzca el valor del modificador");
-                    int value = Integer.parseInt(input2.nextLine());
-                    System.out.println("Introduzca el tipo del modificador ('Fortaleza' o 'Debilidad')");
-                    String type = input2.nextLine();
-                    choice = Menu.showConfirmationMenu();
-                    if (choice) {
-                        Modifier modifier = new Modifier(name, value, type);
-                        combat.addModifier(modifier);
-                    }
-                    break;
-                case 2:
-                    List<Modifier> activeModifiers = combat.getActiveModifiers();
-                    int i = 0;
-                    for (Modifier modifier : activeModifiers) {
-                        System.out.println("[" + i + "] " + modifier.getName());
-                        i += 1;
-
-                    }
-                    System.out.println("Escribe el número del modificador a eliminar del combate");
-                    Scanner input3= new Scanner(System.in);
-                    int modifierIndex = Integer.parseInt(input3.nextLine());
-                    choice = Menu.showConfirmationMenu();
-                    if (choice) {
-                        combat.removeModifier(activeModifiers.get(modifierIndex));
-                    }
-                    break;
-                case 3:
-                    break;
-                default:
-                    System.out.println("Pulsa una opcion valida");
-            }
-        } while ((option < 1) || (option > 3));
-    }
-
-    @Override
-    public void update(WatchEvent<?> event) {
-
+            do {
+                choice = menu.showMenu();
+                int modifierIndex;
+                switch (choice) {
+                    case 1:
+                        Menu menuAddModifier = new Menu();
+                        menuAddModifier.setTitle("Seleccione un modificador");
+                        menuAddModifier.setOptions(existingModifiers);
+                        do {
+                            modifierIndex = menuAddModifier.showMenu();
+                        } while (modifierIndex != existingModifiers.length + 1);
+                        activeModifiers.add(existingModifiers[modifierIndex]);
+                        break;
+                    case 2:
+                        String[] activeModifiersArray = activeModifiers.toArray(new String[0]);
+                        Menu menuDeleteModifier = new Menu();
+                        menuDeleteModifier.setTitle("Seleccione un modificador");
+                        menuDeleteModifier.setOptions(activeModifiersArray);
+                        do {
+                            modifierIndex = menuDeleteModifier.showMenu();
+                        } while (modifierIndex != activeModifiersArray.length + 1);
+                        activeModifiers.remove(modifierIndex);
+                        break;
+                    case 3:
+                        JSONArray arr = new JSONArray(activeModifiers);
+                        notification.put("activeModifiers", arr);
+                        fileManager.save("data/notifications/" + challenged + ".json", notification);
+                        break;
+                        // case 4: TODO: notificacion de rechazo
+                    case 5:
+                        return;
+                }
+            } while ((choice < 3) || (choice > 5));
+            removeNotification(path);
+        }
     }
 }

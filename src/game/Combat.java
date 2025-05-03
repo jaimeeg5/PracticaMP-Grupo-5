@@ -23,16 +23,19 @@ public class Combat {
     private String loser;
     private int minionsAlive;
     private List<String> turnSummary;
-    private List<Modifier> activeModifiers;
+    private List<String> activeModifiers;
     private int id;
-    private Notification notification;
 
-    public Combat(Notification notification) {
-        this.notification = notification;
-        this.calcDate = ZonedDateTime.now(ZoneId.of("Europe/Madrid"));
+    public Combat(Player challenger, Player challenged, List<String> activeModifiers) {
+        this.challenger = challenger;
+        this.challenged = challenged;
+        this.activeModifiers = activeModifiers;
+        this.calcDate = ZonedDateTime.now(ZoneId.systemDefault());
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
         this.turnSummary.add(this.date + "\n........................");
     }
+
+
 
     public static Combat loadFromDisk(int id){
         ObjectInputStream in = null;
@@ -108,15 +111,7 @@ public class Combat {
         }
     }
 
-    public List<Modifier> getActiveModifiers() {
+    public List<String> getActiveModifiers() {
         return activeModifiers;
-    }
-
-    public void addModifier(Modifier modifier){
-        this.activeModifiers.add(modifier);
-    }
-
-    public void removeModifier(Modifier modifier){
-        this.activeModifiers.remove(modifier);
     }
 }
