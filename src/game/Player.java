@@ -194,7 +194,10 @@ public class Player extends User {
     }
 
     private void challengeRejected(JSONObject notification) {
-
+        int gold = notification.getInt("gold");
+        goldWon += gold;
+        character.setGold(character.getGold() + gold);
+        System.out.println(notification.getString("by") + " ha rechazado tu desafío");
     }
 
     private void combatReceived(JSONObject notification) {
