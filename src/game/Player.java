@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import characters.*;
 import characters.Character;
-import characters.Hunter;
-import characters.Vampire;
-import characters.Werewolf;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -284,13 +282,13 @@ public class Player extends User {
             String type = characterJson.getString("type");
             switch (type) {
                 case "Vampire":
-                    character = new Vampire();
+                    character = new Vampire(150, CharacterType.Vampire);
                     break;
                 case "Werewolf":
-                    character = new Werewolf();
+                    character = new Werewolf(1.90, 100, CharacterType.Werewolf);
                     break;
                 case "Hunter":
-                    character = new Hunter();
+                    character = new Hunter(CharacterType.Hunter);
                     break;
             }
             character.fromJSONObject(characterJson);

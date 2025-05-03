@@ -2,6 +2,7 @@ package characters;
 
 import equipments.Armor;
 import equipments.Equipment;
+import equipments.EquipmentType;
 import game.Jsonable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class Character implements Jsonable {
     private String name;
@@ -121,9 +123,6 @@ public abstract class Character implements Jsonable {
     }
 
     public void setAvailableWeapons(List<Equipment> availableWeapons) {
-        if (availableWeapons.size() > 2){
-            System.out.println("No puedes tener más de dos armas disponibles.");
-        }
         this.availableWeapons = availableWeapons;
     }
 
@@ -150,12 +149,8 @@ public abstract class Character implements Jsonable {
     }
 
     public void setWeapons(Equipment weapon0, Equipment weapon1) {
-        if (weapon0 != null) {
-            weapons[0] = weapon0;
-        }
-        if (weapon1 != null) {
-            weapons[1] = weapon1;
-        }
+        weapons[0] = weapon0;
+        weapons[1] = weapon1;
     }
 
     public void setModifier(Modifier modifier) {
@@ -219,12 +214,38 @@ public abstract class Character implements Jsonable {
 
     public void selectEquipment() {
         if (!availableWeapons.isEmpty()) {
-            setWeapons(availableWeapons.get(0),
-                    availableWeapons.size() > 1 ? availableWeapons.get(1) : null);
+            int i = 1;
+            for (Equipment weapon : availableWeapons) {
+                System.out.println("[" + i + "] " + "Nombre: " + weapon.getName() + " Ataque: " + weapon.getAttackValue() + " Defensa: " + weapon.getDefenseValue());
+            }
+            Scanner input = new Scanner(System.in);
+            int chosen;
+            System.out.println("Introduce el numero del arma que quieres equipar");
+            chosen = Integer.parseInt(input.nextLine()) - 1;
+            if (availableWeapons.get(chosen).getType() == EquipmentType.TWOHANDEDWEAPON) {
+                setWeapons(availableWeapons.get(chosen), null);
+            } else {
+                Equipment weapon1 = availableWeapons.get(chosen);
+                System.out.println("Introduce el numero del segundo arma que quieres equipar");
+                chosen = Integer.parseInt(input.nextLine()) - 1;
+                setWeapons(weapon1, availableWeapons.get(chosen));
+            }
+        } else {
+            System.out.println("No hay armas disponibles");
         }
 
         if (!availableArmors.isEmpty()) {
-            setActiveArmor(availableArmors.get(0));
+            int i = 1;
+            for (Equipment armor : availableArmors) {
+                System.out.println("[" + i + "] " + "Nombre: " + armor.getName() + " Ataque: " + armor.getAttackValue() + " Defensa: " + armor.getDefenseValue());
+            }
+            Scanner input = new Scanner(System.in);
+            int chosen;
+            System.out.println("Introduce el numero de la armadura que quieres equipar");
+            chosen = Integer.parseInt(input.nextLine()) - 1;
+            setActiveArmor(availableArmors.get(chosen));
+        } else {
+            System.out.println("No hay armaduras disponibles");
         }
     }
 

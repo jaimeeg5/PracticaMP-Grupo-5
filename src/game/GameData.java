@@ -178,6 +178,30 @@ public class GameData implements FileSystemEventListener, Jsonable {
             builder.buildRegisterNumber(json.getString("registerNumber"));
         }
         return builder.build();
+        /*sustituir return builder.build(); por User user = builder.build();
+
+        // Cargar notificaciones del usuario
+        Path userNotifPath = Paths.get("data/notifications/" + nick);
+
+        // Limpiar las notificaciones previas
+        user.getNotifications().clear();
+
+        try {
+            // Cargar todos los archivos de notificación de la carpeta
+            if (Files.exists(userNotifPath) && Files.isDirectory(userNotifPath)) {
+                for (Path p : Files.newDirectoryStream(userNotifPath)) {
+                    if (Files.isRegularFile(p)) {
+                        user.getNotifications().add(p);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return user;
+    }
+         */
     }
 
     private String generateRegisterNumber() {
