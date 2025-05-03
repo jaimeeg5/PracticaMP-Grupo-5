@@ -21,7 +21,7 @@ public class FileManager {
         }
     }
 
-    public void save(Path path, JSONObject json) {
+    public static void save(Path path, JSONObject json) {
         try {
             Files.writeString(path, json.toString(4));
         } catch (IOException e) {
@@ -29,11 +29,19 @@ public class FileManager {
         }
     }
 
-    public void save(String path, JSONObject json) {
+    public static void save(String path, JSONObject json) {
         save(Paths.get(path), json);
     }
 
-    public JSONObject load(Path path) {
+    public static void save(String path, Jsonable obj) {
+        save(path, obj.toJSONObject());
+    }
+
+    public static void save(Path path, Jsonable obj) {
+        save(path, obj.toJSONObject());
+    }
+
+    public static JSONObject load(Path path) {
         if (Files.exists(path)) {
             try {
                 String s = Files.readString(path);
@@ -45,11 +53,11 @@ public class FileManager {
         return null;
     }
 
-    public JSONObject load(String path) {
+    public static JSONObject load(String path) {
         return load(Paths.get(path));
     }
 
-    public void delete(Path path) {
+    public static void delete(Path path) {
         try {
             Files.delete(path);
         } catch (IOException e) {
@@ -57,7 +65,19 @@ public class FileManager {
         }
     }
 
-    public void delete(String path) {
+    public static void delete(String path) {
         delete(Paths.get(path));
+    }
+
+    public static void createDirectory(String path) {
+        createDirectory(Paths.get(path));
+    }
+
+    public static void createDirectory(Path path) {
+        try {
+            Files.createDirectory(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

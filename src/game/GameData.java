@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
@@ -23,6 +24,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private final FileModifyEventNotifier notifier;
     private final Map<String, Integer> ranking;
     private final List<String> modifiers;
+    private int lastCombatId = -1;
 
     private GameData() {
         FileManager.setup();
@@ -98,8 +100,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     private void loadFromDisk() {
-        FileManager manager = new FileManager();
-        JSONObject json = manager.load(gameDataPath);
+        JSONObject json = FileManager.load(gameDataPath);
         if (json != null) {
             fromJSONObject(json);
         }
@@ -110,8 +111,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         try (FileChannel fc = FileChannel.open(gameDataPath)) {
             try (FileLock lock = fc.lock()) {
                 JSONObject json = toJSONObject();
-                FileManager m = new FileManager();
-                m.save(gameDataPath, json);
+                FileManager.save(gameDataPath, json);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -148,6 +148,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         json.put("name", name);
 
         if (type == UserType.PLAYER) {
+            FileManager.createDirectory("data/notifications/" + nick);
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
             json.put("registerNumber", num);
@@ -157,8 +158,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         passwords.put(nick, password);
         User u = builder.build();
 
-        FileManager fileManager = new FileManager();
-        fileManager.save("data/users" + nick + ".json", json);
+        FileManager.save("data/users" + nick + ".json", json);
 
         saveToDisk();
         return u;
@@ -169,8 +169,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public User getUser(String nick) {// TODO: cargar notificaciones
-        FileManager manager = new FileManager();
-        JSONObject json = manager.load("data/users/" + nick + ".json");
+        JSONObject json = FileManager.load("data/users/" + nick + ".json");
         UserType type = UserType.valueOf(json.getString("type"));
         UserBuilder builder = new UserBuilder(type);
         builder.buildNick(json.getString("nick"));
@@ -216,12 +215,11 @@ public class GameData implements FileSystemEventListener, Jsonable {
         passwords.remove(nick);
         bannedUsers.remove(nick);
 
-        FileManager fm = new FileManager();
-        fm.delete("data/users/" + nick + ".json");
+        FileManager.delete("data/users/" + nick + ".json");
         for (Path path: user.getNotifications()) {
-            fm.delete(path);
+            FileManager.delete(path);
         }
-        fm.delete("data/notifications/" + nick);
+        FileManager.delete("data/notifications/" + nick);
         saveToDisk();
     }
 
@@ -273,6 +271,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         json.put("registeredNumbers", registeredNumbersArray);
         json.put("ranking", rankingArray);
         json.put("modifiers", modifiersArray);
+        json.put("lastCombatId", lastCombatId);
         return json;
     }
 
@@ -309,5 +308,16 @@ public class GameData implements FileSystemEventListener, Jsonable {
         for (int i = 0; i < arr.length(); i++) {
             modifiers.add(arr.getString(i));
         }
+
+        lastCombatId = json.getInt("lastCombatId");
+    }
+
+    public int increaseLastCombatId() {
+        if (updated) {
+            loadFromDisk();
+        }
+        lastCombatId += 1;
+        saveToDisk();
+        return lastCombatId;
     }
 }

@@ -2,6 +2,7 @@ package game;
 
 import fileEvents.FileSystemEventListener;
 import fileEvents.FileSystemEventNotifier;
+import org.json.JSONObject;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -67,5 +68,15 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     public void update(WatchEvent<?> event) {
         Path path = (Path) event;
         pendingNotifications.add(path);
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        return null;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+
     }
 }

@@ -169,10 +169,9 @@ public class Operator extends User {
     }
 
     public void manageCombat() {
-        FileManager fileManager = new FileManager();
         GameData gd = GameData.getInstance();
         for (Path path: getNotifications()) {
-            JSONObject notification = fileManager.load(path);
+            JSONObject notification = FileManager.load(path);
             String challenger = notification.getString("challenger");
             String challenged = notification.getString("challenged");
             int gold = notification.getInt("gold");
@@ -219,9 +218,15 @@ public class Operator extends User {
                     case 3:
                         JSONArray arr = new JSONArray(activeModifiers);
                         notification.put("activeModifiers", arr);
-                        fileManager.save("data/notifications/" + challenged + ".json", notification);
+                        FileManager.save("data/notifications/" + challenged + "/" + System.currentTimeMillis() + ".json", notification);
                         break;
-                        // case 4: TODO: notificacion de rechazo
+                    case 4:
+                        JSONObject challengeNotification = new JSONObject();
+                        challengeNotification.put("type", NotificationType.CHALLENGE_REJECTED);
+                        challengeNotification.put("by", "Un administrador");
+                        challengeNotification.put("gold", 0);
+                        FileManager.save("data/notifications/" + challenged + "/" + System.currentTimeMillis() + ".json", notification);
+                        break;
                     case 5:
                         return;
                 }

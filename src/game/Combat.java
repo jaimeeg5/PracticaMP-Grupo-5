@@ -33,6 +33,7 @@ public class Combat implements Jsonable{
         this.calcDate = ZonedDateTime.now(ZoneId.systemDefault());
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
         this.turnSummary.add(this.date + "\n........................");
+        this.id = GameData.getInstance().increaseLastCombatId();
     }
 
     public static Combat loadFromDisk(int id){
@@ -86,13 +87,11 @@ public class Combat implements Jsonable{
             this.turnSummary.add("Turno " + this.rounds + ":\nSalud del jugador 1 = " + character1.getHealth() + "\nSalud del jugador 2 = " + character2.getHealth() + "\n-------------------------");
         }
         if ((character1.getHealth() > 0) && (character2.getHealth() <= 0)) {
-            winner = "Jugador 1";
-            loser = "Jugador 2";
-            challenged.pay(challenger, gold);
+            winner = challenger.getNick();
+            loser = challenged.getNick();
         } else if ((character1.getHealth() <= 0) && (character2.getHealth() > 0)) {
-            winner = "Jugador 2";
-            loser = "Jugador 1";
-            challenger.pay(challenged, gold);
+            winner = challenged.getNick();
+            loser = challenger.getNick();
         } else {
             winner = "Empate";
         }
@@ -101,7 +100,7 @@ public class Combat implements Jsonable{
     public void printResult(){
         if (!winner.equals("Empate")) {
             System.out.println("El ganador del combate ha sido " + winner);
-            System.out.println("El " + loser + " paga " + gold + " a " + winner);
+            System.out.println(loser + " paga " + gold + " a " + winner);
             System.out.println(loser + " no podrá jugar en 24 h");
         } else {
             System.out.println("Los jugadores han empatado");
@@ -186,4 +185,21 @@ public class Combat implements Jsonable{
         for (int i = 0; i < arr.length(); i++) {
             modifiers.add(arr.getString(i));
         }
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public String getLoser() {
+        return loser;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
