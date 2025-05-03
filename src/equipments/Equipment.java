@@ -4,11 +4,17 @@ public class Equipment {
     private String name;
     private int attackValue;
     private int defenseValue;
+    private EquipmentType type;
 
-    public Equipment(String name, int attack, int defense){
+    public Equipment(String name, int attack, int defense, EquipmentType type){
         this.name = name;
         this.attackValue = attack;
         this.defenseValue = defense;
+        this.type = type;
+    }
+
+    public EquipmentType getType() {
+        return type;
     }
 
     public String getName() {

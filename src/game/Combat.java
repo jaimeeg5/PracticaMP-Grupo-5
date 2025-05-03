@@ -1,13 +1,8 @@
 package game;
-
-import characters.Modifier;
 import characters.Character;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -21,7 +16,6 @@ public class Combat implements Jsonable{
     private int gold;
     private String winner;
     private String loser;
-    private int minionsAlive;
     private List<String> turnSummary;
     private List<String> activeModifiers;
     private int id;
@@ -32,7 +26,6 @@ public class Combat implements Jsonable{
         this.activeModifiers = activeModifiers;
         this.calcDate = ZonedDateTime.now(ZoneId.systemDefault());
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
-        this.turnSummary.add(this.date + "\n........................");
     }
 
     public static Combat loadFromDisk(int id){
@@ -86,12 +79,12 @@ public class Combat implements Jsonable{
             this.turnSummary.add("Turno " + this.rounds + ":\nSalud del jugador 1 = " + character1.getHealth() + "\nSalud del jugador 2 = " + character2.getHealth() + "\n-------------------------");
         }
         if ((character1.getHealth() > 0) && (character2.getHealth() <= 0)) {
-            winner = "Jugador 1";
-            loser = "Jugador 2";
+            winner = challenger.getNick();
+            loser = challenged.getNick();
             challenged.pay(challenger, gold);
         } else if ((character1.getHealth() <= 0) && (character2.getHealth() > 0)) {
-            winner = "Jugador 2";
-            loser = "Jugador 1";
+            winner = challenged.getNick();
+            loser = challenger.getNick();
             challenger.pay(challenged, gold);
         } else {
             winner = "Empate";
@@ -101,7 +94,7 @@ public class Combat implements Jsonable{
     public void printResult(){
         if (!winner.equals("Empate")) {
             System.out.println("El ganador del combate ha sido " + winner);
-            System.out.println("El " + loser + " paga " + gold + " a " + winner);
+            System.out.println(loser + " paga " + gold + " a " + winner);
             System.out.println(loser + " no podrá jugar en 24 h");
         } else {
             System.out.println("Los jugadores han empatado");
@@ -116,74 +109,49 @@ public class Combat implements Jsonable{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
-        JSONArray passwordsArray = new JSONArray();
-        for (String key: passwords.keySet()) {
-            JSONArray pw =  new JSONArray();
-            pw.put(0, key);
-            pw.put(1, passwords.get(key));
-            passwordsArray.put(pw);
+        JSONArray turnsArray = new JSONArray();
+        for (String turn: turnSummary) {
+            turnsArray.put(0, turn);
         }
-        JSONArray bannedUsersArray = new JSONArray();
-        for (String user: bannedUsers) {
-            bannedUsersArray.put(0, user);
+        JSONArray modifiersArray = new JSONArray();
+        for (String modifier: activeModifiers) {
+            turnsArray.put(0, modifier);
         }
-        JSONArray registeredNumbersArray = new JSONArray();
-        for (String key: registeredNumbers.keySet()) {
-            JSONArray rn =  new JSONArray();
-            rn.put(0, key);
-            rn.put(1, registeredNumbers.get(key));
-            passwordsArray.put(rn);
-        }
-        JSONArray rankingArray = new JSONArray();
-        for (String key: ranking.keySet()) {
-            JSONArray pl =  new JSONArray();
-            pl.put(0, key);
-            pl.put(1, ranking.get(key));
-            rankingArray.put(pl);
-        }
-        JSONArray modifiersArray = json.getJSONArray("modifiers");
-        for (String user: bannedUsers) {
-            bannedUsersArray.put(0, user);
-        }
-        json.put("passwords", passwordsArray);
-        json.put("bannedUsers", bannedUsersArray);
-        json.put("registeredNumbers", registeredNumbersArray);
-        json.put("ranking", rankingArray);
+        json.put("id", id);
+        json.put("date", date);
+        json.put("challenger", challenger.toJSONObject());
+        json.put("challenged", challenged.toJSONObject());
+        json.put("gold", gold);
         json.put("modifiers", modifiersArray);
+        json.put("numRounds", rounds);
+        json.put("turns", turnsArray);
+        json.put("winner", winner);
+        json.put("loser", loser);
         return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
-        JSONArray arr = json.getJSONArray("passwords");
-        for (int i = 0; i < arr.length(); i++) {
-            JSONArray pw = arr.getJSONArray(i);
-            passwords.put(pw.getString(0), pw.getString(1));
-        }
-
-        arr = json.getJSONArray("bannedUsers");
-        bannedUsers.clear();
-        for (int i = 0; i < arr.length(); i++) {
-            bannedUsers.add(arr.getString(i));
-        }
-
-        arr = json.getJSONArray("registeredNumbers");
-        registeredNumbers.clear();
-        for (int i = 0; i < arr.length(); i++) {
-            JSONArray rn = arr.getJSONArray(i);
-            registeredNumbers.put(rn.getString(0), rn.getString(1));
-        }
-
-        arr = json.getJSONArray("rankingArray");
-        ranking.clear();
-        for (int i = 0; i < arr.length(); i++) {
-            JSONArray pl = arr.getJSONArray(i);
-            ranking.put(pl.getString(0), pl.getInt(1));
-        }
-
+        JSONArray arr;
+        id = json.getInt("id");
+        date = (json.getString("date"));
+        JSONObject player = json.getJSONObject("challenger");
+        challenger.fromJSONObject(player);
+        player = json.getJSONObject("challenged");
+        challenged.fromJSONObject(player);
+        gold = json.getInt("gold");
         arr = json.getJSONArray("modifiers");
-        modifiers.clear();
+        activeModifiers.clear();
         for (int i = 0; i < arr.length(); i++) {
-            modifiers.add(arr.getString(i));
+            activeModifiers.add(arr.getString(i));
         }
+        rounds = json.getInt("numRounds");
+        arr = json.getJSONArray("turns");
+        turnSummary.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            turnSummary.add(arr.getString(i));
+        }
+        winner = (json.getString("winner"));
+        loser = (json.getString("loser"));
+    }
 }

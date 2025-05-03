@@ -34,13 +34,13 @@ public class EquipmentBuilder {
             throw new RuntimeException("Deben establecerse el nombre, ataque y defensa del equipamiento");
         }
         if (type == EquipmentType.ARMOR) {
-            return new Armor(name, attack, defense);
+            return new Armor(name, attack, defense, EquipmentType.ARMOR);
         }
         else if(type == EquipmentType.ONEHANDEDWEAPON){
-            return new OneHandedWeapon(name, attack, defense);
+            return new OneHandedWeapon(name, attack, defense, EquipmentType.ONEHANDEDWEAPON);
         }
         else{
-           return new TwoHandedWeapon(name, attack, defense);
+           return new TwoHandedWeapon(name, attack, defense, EquipmentType.ONEHANDEDWEAPON);
         }
     }
 }
