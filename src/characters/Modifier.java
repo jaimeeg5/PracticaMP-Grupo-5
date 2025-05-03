@@ -1,8 +1,9 @@
 package characters;
 
+import game.Jsonable;
 import org.json.JSONObject;
 
-public class Modifier {
+public class Modifier implements Jsonable {
     private String name;
     private int value;
     private ModifierType type;
