@@ -7,8 +7,6 @@ public class Vampire extends Character{
     private int bloodPoints = 0;
     private int age;
 
-    public Vampire(){
-    }
 
     public Vampire(int age, CharacterType type) {
         this.age = age;
