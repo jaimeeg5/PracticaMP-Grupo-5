@@ -3,6 +3,7 @@ package game;
 public class GameManager {
 
     public void start() {
+        FileManager.setup();
         Menu menu = new Menu();
         menu.setTitle("Bienvenido a Fantasy Fight");
         String[] menuOptions = {

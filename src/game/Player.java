@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 import characters.*;
 import characters.Character;
+import fileEvents.AddFileEventNotifier;
+import fileEvents.FileSystemEventNotifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,15 +28,15 @@ public class Player extends User {
     public void operate(){
         Menu menu = new Menu();
         menu.setTitle("Elige una opción");
-        String[] menuOptions = {};
+        String[] menuOptions = {
+                "Gestionar personaje",
+                "Desafiar usuario",
+                "Consultar oro",
+                "Consultar ranking",
+                "Darse de baja"
+        };
         if (character == null) {
-            menuOptions = new String[] {
-                    "Gestionar personaje",
-                    "Desafiar usuario",
-                    "Consultar oro",
-                    "Consultar ranking",
-                    "Darse de baja"
-            };
+            menuOptions[0] = "Registrar personaje";
         }
         menu.setOptions(menuOptions);
         int choice;
@@ -45,10 +47,18 @@ public class Player extends User {
             choice = menu.showMenu();
             switch (choice) {
                 case 1:
+                    if (character == null) {
+                        registerCharacter();
+                    }
                     manageCharacter();
                     break;
                 case 2:
-                    challengeUser();
+                    if (character == null) {
+                        System.out.println("Tienes que registrar un personaje primero.");
+                    }
+                    else {
+                        challengeUser();
+                    }
                     break;
                 case 3:
                     checkGold();
@@ -68,6 +78,14 @@ public class Player extends User {
         } while (choice != 6 && choice != 5);
     }
 
+    @Override
+    public void setupNotifier() {
+        FileSystemEventNotifier notifier = new AddFileEventNotifier("data/notifications/" + getNick());
+        setNotifier(notifier);
+        notifier.subscribe(this);
+        notifier.start();
+    }
+
     private void manageCharacter() {
         Menu menu = new Menu();
         menu.setTitle("Gestión de personaje");
@@ -76,6 +94,7 @@ public class Player extends User {
                 "Gestionar equipamiento",
                 "Dar de baja personaje"
         };
+        menu.setOptions(menuOptions);
         menu.showMenu();
         int choice;
         do {
@@ -100,7 +119,9 @@ public class Player extends User {
         System.out.println("Consulta de oro. Pulsa intro para volver.");
         System.out.println("- Oro ganado total: " + goldWon);
         System.out.println("- Oro perdido total: " + goldLost);
-        System.out.println("- Oro del personaje actual: " + character.getGold());
+        if (character != null) {
+            System.out.println("- Oro del personaje actual: " + character.getGold());
+        }
     }
 
     public void challengeUser() {
@@ -150,7 +171,8 @@ public class Player extends User {
         FileManager.save("data/notifications/admin/" + System.currentTimeMillis() + ".json", challenge);
     }
 
-    public void registerCharacter(Character character){
+    public void registerCharacter(){
+        // TODO
         if (character == null) {
             System.out.println("No se puede registrar un personaje que no existe.");
             return;

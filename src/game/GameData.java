@@ -8,9 +8,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
+import java.nio.file.*;
 import java.util.*;
 
 public class GameData implements FileSystemEventListener, Jsonable {
@@ -21,12 +19,11 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private final Map<String, String> registeredNumbers;
     private boolean updated;
     private final FileModifyEventNotifier notifier;
-    private final Map<String, Integer> ranking;
+    private final Map<String, Integer> ranking; // TODO: añadir gente al ranking cuando tal
     private final List<String> modifiers;
     private int lastCombatId = -1;
 
     private GameData() {
-        FileManager.setup();
         passwords = new HashMap<>();
         bannedUsers = new TreeSet<>();
         registeredNumbers = new HashMap<>();
@@ -107,13 +104,18 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     private void saveToDisk() {
-        try (FileChannel fc = FileChannel.open(gameDataPath)) {
-            try (FileLock lock = fc.lock()) {
-                JSONObject json = toJSONObject();
-                FileManager.save(gameDataPath, json);
+        JSONObject json = toJSONObject();
+        if (!Files.exists(gameDataPath)) {
+            FileManager.save(gameDataPath, json);
+        }
+        else {
+            try (FileChannel fc = FileChannel.open(gameDataPath, StandardOpenOption.WRITE)) {
+                try (FileLock lock = fc.lock()) {
+                    FileManager.save(gameDataPath, json);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         updated = false;
     }
@@ -156,8 +158,9 @@ public class GameData implements FileSystemEventListener, Jsonable {
 
         passwords.put(nick, password);
         User u = builder.build();
+        ranking.put(nick, 0);
 
-        FileManager.save("data/users" + nick + ".json", json);
+        FileManager.save("data/users/" + nick + ".json", json);
 
         saveToDisk();
         return u;

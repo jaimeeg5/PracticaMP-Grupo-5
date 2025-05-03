@@ -1,8 +1,9 @@
 package characters;
 
+import game.Jsonable;
 import org.json.JSONObject;
 
-public class SpecialAbility {
+public class SpecialAbility implements Jsonable {
     private String name;
     private int attack;
     private int defense;

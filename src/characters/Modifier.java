@@ -1,13 +1,14 @@
 package characters;
 
+import game.Jsonable;
 import org.json.JSONObject;
 
-public class Modifier {
+public class Modifier implements Jsonable {
     private String name;
     private int value;
     private ModifierType type;
 
-    public Modifier(String name, int value, String type){
+    public Modifier(String name, int value, String type) {
         this.name = name;
         this.value = value;
         if (type.equals("Fortaleza")){

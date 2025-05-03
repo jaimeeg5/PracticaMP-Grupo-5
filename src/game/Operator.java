@@ -1,6 +1,8 @@
 package game;
 import characters.*;
 import characters.Character;
+import fileEvents.AddFileEventNotifier;
+import fileEvents.FileSystemEventNotifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,6 +19,14 @@ public class Operator extends User {
 
     public Operator(String nick, String name) {
         super(nick, name);
+    }
+
+    @Override
+    public void setupNotifier() {
+        FileSystemEventNotifier notifier = new AddFileEventNotifier("data/notifications/admin");
+        setNotifier(notifier);
+        notifier.subscribe(this);
+        notifier.start();
     }
 
     @Override

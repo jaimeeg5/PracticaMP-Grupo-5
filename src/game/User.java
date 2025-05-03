@@ -6,13 +6,18 @@ import org.json.JSONObject;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class User implements FileSystemEventListener, Jsonable {
     private String name;
     private String nick;
     private FileSystemEventNotifier notifier;
-    private List<Path> pendingNotifications;
+    private final List<Path> pendingNotifications;
+
+    public void setNotifier(FileSystemEventNotifier notifier) {
+        this.notifier = notifier;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -54,7 +59,11 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     public User(String nick, String name){
         this.nick = nick;
         this.name = name;
+        this.pendingNotifications = new LinkedList<>();
+        this.setupNotifier();
     }
+
+    public abstract void setupNotifier();
 
     public List<Path> getNotifications() {
         return pendingNotifications;
