@@ -124,7 +124,7 @@ public class Operator extends User {
                         System.out.println("Introduzca el nuevo poder");
                         characterToModify.setPower(Integer.parseInt(input2.nextLine()));
                         break;
-                    case "Fotalezas":
+                    case "Fortalezas":
                         System.out.println("¿'Añadir' o 'Eliminar'?");
                         opt = input2.nextLine();
                         switch(opt){
@@ -173,7 +173,7 @@ public class Operator extends User {
                         }
                         break;
                     case "Oro":
-                        System.out.println("Inidique la nueva cantidad de oro");
+                        System.out.println("Indique la nueva cantidad de oro");
                         characterToModify.setGold(Integer.parseInt(input2.nextLine()));
                         break;
                 }
@@ -223,7 +223,20 @@ public class Operator extends User {
                 werewolf.setWeight(Integer.parseInt(input2.nextLine()));
                 characters.add(werewolf);
             } else {
-
+                Hunter hunter = new Hunter();
+                hunter.setType(CharacterType.Hunter);
+                System.out.println("Introduzca el nombre del personaje");
+                hunter.setName(input2.nextLine());
+                System.out.println("Introduzca la voluntad del personaje");
+                hunter.setWillpower(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce el nombre de la habilidad especial");
+                String name = input2.nextLine();
+                System.out.println("Introduce el ataque de la habilidad especial");
+                int attack = input2.nextInt();
+                System.out.println("Introduce defensa de la habilidad especial");
+                int defense = Integer.parseInt(input2.nextLine());
+                Talent talent = new Talent(name, attack, defense);
+                hunter.setSpecialAbility(talent);
             }
         }
 
