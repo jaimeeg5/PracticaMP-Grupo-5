@@ -7,6 +7,7 @@ public class Vampire extends Character{
     private int bloodPoints = 0;
     private int age;
 
+
     public Vampire(int age, CharacterType type) {
         this.age = age;
         super.setType(type);
