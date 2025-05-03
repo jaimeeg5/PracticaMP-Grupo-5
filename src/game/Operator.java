@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class Operator extends User {
     // TODO Quitar lista characters y pillar la de gamedata (Set)
+    // TODO Cambiar gamedata en métodos por el de gamedata
     private List<Character> characters = new ArrayList<>();
 
     public Operator(String nick, String name) {
@@ -192,17 +193,17 @@ public class Operator extends User {
                 vampire.setAge(Integer.parseInt(input2.nextLine()));
                 System.out.println("Introduzca los puntos de sangre");
                 vampire.setBloodPoints(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el nombre de la habilidad especial");
+                System.out.println("Introduce el nombre de la disciplina");
                 String name = input2.nextLine();
-                System.out.println("Introduce el ataque de la habilidad especial");
-                int attack = input2.nextInt();
-                System.out.println("Introduce defensa de la habilidad especial");
+                System.out.println("Introduce el ataque de la disciplina");
+                int attack = Integer.parseInt(input2.nextLine());
+                System.out.println("Introduce defensa de la disciplina");
                 int defense = Integer.parseInt(input2.nextLine());
                 Discipline discipline = new Discipline(name, attack, defense);
                 vampire.setSpecialAbility(discipline);
-
+                // TODO Hacer resto de atributos
                 characters.add(vampire);
-            } else if (type.equals("Werewolf")) {
+            } else if (type.equals("Hombre Lobo")) {
                 Werewolf werewolf = new Werewolf();
                 werewolf.setType(CharacterType.Werewolf);
                 System.out.println("Introduzca el nombre del personaje");
@@ -212,7 +213,7 @@ public class Operator extends User {
                 System.out.println("Introduce el nombre del don");
                 String name = input2.nextLine();
                 System.out.println("Introduce el ataque del don");
-                int attack = input2.nextInt();
+                int attack = Integer.parseInt(input2.nextLine());
                 System.out.println("Introduce defensa del don");
                 int defense = Integer.parseInt(input2.nextLine());
                 Don don = new Don(name, attack, defense);
@@ -221,6 +222,7 @@ public class Operator extends User {
                 werewolf.setHeight(Integer.parseInt(input2.nextLine()));
                 System.out.println("Introduzca el peso del personaje");
                 werewolf.setWeight(Integer.parseInt(input2.nextLine()));
+                // TODO Hacer resto de atributos
                 characters.add(werewolf);
             } else {
                 Hunter hunter = new Hunter();
@@ -232,11 +234,13 @@ public class Operator extends User {
                 System.out.println("Introduce el nombre de la habilidad especial");
                 String name = input2.nextLine();
                 System.out.println("Introduce el ataque de la habilidad especial");
-                int attack = input2.nextInt();
+                int attack = Integer.parseInt(input2.nextLine());
                 System.out.println("Introduce defensa de la habilidad especial");
                 int defense = Integer.parseInt(input2.nextLine());
                 Talent talent = new Talent(name, attack, defense);
                 hunter.setSpecialAbility(talent);
+                // TODO Hacer el resto de atributos
+                characters.add(hunter);
             }
         }
 
