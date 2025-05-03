@@ -68,4 +68,34 @@ public abstract class User implements FileSystemEventListener, Jsonable {
         Path path = (Path) event;
         pendingNotifications.add(path);
     }
+
+    /* PARA EL TODO AÑADIR NOTIFICACIONES DE GAMEDATA
+
+    sustituir private List<Path> pendingNotifications; por protected List<Path> pendingNotifications;
+
+     // Método para cargar notificaciones
+    public void loadNotifications() {
+        Path userNotifPath = Paths.get("data/notifications/" + nick);
+
+        // Limpiar las notificaciones previas
+        pendingNotifications.clear();
+
+        try {
+            // Cargar todos los archivos de notificación de la carpeta
+            if (Files.exists(userNotifPath) && Files.isDirectory(userNotifPath)) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(userNotifPath)) {
+                    for (Path p : stream) {
+                        if (Files.isRegularFile(p)) {
+                            pendingNotifications.add(p);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+     */
+
 }

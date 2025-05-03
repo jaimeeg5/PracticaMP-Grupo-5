@@ -222,6 +222,21 @@ public class Operator extends User {
                         fileManager.save("data/notifications/" + challenged + ".json", notification);
                         break;
                         // case 4: TODO: notificacion de rechazo
+
+                        /*
+                            case 4:
+                                // Crear una notificación de rechazo de desafío
+                                JSONObject rejectionNotification = new JSONObject();
+                                rejectionNotification.put("challenger", challenger);
+                                rejectionNotification.put("challenged", challenged);
+                                rejectionNotification.put("gold", gold);
+                                rejectionNotification.put("status", "rejected"); // Indicamos que el desafío fue rechazado
+
+                                // Guardar la notificación de rechazo en el directorio de notificaciones del jugador desafiado
+                                fileManager.save("data/notifications/" + challenged + "_rejected.json", rejectionNotification);
+                                System.out.println("Desafío rechazado.");
+                                break;
+                         */
                     case 5:
                         return;
                 }

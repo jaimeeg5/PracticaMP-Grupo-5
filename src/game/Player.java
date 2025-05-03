@@ -142,12 +142,20 @@ public class Player extends User {
             catch (NumberFormatException _) {}
         }
 
+        /*PARA EL TODO DE QUITAR ORO CUANDO DESAFÍAS
+
+        // Aquí restamos el oro del jugador desafiante
+        character.setGold(character.getGold() - gold);  // Se resta el oro al personaje del jugador desafiante
+
+         */
+
         JSONObject challenge = new JSONObject();
         challenge.put("type", NotificationType.CHALLENGE_SENT);
         challenge.put("challenger", getNick());
         challenge.put("challenged", player);
         challenge.put("gold", gold);
         new FileManager().save("data/notifications/admin", challenge);
+
     }
 
     public void pay(Player player, int amount){
@@ -185,6 +193,39 @@ public class Player extends User {
     public void update(WatchEvent<?> event) {
         super.update(event);
         // TODO: interrupt or some shi
+
+        /*
+        // Aquí podríamos tener un flag de interrupción
+        boolean interrupted = false;
+
+        // Para interrumpir algún evento en curso, verificamos el tipo de evento
+        if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
+            Path path = (Path) event.context();  // Obtenemos el archivo modificado (ejemplo de evento)
+
+            // Supongamos que estamos manejando notificaciones y queremos dar la opción de cancelarlas
+            for (Path notificationPath : getNotifications()) {
+                // Si detectamos una notificación modificada, verificamos si el jugador desea interrumpir
+                JSONObject notification = new FileManager().load(notificationPath);
+                NotificationType type = NotificationType.valueOf(notification.getString("type"));
+
+                if (type == NotificationType.CHALLENGE_SENT) {
+                    // Si el tipo de notificación es un desafío, preguntamos al jugador si quiere interrumpir
+                    System.out.println("¡Nuevo desafío recibido! ¿Quieres interrumpirlo?");
+                    if (Menu.showConfirmationMenu("¿Deseas interrumpir este desafío?")) {
+                        // Si el jugador decide interrumpir, podemos cancelar la notificación
+                        interrupted = true;
+                        System.out.println("El desafío ha sido interrumpido.");
+                        break;  // Salimos del loop si la notificación fue interrumpida
+                    }
+                }
+            }
+        }
+
+        // Si el evento fue interrumpido, entonces no seguimos procesando más acciones.
+        if (interrupted) {
+            return;  // Termina la ejecución de la función, evitando continuar con más actualizaciones.
+        }
+         */
     }
 
     private void handleNotifications() {
@@ -207,9 +248,36 @@ public class Player extends User {
                         Combat combat = new Combat((Player) GameData.getInstance().getUser(challenger), this, activeModifiers);
                         combat.fight();
                         // TODO
+
+                        /*
+                        // Aquí puedes manejar el resultado del combate (si es necesario)
+                        // Por ejemplo, actualizar el oro del jugador dependiendo de si ganó o perdió
+                        boolean wonCombat = combat.getWinner().equals(this);  // Suponiendo que `getWinner()` retorna el ganador
+                        if (wonCombat) {
+                            goldWon += gold;  // Incrementamos el oro ganado
+                            System.out.println("¡Ganaste el combate! Has ganado " + gold + " oro.");
+                        } else {
+                            goldLost += gold;  // Incrementamos el oro perdido
+                            System.out.println("Perdiste el combate. Has perdido " + gold + " oro.");
+                        }
+                         */
+
                     }
                     else {
                         // TODO: mandar notificacion de rechazo
+
+                        /*
+                        // Si el jugador rechaza el desafío, mandamos una notificación de rechazo
+                        System.out.println("Has rechazado el desafío de " + challenger);
+                        JSONObject rejectionNotification = new JSONObject();
+                        rejectionNotification.put("type", NotificationType.CHALLENGE_REJECTED.toString());
+                        rejectionNotification.put("challenger", challenger);
+                        rejectionNotification.put("challenged", getNick());
+                        rejectionNotification.put("gold", gold);  // Enviamos el oro apostado también
+
+                        // Guardamos la notificación de rechazo en el archivo correspondiente
+                        new FileManager().save("data/notifications/" + challenger + ".json", rejectionNotification);
+                         */
                     }
                     break;
             }
