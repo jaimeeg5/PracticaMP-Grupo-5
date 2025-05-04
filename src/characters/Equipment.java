@@ -65,4 +65,9 @@ public class Equipment implements Jsonable {
         this.defenseValue = json.getInt("defenseValue");
         this.type = EquipmentType.valueOf(json.getString("type"));
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

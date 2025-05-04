@@ -5,9 +5,8 @@ import fileEvents.FileSystemEventNotifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.WatchEvent;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,6 +15,10 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     private String nick;
     private FileSystemEventNotifier notifier;
     private final List<Path> pendingNotifications;
+
+    public User() {
+        pendingNotifications = new LinkedList<>();
+    }
 
     public void setNotifier(FileSystemEventNotifier notifier) {
         this.notifier = notifier;
@@ -30,11 +33,13 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     }
 
     public void logout(){
-        notifier.unsubscribe(this);
-        if (notifier.isEmpty()) {
-            notifier.interrupt();
+        if (notifier != null) {
+            notifier.unsubscribe(this);
+            if (notifier.isEmpty()) {
+                notifier.interrupt();
+            }
+            System.out.println(nick + " se ha desconectado.");
         }
-        System.out.println(nick + " se ha desconectado.");
     }
 
     public void dropout(){
@@ -86,11 +91,6 @@ public abstract class User implements FileSystemEventListener, Jsonable {
         JSONObject json = new JSONObject();
         json.put("nick", getNick());
         json.put("name", getName());
-        JSONArray arr = new JSONArray();
-        for (Path path: pendingNotifications) {
-            arr.put(path.toString());
-        }
-        json.put("notifications", arr);
         return json;
     }
 
@@ -98,9 +98,14 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     public void fromJSONObject(JSONObject json) {
         setNick(json.getString("nick"));
         setName(json.getString("name"));
-        JSONArray arr = json.getJSONArray("notifications");
-        for (int i = 0; i< arr.length(); i++) {
-            pendingNotifications.add(Paths.get(arr.getString(i)));
+        Path dirPath = Paths.get("data/notifications/" + nick);
+        pendingNotifications.clear();
+        try (DirectoryStream<Path> dir = Files.newDirectoryStream(dirPath)) {
+            for (Path file: dir) {
+                pendingNotifications.add(file);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

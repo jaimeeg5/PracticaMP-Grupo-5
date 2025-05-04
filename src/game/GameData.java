@@ -1,5 +1,6 @@
 package game;
 
+import characters.*;
 import fileEvents.FileModifyEventNotifier;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
@@ -155,21 +156,16 @@ public class GameData implements FileSystemEventListener, Jsonable {
             loadFromDisk();
         }
 
-        JSONObject json = new JSONObject();
         UserBuilder builder = new UserBuilder(type);
-        json.put("type", type);
 
         builder.buildNick(nick);
-        json.put("nick", nick);
 
         builder.buildName(name);
-        json.put("name", name);
 
         if (type == UserType.PLAYER) {
             FileManager.createDirectory("data/notifications/" + nick);
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
-            json.put("registerNumber", num);
             registeredNumbers.put(num, nick);
         }
 
@@ -177,7 +173,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         User u = builder.build();
         ranking.put(nick, 0);
 
-        FileManager.save("data/users/" + nick + ".json", json);
+        FileManager.save("data/users/" + nick + ".json", u);
 
         saveToDisk();
         return u;
@@ -187,16 +183,15 @@ public class GameData implements FileSystemEventListener, Jsonable {
         ranking.put(user, ranking.get(user) + 1);
     }
 
-    public User getUser(String nick) {// TODO: cargar notificaciones
+    public User getUser(String nick) {
         JSONObject json = FileManager.load("data/users/" + nick + ".json");
         UserType type = UserType.valueOf(json.getString("type"));
-        UserBuilder builder = new UserBuilder(type);
-        builder.buildNick(json.getString("nick"));
-        builder.buildName(json.getString("name"));
-        if (type == UserType.PLAYER) {
-            builder.buildRegisterNumber(json.getString("registerNumber"));
-        }
-        return builder.build();
+        User user = switch (type) {
+            case PLAYER -> new Player();
+            case OPERATOR -> new Operator();
+        };
+        user.fromJSONObject(json);
+        return user;
     }
 
     private String generateRegisterNumber() {
@@ -292,16 +287,26 @@ public class GameData implements FileSystemEventListener, Jsonable {
         }
         JSONArray modifiersArray = new JSONArray();
         for (String modifier: modifiers) {
-            modifiersArray.put(0, modifier);
+            modifiersArray.put(modifier);
         }
         JSONArray weaponsArray = new JSONArray();
         for (String weapon: weapons) {
-            weaponsArray.put(0, weapon);
+            weaponsArray.put(weapon);
         }
         JSONArray armorsArray = new JSONArray();
         for (String armor: armors) {
-            armorsArray.put(0, armor);
+            armorsArray.put(armor);
         }
+        JSONArray characterArray = new JSONArray();
+        for (String c: characters) {
+            characterArray.put(c);
+        }
+        JSONArray minionArray = new JSONArray();
+        for (String c: minions) {
+            minionArray.put(c);
+        }
+        json.put("minions", minionArray);
+        json.put("characters", characterArray);
         json.put("passwords", passwordsArray);
         json.put("bannedUsers", bannedUsersArray);
         json.put("registeredNumbers", registeredNumbersArray);
@@ -358,7 +363,16 @@ public class GameData implements FileSystemEventListener, Jsonable {
         for (int i = 0; i < arr.length(); i++) {
             armors.add(arr.getString(i));
         }
-
+        arr = json.getJSONArray("characters");
+        characters.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            characters.add(arr.getString(i));
+        }
+        arr = json.getJSONArray("minions");
+        minions.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            minions.add(arr.getString(i));
+        }
         lastCombatId = json.getInt("lastCombatId");
     }
 
@@ -369,5 +383,13 @@ public class GameData implements FileSystemEventListener, Jsonable {
         lastCombatId += 1;
         saveToDisk();
         return lastCombatId;
+    }
+
+    public void addWeapon(Equipment equipment) {
+        weapons.add(equipment.getName());
+    }
+
+    public void addArmor(Equipment equipment) {
+        armors.add(equipment.getName());
     }
 }

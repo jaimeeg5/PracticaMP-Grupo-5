@@ -16,12 +16,12 @@ public abstract class Character implements Jsonable {
     private List<Equipment> availableArmors;
     private Equipment[] activeWeapons = new Equipment[2];
     private Equipment activeArmor;
-    private List<Minion> minions;
+    private List<Minion> minions = new ArrayList<>();
     private int health;
     private int power;
     private Modifier modifier;
-    private List<PowerUp> powerUps;
-    private List<Weakness> weaknesses;
+    private List<PowerUp> powerUps = new ArrayList<>();
+    private List<Weakness> weaknesses = new ArrayList<>();
     private CharacterType type;
     private int powerupValue = 0;
     private int weaknessValue = 0;
@@ -281,21 +281,25 @@ public abstract class Character implements Jsonable {
         JSONObject json = new JSONObject();
         json.put("type", type);
         JSONArray arr = new JSONArray();
-        for (Equipment weapon: availableWeapons) {
-            arr.put(weapon.toJSONObject());
-        }
-        activeArmor.fromJSONObject(json.getJSONObject("activeArmor"));
-        arr.clear();
+        json.put("activeArmor", activeArmor.toJSONObject());
         for (Minion minion: minions) {
             arr.put(minion.toJSONObject());
         }
         json.put("minions", arr);
-        arr.clear();
+        arr = new JSONArray();
+        for (Equipment weapon: activeWeapons) {
+            if (weapon != null) {
+                arr.put(weapon.toJSONObject());
+            }
+        }
+        json.put("activeWeapons", arr);
+
+        arr = new JSONArray();
         for (PowerUp pw: powerUps) {
             arr.put(pw.toJSONObject());
         }
         json.put("powerUps", arr);
-        arr.clear();
+        arr = new JSONArray();
         for (Weakness wk: weaknesses) {
             arr.put(wk.toJSONObject());
         }
@@ -326,6 +330,7 @@ public abstract class Character implements Jsonable {
             w.fromJSONObject(arr.getJSONObject(i));
             activeWeapons[i] = w;
         }
+        activeArmor = new Equipment();
         activeArmor.fromJSONObject(json.getJSONObject("activeArmor"));
         arr = json.getJSONArray("minions");
         minions.clear();

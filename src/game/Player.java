@@ -1,7 +1,6 @@
 package game;
 
 import java.nio.file.Path;
-import java.nio.file.WatchEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,26 +24,34 @@ public class Player extends User {
         this.registerNumber = registerNumber;
     }
 
+    public Player() {
+        super();
+        registerNumber = null;
+    }
+
     @Override
     public void operate(){
         Menu menu = new Menu();
         menu.setTitle("Elige una opción");
         String[] menuOptions = {
-                "Gestionar personaje",
+                "Si sale este texto tenemos un problema",
                 "Desafiar usuario",
                 "Consultar oro",
                 "Consultar ranking",
                 "Darse de baja"
         };
-        if (character == null) {
-            menuOptions[0] = "Registrar personaje";
-        }
-        menu.setOptions(menuOptions);
         int choice;
         do {
             if (!getNotifications().isEmpty()) {
                 handleNotifications();
             }
+            if (character == null) {
+                menuOptions[0] = "Registrar personaje";
+            }
+            else {
+                menuOptions[0] = "Gestionar personaje";
+            }
+            menu.setOptions(menuOptions);
             choice = menu.showMenu();
             switch (choice) {
                 case 1:
@@ -72,13 +79,14 @@ public class Player extends User {
                 case 5:
                     if (Menu.showConfirmationMenu()) {
                         dropout();
+                        choice = 6;
                     }
                     break;
                 case 6:
                     logout();
                     break;
             }
-        } while (choice != 6 && choice != 5);
+        } while (choice != 6);
     }
 
     @Override
@@ -98,7 +106,6 @@ public class Player extends User {
                 "Dar de baja personaje"
         };
         menu.setOptions(menuOptions);
-        menu.showMenu();
         int choice;
         do {
             choice = menu.showMenu();
@@ -115,7 +122,7 @@ public class Player extends User {
                     }
                     break;
             }
-        } while (choice != 4);
+        } while (choice != 3 && choice != 4);
     }
 
     private void checkGold() {
@@ -185,7 +192,7 @@ public class Player extends User {
         do {
             choice = menu.showMenu();
             if (choice <= characterArray.length) {
-                JSONObject json = FileManager.load("data/characters/" + characterArray[choice - 1]);
+                JSONObject json = FileManager.load("data/characters/" + characterArray[choice - 1] + ".json");
                 character = switch (CharacterType.valueOf(json.getString("type"))) {
                     case Vampire -> new Vampire();
                     case Werewolf -> new Werewolf();
@@ -193,7 +200,7 @@ public class Player extends User {
                 };
                 character.fromJSONObject(json);
             }
-        } while (choice != characterArray.length + 1);
+        } while (choice > characterArray.length + 1);
     }
 
     public void dropoutCharacter(){

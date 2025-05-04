@@ -45,4 +45,9 @@ public class Minion implements Jsonable {
         this.name = json.getString("name");
         this.health = json.getInt("health");
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

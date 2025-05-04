@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -19,6 +18,10 @@ public class Operator extends User {
 
     public Operator(String nick, String name) {
         super(nick, name);
+    }
+
+    public Operator() {
+        super();
     }
 
     @Override
@@ -35,8 +38,6 @@ public class Operator extends User {
         int choice;
         menu.setTitle("Elija una opcion:");
         String[] menuOptions = {
-                "Darse de baja",
-                "Salir del sistema",
                 "Crear un personaje",
                 "Crear una armadura",
                 "Crear un arma de una mano",
@@ -45,49 +46,51 @@ public class Operator extends User {
                 "Editar un personaje",
                 "Validar y gestionar desafios",
                 "Bloquear usuario",
-                "Desbloquear usuario"
+                "Desbloquear usuario",
+                "Darse de baja"
         };
         menu.setOptions(menuOptions);
         do {
             choice = menu.showMenu();
             switch (choice) {
                 case 1:
-                    if (Menu.showConfirmationMenu()) {
-                        dropout();
-                    }
-                    break;
-                case 2:
-                    logout();
-                    break;
-                case 3:
                     createCharacter();
                     break;
-                case 4:
+                case 2:
                     createEquipment(EquipmentType.ARMOR);
                     break;
-                case 5:
+                case 3:
                     createEquipment(EquipmentType.ONEHANDEDWEAPON);
                     break;
-                case 6:
+                case 4:
                     createEquipment(EquipmentType.TWOHANDEDWEAPON);
                     break;
-                case 7:
+                case 5:
                     createMinion();
                     break;
-                case 8:
+                case 6:
                     modifyCharacter();
                     break;
-                case 9:
+                case 7:
                     manageCombat();
                     break;
-                case 10:
+                case 8:
                     banUsers();
                     break;
-                case 11:
+                case 9:
                     unbanUsers();
                     break;
+                case 10:
+                    if (Menu.showConfirmationMenu()) {
+                        dropout();
+                        choice = 11;
+                    }
+                    break;
+                case 11:
+                    logout();
+                    break;
             }
-        } while(choice != 8);
+        } while(choice != 11);
     }
 
     public void createCharacter(){
@@ -392,15 +395,15 @@ public class Operator extends User {
             System.out.println("Elija el numero de arma");
             int i = 1;
             for (String weaponElement : weapons){
-                System.out.println("[" + i + "] " + weapon);
+                System.out.println("[" + i + "] " + weaponElement);
                 i += 1;
             }
             JSONObject JSONWeapon = FileManager.load("data/weapons/" + weapons.get(i-1) + ".json");
             weapon.fromJSONObject(JSONWeapon);
         } else {
             System.out.println("No existen armas. Tienes que crear una");
-            createEquipment(EquipmentType.ONEHANDEDWEAPON);
-            JSONObject JSONWeapon = FileManager.load("data/weapons/" + weapons.getFirst() + ".json");
+            Equipment equipment = createEquipment(EquipmentType.ONEHANDEDWEAPON);
+            JSONObject JSONWeapon = FileManager.load("data/weapons/" + equipment.getName() + ".json");
             weapon.fromJSONObject(JSONWeapon);
         }
         return weapon;
@@ -421,8 +424,8 @@ public class Operator extends User {
             armor.fromJSONObject(JSONArmor);
         } else {
             System.out.println("No existen armaduras. Tienes que crear una");
-            createEquipment(EquipmentType.ARMOR);
-            JSONObject JSONArmor = FileManager.load("data/armors/" + armors.getFirst() + ".json");
+            armor = createEquipment(EquipmentType.ARMOR);
+            JSONObject JSONArmor = FileManager.load("data/armors/" + armor.getName() + ".json");
             armor.fromJSONObject(JSONArmor);
         }
         return armor;
@@ -599,7 +602,7 @@ public class Operator extends User {
         }
     }
 
-    public void createModifier(){
+    public Modifier createModifier(){
         Scanner input = new Scanner(System.in);
         System.out.println("Introduce el nombre del modificador");
         String modifierName = input.nextLine();
@@ -610,9 +613,11 @@ public class Operator extends User {
         Modifier modifier = new Modifier(modifierName, modifierValue, modifierType);
         JSONObject  json = modifier.toJSONObject();
         FileManager.save("data/modifiers/" + modifierName + ".json", json);
+        GameData.getInstance().addModifier(modifier.getName());
+        return modifier;
     }
 
-    public void createEquipment(EquipmentType type){
+    public Equipment createEquipment(EquipmentType type){
         Scanner input = new Scanner(System.in);
         System.out.println("Introduce el nombre del equipamiento");
         String equipmentName = input.nextLine();
@@ -625,9 +630,13 @@ public class Operator extends User {
         JSONObject  json = equipment.toJSONObject();
         if (type == EquipmentType.ONEHANDEDWEAPON || type == EquipmentType.TWOHANDEDWEAPON){
             FileManager.save("data/weapons/" + equipmentName + ".json", json);
+            GameData.getInstance().addWeapon(equipment);
         } else {
             FileManager.save("data/armors/" + equipmentName + ".json", json);
+            GameData.getInstance().addArmor(equipment);
         }
+
+        return equipment;
     }
 
     @Override
