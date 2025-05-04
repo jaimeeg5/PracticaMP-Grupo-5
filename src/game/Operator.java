@@ -43,6 +43,7 @@ public class Operator extends User {
                 "Crear una armadura",
                 "Crear un arma de una mano",
                 "Crear un arma de dos manos",
+                "Crear un minion",
                 "Editar un personaje",
                 "Validar y gestionar desafios",
                 "Bloquear usuario",
@@ -73,15 +74,18 @@ public class Operator extends User {
                     createEquipment(EquipmentType.TWOHANDEDWEAPON);
                     break;
                 case 7:
-                    modifyCharacter();
+                    createMinion();
                     break;
                 case 8:
-                    manageCombat();
+                    modifyCharacter();
                     break;
                 case 9:
-                    banUsers();
+                    manageCombat();
                     break;
                 case 10:
+                    banUsers();
+                    break;
+                case 11:
                     unbanUsers();
                     break;
             }
