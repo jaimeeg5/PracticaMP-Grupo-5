@@ -43,6 +43,7 @@ public class Operator extends User {
                 "Crear una armadura",
                 "Crear un arma de una mano",
                 "Crear un arma de dos manos",
+                "Crear un minion",
                 "Editar un personaje",
                 "Validar y gestionar desafios",
                 "Bloquear usuario",
@@ -73,15 +74,18 @@ public class Operator extends User {
                     createEquipment(EquipmentType.TWOHANDEDWEAPON);
                     break;
                 case 7:
-                    modifyCharacter();
+                    createMinion();
                     break;
                 case 8:
-                    manageCombat();
+                    modifyCharacter();
                     break;
                 case 9:
-                    banUsers();
+                    manageCombat();
                     break;
                 case 10:
+                    banUsers();
+                    break;
+                case 11:
                     unbanUsers();
                     break;
             }
@@ -266,6 +270,7 @@ public class Operator extends User {
             }
         } while(!type.equals("Vampiro") && !type.equals("Hombre Lobo") && !type.equals("Cazador"));
     }
+
     public void createMinion(){
         GameData data = GameData.getInstance();
         Set<String> minions = data.getMinions();
@@ -274,16 +279,38 @@ public class Operator extends User {
         do {
             System.out.println("¿Que tipo de minion quieres crear?");
             type = input2.nextLine();
-            if (type.equals("Demonio")) {
+            if (type.equals("Humano")) {
+                Human human = new Human();
+                human.setType(MinionType.Human);
+                System.out.println("Introduzca el nombre del esbirro");
+                human.setName(input2.nextLine());
+                System.out.println("Introduce la salud del esbirro");
+                human.setHealth(Integer.parseInt(input2.nextLine()));
+                minions.add(human.getName());
+                JSONObject jsonHuman = human.toJSONObject();
+                FileManager.save("data/minions/" + human.getName() + ".json", jsonHuman);
+            } else if (type.equals("Ghoul")) {
+                Ghoul ghoul = new Ghoul();
+                ghoul.setType(MinionType.Ghoul);
+                System.out.println("Introduzca el nombre del esbirro");
+                ghoul.setName(input2.nextLine());
+                System.out.println("Introduce la salud del esbirro");
+                ghoul.setHealth(Integer.parseInt(input2.nextLine()));
+                minions.add(ghoul.getName());
+                JSONObject jsonGhoul = ghoul.toJSONObject();
+                FileManager.save("data/minions/" + ghoul.getName() + ".json", jsonGhoul);
+            } else if (type.equals("Demonio")) {
                 Demon demon = new Demon();
                 demon.setType(MinionType.Demon);
-                System.out.println("Introduzca el nombre del minion");
+                System.out.println("Introduzca el nombre del esbirro");
                 demon.setName(input2.nextLine());
-                System.out.println("Introduce la salud del minion");
+                System.out.println("Introduce la salud del esbirro");
                 demon.setHealth(Integer.parseInt(input2.nextLine()));
                 minions.add(demon.getName());
                 JSONObject jsonDemon = demon.toJSONObject();
                 FileManager.save("data/minions/" + demon.getName() + ".json", jsonDemon);
+            } else {
+                System.out.println("El esbirro debe ser: 'Humano', 'Ghoul' o 'Demonio'");
             }
         }while(!type.equals("Demonio") && !type.equals("Ghoul") && !type.equals("Humano"));
     }
