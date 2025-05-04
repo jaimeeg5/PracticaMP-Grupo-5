@@ -1,9 +1,5 @@
 package characters;
 
-import equipments.Armor;
-import equipments.Equipment;
-import equipments.EquipmentType;
-import equipments.OneHandedWeapon;
 import game.GameData;
 import game.Jsonable;
 import org.json.JSONArray;
@@ -17,9 +13,9 @@ public abstract class Character implements Jsonable {
     private String name;
     private SpecialAbility specialAbility;
     private List<Equipment>  availableWeapons = GameData.getInstance().getAvailableWeapons();
-    private List<Armor> availableArmors = GameData.getInstance().getAvailableArmors();
+    private List<Equipment> availableArmors = GameData.getInstance().getAvailableArmors();
     private Equipment[] activeWeapons = new Equipment[2];
-    private Armor activeArmor;
+    private Equipment activeArmor;
     private List<Minion> minions;
     private int health;
     private int power;
@@ -87,7 +83,7 @@ public abstract class Character implements Jsonable {
         return activeWeapons;
     }
 
-    public Armor getActiveArmor() {
+    public Equipment getActiveArmor() {
         return activeArmor;
     }
 
@@ -115,7 +111,7 @@ public abstract class Character implements Jsonable {
         this.name = name;
     }
 
-    public void setActiveArmor(Armor activeArmor) {
+    public void setActiveArmor(Equipment activeArmor) {
         this.activeArmor = activeArmor;
     }
 
@@ -285,8 +281,7 @@ public abstract class Character implements Jsonable {
         for (Equipment weapon: activeWeapons) {
             arr.put(weapon.toJSONObject());
         }
-        json.put("activeWeapons", arr);
-        json.put("activeArmor", activeArmor.toJSONObject());
+        activeArmor.fromJSONObject(json.getJSONObject("activeArmor"));
         arr.clear();
         for (Minion minion: minions) {
             arr.put(minion.toJSONObject());
@@ -316,128 +311,54 @@ public abstract class Character implements Jsonable {
     @Override
     public void fromJSONObject(JSONObject json) {
         type = CharacterType.valueOf(json.getString("type"));
+        name = json.getString("name");
+        health = json.getInt("health");
+        power = json.getInt("power");
+        gold = json.getInt("gold");
+        powerupValue = json.getInt("powerUpValue");
+        weaknessValue = json.getInt("weaknessValue");
         JSONArray arr = json.getJSONArray("availableWeapons");
         availableWeapons.clear();
         for (int i = 0; i < arr.length(); i++) {
-            Equipment eq = new ;   // TODO: en toJsonObject guardar el tipo de arma y aqui crear un arma en funcion de cual sea
-            availableWeapons.add(eq.fromJSONObject(arr.getJSONObject(i)));
+            Equipment eq = new Equipment();
+            eq.fromJSONObject(arr.getJSONObject(i));
+            availableWeapons.add(eq);
         }
+        arr = json.getJSONArray("availableArmors");
         availableArmors.clear();
         for (int i = 0; i < arr.length(); i++) {
-            Armor a = new Armor(0, "", );   // TODO: desisto, a partir de aqui la funcion está mal. Buenas noches gente.
-            arr.put(armor.getName());
+            Equipment a = new Equipment();
+            a.fromJSONObject(arr.getJSONObject(i));
+            availableArmors.add(a);
         }
-        json.put("availableArmors", arr);
-        arr.clear();
-        for (Equipment weapon: activeWeapons) {
-            arr.put(weapon.getName());
+        arr = json.getJSONArray("activeWeapons");
+        for (int i = 0; i < arr.length(); i++) {
+            Equipment w = new Equipment();
+            w.fromJSONObject(arr.getJSONObject(i));
+            activeWeapons[i] = w;
         }
-        json.put("activeWeapons", arr);
-        json.put("activeArmor", activeArmor.getName());
-        arr.clear();
-        for (Minion minion: minions) {
-            arr.put(minion.toJSONObject());
+        activeArmor.fromJSONObject(json.getJSONObject("activeArmor"));
+        arr = json.getJSONArray("minions");
+        minions.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            Minion minion = new Minion();
+            minion.fromJSONObject(arr.getJSONObject(i));
+            minions.add(minion);
         }
-        json.put("minions", arr);
-        arr.clear();
-        for (PowerUp pw: powerUps) {
-            arr.put(pw.toJSONObject());
+        arr = json.getJSONArray("powerUps");
+        powerUps.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            PowerUp pw = new PowerUp();
+            pw.fromJSONObject(arr.getJSONObject(i));
+            powerUps.add(pw);
         }
-        json.put("powerUps", arr);
-        arr.clear();
-        for (Weakness wk: weaknesses) {
-            arr.put(wk.toJSONObject());
+        arr = json.getJSONArray("weaknesses");
+        weaknesses.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            Weakness pw = new Weakness();
+            pw.fromJSONObject(arr.getJSONObject(i));
+            weaknesses.add(pw);
         }
-        json.put("weaknesses", arr);
-        json.put("modifier", modifier.toJSONObject());
-        json.put("power", power);
-        json.put("name", name);
-        json.put("health", health);
-        json.put("gold", gold);
-        json.put("powerUpValue", powerupValue);
-        json.put("weaknessValue", weaknessValue);
-        json.put("specialAbility", specialAbility.toJSONObject());
+        specialAbility.fromJSONObject(json.getJSONObject("specialAbility"));
     }
-
-
-    /*
-    @Override
-public void fromJSONObject(JSONObject json) {
-    this.type = CharacterType.valueOf(json.getString("type"));
-    this.name = json.getString("name");
-    this.health = json.getInt("health");
-    this.power = json.getInt("power");
-    this.gold = json.getInt("gold");
-    this.powerupValue = json.getInt("powerUpValue");
-    this.weaknessValue = json.getInt("weaknessValue");
-
-    this.availableWeapons = new ArrayList<>();
-    JSONArray weaponArray = json.getJSONArray("availableWeapons");
-    for (int i = 0; i < weaponArray.length(); i++) {
-        JSONObject weaponJson = weaponArray.getJSONObject(i);
-        EquipmentType type = EquipmentType.valueOf(weaponJson.getString("type"));
-        Equipment weapon = switch (type) {
-            case ONEHANDEDWEAPON -> new OneHandedWeapon(weaponJson);
-            case TWOHANDEDWEAPON -> new equipments.TwoHandedWeapon(weaponJson);
-            default -> throw new IllegalArgumentException("Tipo de arma desconocido: " + type);
-        };
-        availableWeapons.add(weapon);
-    }
-
-    this.availableArmors = new ArrayList<>();
-    JSONArray armorArray = json.getJSONArray("availableArmors");
-    for (int i = 0; i < armorArray.length(); i++) {
-        JSONObject armorJson = armorArray.getJSONObject(i);
-        Armor armor = new Armor(armorJson); // Asumiendo constructor Armor(JSONObject)
-        availableArmors.add(armor);
-    }
-
-    this.activeWeapons = new Equipment[2];
-    JSONArray activeWeaponsArray = json.getJSONArray("activeWeapons");
-    for (int i = 0; i < activeWeaponsArray.length(); i++) {
-        JSONObject weaponJson = activeWeaponsArray.getJSONObject(i);
-        if (!weaponJson.isEmpty()) {
-            EquipmentType type = EquipmentType.valueOf(weaponJson.getString("type"));
-            Equipment weapon = switch (type) {
-                case ONEHANDEDWEAPON -> new OneHandedWeapon(weaponJson);
-                case TWOHANDEDWEAPON -> new equipments.TwoHandedWeapon(weaponJson);
-                default -> null;
-            };
-            activeWeapons[i] = weapon;
-        }
-    }
-
-    if (json.has("activeArmor") && !json.isNull("activeArmor")) {
-        this.activeArmor = new Armor(json.getJSONObject("activeArmor"));
-    }
-
-    this.minions = new ArrayList<>();
-    JSONArray minionArray = json.getJSONArray("minions");
-    for (int i = 0; i < minionArray.length(); i++) {
-        JSONObject minionJson = minionArray.getJSONObject(i);
-        Minion minion = new Minion(minionJson); // Asumiendo constructor Minion(JSONObject)
-        minions.add(minion);
-    }
-
-    this.powerUps = new ArrayList<>();
-    JSONArray powerupArray = json.getJSONArray("powerUps");
-    for (int i = 0; i < powerupArray.length(); i++) {
-        JSONObject puJson = powerupArray.getJSONObject(i);
-        PowerUp pu = new PowerUp(puJson); // Asumiendo constructor PowerUp(JSONObject)
-        powerUps.add(pu);
-    }
-
-    this.weaknesses = new ArrayList<>();
-    JSONArray weaknessArray = json.getJSONArray("weaknesses");
-    for (int i = 0; i < weaknessArray.length(); i++) {
-        JSONObject wJson = weaknessArray.getJSONObject(i);
-        Weakness wk = new Weakness(wJson); // Asumiendo constructor Weakness(JSONObject)
-        weaknesses.add(wk);
-    }
-
-    this.modifier = new Modifier(json.getJSONObject("modifier")); // Asumiendo constructor Modifier(JSONObject)
-    this.specialAbility = new SpecialAbility(json.getJSONObject("specialAbility")); // Asumiendo constructor
-}
-     */
-
 }

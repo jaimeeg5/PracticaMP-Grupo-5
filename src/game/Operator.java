@@ -266,7 +266,7 @@ public class Operator extends User {
             }
         } while(!type.equals("Vampiro") && !type.equals("Hombre Lobo") && !type.equals("Cazador"));
     }
-    public Minion createMinion(){
+    public void createMinion(){
         GameData data = GameData.getInstance();
         Set<String> minions = data.getMinions();
         Scanner input2 = new Scanner(System.in);
@@ -274,7 +274,7 @@ public class Operator extends User {
         do {
             System.out.println("¿Que tipo de minion quieres crear?");
             type = input2.nextLine();
-            if (type.equals("Demon")) {
+            if (type.equals("Demonio")) {
                 Demon demon = new Demon();
                 demon.setType(MinionType.Demon);
                 System.out.println("Introduzca el nombre del minion");
@@ -282,10 +282,10 @@ public class Operator extends User {
                 System.out.println("Introduce la salud del minion");
                 demon.setHealth(Integer.parseInt(input2.nextLine()));
                 minions.add(demon.getName());
-                JSONObject jsonVampire = vampire.toJSONObject();
-                FileManager.save("data/characters/" + vampire.getName() + ".json", jsonVampire);
+                JSONObject jsonDemon = demon.toJSONObject();
+                FileManager.save("data/minions/" + demon.getName() + ".json", jsonDemon);
             }
-        }
+        }while(!type.equals("Demonio") && !type.equals("Ghoul") && !type.equals("Humano"));
     }
     public void banUsers(){
         GameData gameData = GameData.getInstance();
