@@ -1,6 +1,5 @@
 package characters;
 
-import equipments.Equipment;
 import org.json.JSONObject;
 
 public class Vampire extends Character{

@@ -12,6 +12,10 @@ public class PowerUp implements Jsonable {
         this.value = value;
     }
 
+    public PowerUp() {
+
+    }
+
     public String getName() {
         return name;
     }

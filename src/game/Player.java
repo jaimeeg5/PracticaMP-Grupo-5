@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 public class Player extends User {
     private final String registerNumber;
-    private int goldWon; // TODO: quitar oro cuando desafias y tal
+    private int goldWon;
     private int goldLost;
     private Character character;
 
@@ -166,12 +166,6 @@ public class Player extends User {
             catch (NumberFormatException _) {}
         }
 
-        /*
-        // Quitar oro cuando desafías
-        character.setGold(character.getGold() - gold);
-        goldLost += gold;
-         */
-
         JSONObject challenge = new JSONObject();
         challenge.put("type", NotificationType.CHALLENGE_SENT);
         challenge.put("challenger", getNick());
@@ -208,53 +202,6 @@ public class Player extends User {
 
     public Character getCharacter() {
         return character;
-    }
-
-    @Override
-    public void update(WatchEvent<?> event) {
-        super.update(event);
-        // TODO: interrupt or some shi
-
-        /*
-        // Aquí podríamos verificar el tipo de evento y tomar decisiones al respecto.
-    // Si el evento está relacionado con una notificación, procesarla y eliminarla de la lista de notificaciones pendientes.
-
-    Path path = (Path) event.context();
-    JSONObject notification = FileManager.load(path);
-    NotificationType type = NotificationType.valueOf(notification.getString("type"));
-
-    // Acciones según el tipo de notificación
-    switch (type) {
-        case CHALLENGE_SENT:
-            // Si el jugador recibe un desafío, podemos procesar la notificación de desafío
-            challengeReceived(notification);
-            break;
-        case CHALLENGE_ACCEPTED:
-            // Si se acepta un desafío, podemos comenzar un combate o algo similar
-            combatReceived(notification);
-            break;
-        case CHALLENGE_REJECTED:
-            // Si el desafío es rechazado, gestionar la notificación
-            challengeRejected(notification);
-            break;
-        case BANNED:
-            // Si el jugador es baneado, podemos ejecutar alguna lógica de penalización o desconexión
-            handleBan(notification);
-            break;
-        default:
-            break;
-    }
-
-    // Eliminar la notificación procesada de la lista pendiente
-    removeNotification(path);
-}
-
-private void handleBan(JSONObject notification) {
-    // Si el jugador está baneado, lo sacamos del sistema o lo marcamos como inactivo
-    System.out.println("Tu cuenta ha sido baneada. No puedes seguir jugando.");
-    dropout();  // Aquí usamos la función dropout para desconectar al jugador.
-}
-         */
     }
 
     private void handleNotifications() {

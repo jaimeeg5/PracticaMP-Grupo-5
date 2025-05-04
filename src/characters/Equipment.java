@@ -1,4 +1,4 @@
-package equipments;
+package characters;
 
 import game.Jsonable;
 import org.json.JSONObject;
@@ -14,6 +14,10 @@ public class Equipment implements Jsonable {
         this.attackValue = attack;
         this.defenseValue = defense;
         this.type = type;
+    }
+
+    public Equipment() {
+
     }
 
     public EquipmentType getType() {

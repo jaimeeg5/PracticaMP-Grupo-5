@@ -2,9 +2,11 @@ package game;
 
 import fileEvents.FileSystemEventListener;
 import fileEvents.FileSystemEventNotifier;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,8 +86,11 @@ public abstract class User implements FileSystemEventListener, Jsonable {
         JSONObject json = new JSONObject();
         json.put("nick", getNick());
         json.put("name", getName());
-        // "notifier" y "pendingNotifications" no se serializan directamente en este caso.
-        // Si se necesita serializar alguna parte del "notifier" o "pendingNotifications", se puede hacer a través de sus implementaciones hijas.
+        JSONArray arr = new JSONArray();
+        for (Path path: pendingNotifications) {
+            arr.put(path.toString());
+        }
+        json.put("notifications", arr);
         return json;
     }
 
@@ -93,7 +98,9 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     public void fromJSONObject(JSONObject json) {
         setNick(json.getString("nick"));
         setName(json.getString("name"));
-        // El "notifier" y "pendingNotifications" no se pueden reconstruir aquí directamente porque dependen de la implementación específica de la subclase.
-        // Si necesitas reconstruir el "notifier", debes hacerlo en las subclases correspondientes.
+        JSONArray arr = json.getJSONArray("notifications");
+        for (int i = 0; i< arr.length(); i++) {
+            pendingNotifications.add(Paths.get(arr.getString(i)));
+        }
     }
 }

@@ -1,4 +1,4 @@
-package equipments;
+package characters;
 
 public enum EquipmentType {
     ARMOR, ONEHANDEDWEAPON, TWOHANDEDWEAPON

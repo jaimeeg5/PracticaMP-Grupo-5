@@ -12,6 +12,10 @@ public class Weakness implements Jsonable {
         this.value = value;
     }
 
+    public Weakness() {
+
+    }
+
     public String getName() {
         return name;
     }

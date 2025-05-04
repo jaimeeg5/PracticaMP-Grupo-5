@@ -6,9 +6,4 @@ public class Ghoul extends Minion{
     public void setDependency(int dependency) {
         this.dependency = dependency;
     }
-
-    @Override
-    public boolean takeDamage(){
-        return super.takeDamage();
-    }
 }
