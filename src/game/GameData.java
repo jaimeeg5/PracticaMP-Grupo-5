@@ -1,5 +1,6 @@
 package game;
 
+import characters.Modifier;
 import fileEvents.FileModifyEventNotifier;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
@@ -21,6 +22,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private final FileModifyEventNotifier notifier;
     private final Map<String, Integer> ranking;
     private final List<String> modifiers;
+    private final List<Modifier> modifierList;
     private int lastCombatId = -1;
     private final Set<String> characters;
 
@@ -31,6 +33,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         ranking = new TreeMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
         modifiers = new ArrayList<>();
+        modifierList = new ArrayList<>();
         characters = new TreeSet<>();
         notifier.subscribe(this);
         notifier.start();
@@ -275,11 +278,16 @@ public class GameData implements FileSystemEventListener, Jsonable {
         for (String user: bannedUsers) {
             bannedUsersArray.put(0, user);
         }
+        JSONArray modifiersListArray = new JSONArray();
+        for (Modifier modifier: modifierList) {
+            modifiersListArray.put(0, modifier);
+        }
         json.put("passwords", passwordsArray);
         json.put("bannedUsers", bannedUsersArray);
         json.put("registeredNumbers", registeredNumbersArray);
         json.put("ranking", rankingArray);
         json.put("modifiers", modifiersArray);
+        json.put("modifierList", modifiersListArray);
         json.put("lastCombatId", lastCombatId);
         return json;
     }
@@ -316,6 +324,12 @@ public class GameData implements FileSystemEventListener, Jsonable {
         modifiers.clear();
         for (int i = 0; i < arr.length(); i++) {
             modifiers.add(arr.getString(i));
+        }
+
+        arr = json.getJSONArray("modifierList");
+        modifierList.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            modifierList.add((Modifier)arr.get(i));
         }
 
         lastCombatId = json.getInt("lastCombatId");
