@@ -1,6 +1,5 @@
 package game;
 
-import characters.Modifier;
 import fileEvents.FileModifyEventNotifier;
 import fileEvents.FileSystemEventListener;
 import org.json.JSONArray;
@@ -22,7 +21,8 @@ public class GameData implements FileSystemEventListener, Jsonable {
     private final FileModifyEventNotifier notifier;
     private final Map<String, Integer> ranking;
     private final List<String> modifiers;
-    private final List<Modifier> modifierList;
+    private final List<String> armors;
+    private final List<String> weapons;
     private int lastCombatId = -1;
     private final Set<String> characters;
     private final Set<String> minions;
@@ -35,7 +35,8 @@ public class GameData implements FileSystemEventListener, Jsonable {
         ranking = new TreeMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
         modifiers = new ArrayList<>();
-        modifierList = new ArrayList<>();
+        armors = new ArrayList<>();
+        weapons = new ArrayList<>();
         characters = new TreeSet<>();
         minions = new TreeSet<>();
         notifier.subscribe(this);
@@ -52,6 +53,14 @@ public class GameData implements FileSystemEventListener, Jsonable {
             }
         }
         return instance;
+    }
+
+    public List<String> getWeapons() {
+        return weapons;
+    }
+
+    public List<String> getArmors() {
+        return armors;
     }
 
     public List<String> getModifiers() {
@@ -282,19 +291,24 @@ public class GameData implements FileSystemEventListener, Jsonable {
             rankingArray.put(pl);
         }
         JSONArray modifiersArray = new JSONArray();
-        for (String user: bannedUsers) {
-            bannedUsersArray.put(0, user);
+        for (String modifier: modifiers) {
+            modifiersArray.put(0, modifier);
         }
-        JSONArray modifiersListArray = new JSONArray();
-        for (Modifier modifier: modifierList) {
-            modifiersListArray.put(0, modifier);
+        JSONArray weaponsArray = new JSONArray();
+        for (String weapon: weapons) {
+            weaponsArray.put(0, weapon);
+        }
+        JSONArray armorsArray = new JSONArray();
+        for (String armor: armors) {
+            armorsArray.put(0, armor);
         }
         json.put("passwords", passwordsArray);
         json.put("bannedUsers", bannedUsersArray);
         json.put("registeredNumbers", registeredNumbersArray);
         json.put("ranking", rankingArray);
         json.put("modifiers", modifiersArray);
-        json.put("modifierList", modifiersListArray);
+        json.put("weapons", weaponsArray);
+        json.put("armors", armorsArray);
         json.put("lastCombatId", lastCombatId);
         return json;
     }
@@ -333,10 +347,16 @@ public class GameData implements FileSystemEventListener, Jsonable {
             modifiers.add(arr.getString(i));
         }
 
-        arr = json.getJSONArray("modifierList");
-        modifierList.clear();
+        arr = json.getJSONArray("weapons");
+        weapons.clear();
         for (int i = 0; i < arr.length(); i++) {
-            modifierList.add((Modifier)arr.get(i));
+            weapons.add(arr.getString(i));
+        }
+
+        arr = json.getJSONArray("armors");
+        armors.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            armors.add(arr.getString(i));
         }
 
         lastCombatId = json.getInt("lastCombatId");

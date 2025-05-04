@@ -14,8 +14,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Operator extends User {
-    // TODO Cambiar modificadores, availableWeapons, availableArmors a gameData o donde sea
-    private List<Modifier> mods = new ArrayList<>();
 
     public Operator(String nick, String name) {
         super(nick, name);
@@ -98,173 +96,182 @@ public class Operator extends User {
         do {
             System.out.println("¿Que tipo de personaje quieres crear?");
             type = input2.nextLine();
-            if (type.equals("Vampiro")){
-                Vampire vampire = new Vampire();
-                vampire.setType(CharacterType.Vampire);
-                System.out.println("Introduzca el nombre del personaje");
-                vampire.setName(input2.nextLine());
-                System.out.println("Introduzca la edad del personaje");
-                vampire.setAge(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduzca los puntos de sangre");
-                vampire.setBloodPoints(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el nombre de la disciplina");
-                String name = input2.nextLine();
-                System.out.println("Introduce el ataque de la disciplina");
-                int attack = Integer.parseInt(input2.nextLine());
-                System.out.println("Introduce defensa de la disciplina");
-                int defense = Integer.parseInt(input2.nextLine());
-                Discipline discipline = new Discipline(name, attack, defense);
-                vampire.setSpecialAbility(discipline);
-                // availableWeapons
-                // availableArmors
-                // minions
-                System.out.println("Introduce la salud del personaje");
-                vampire.setHealth(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el poder del personaje");
-                vampire.setPower(Integer.parseInt(input2.nextLine()));
-                List<String> modifiers = data.getModifiers();
-                if(!modifiers.isEmpty()){
-                    System.out.println("Elija el numero de modificador de personaje");
-                    int i = 1;
-                    for (String modifier : modifiers){
-                        System.out.println("[" + i + "] " + modifier);
-                        i += 1;
-                    }
-                    vampire.setModifier(mods.get(Integer.parseInt(input2.nextLine()) - 1));
-                } else {
-                    System.out.println("No existen modificadores. Tienes que crear uno");
-                    createModifier();
-                    vampire.setModifier(mods.getFirst());
+            switch (type) {
+                case "Vampiro" -> {
+                    Vampire vampire = new Vampire();
+                    vampire.setType(CharacterType.Vampire);
+                    System.out.println("Introduzca el nombre del personaje");
+                    vampire.setName(input2.nextLine());
+                    System.out.println("Introduzca la edad del personaje");
+                    vampire.setAge(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduzca los puntos de sangre");
+                    vampire.setBloodPoints(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el nombre de la disciplina");
+                    String name = input2.nextLine();
+                    System.out.println("Introduce el ataque de la disciplina");
+                    int attack = Integer.parseInt(input2.nextLine());
+                    System.out.println("Introduce defensa de la disciplina");
+                    int defense = Integer.parseInt(input2.nextLine());
+                    Discipline discipline = new Discipline(name, attack, defense);
+                    vampire.setSpecialAbility(discipline);
+                    Equipment weapon = chooseWeapon();
+                    vampire.setWeapons(weapon, null);
+                    Equipment armor = chooseArmor();
+                    vampire.setActiveArmor(armor);
+                    // minions
+                    System.out.println("Introduce la salud del personaje");
+                    vampire.setHealth(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el poder del personaje");
+                    vampire.setPower(Integer.parseInt(input2.nextLine()));
+                    Modifier modifier = chooseModifier();
+                    vampire.setModifier(modifier);
+                    System.out.println("Introduce el nombre de la fortaleza");
+                    String PowerUpName = input2.nextLine();
+                    System.out.println("Introduce el valor de la fortaleza");
+                    int PowerUpValue = Integer.parseInt(input2.nextLine());
+                    PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
+                    vampire.addPowerUp(powerUp);
+                    System.out.println("Introduce el nombre de la debilidad");
+                    String WeaknessName = input2.nextLine();
+                    System.out.println("Introduce el valor de la debilidad");
+                    int WeaknessValue = Integer.parseInt(input2.nextLine());
+                    Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
+                    vampire.addWeakness(weakness);
+                    System.out.println("Introduce el poder del personaje");
+                    vampire.setGold(Integer.parseInt(input2.nextLine()));
+                    characters.add(vampire.getName());
+                    JSONObject jsonVampire = vampire.toJSONObject();
+                    FileManager.save("data/characters/" + vampire.getName() + ".json", jsonVampire);
                 }
-                System.out.println("Introduce el nombre de la fortaleza");
-                String PowerUpName = input2.nextLine();
-                System.out.println("Introduce el valor de la fortaleza");
-                int PowerUpValue = Integer.parseInt(input2.nextLine());
-                PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
-                vampire.addPowerUp(powerUp);
-                System.out.println("Introduce el nombre de la debilidad");
-                String WeaknessName = input2.nextLine();
-                System.out.println("Introduce el valor de la debilidad");
-                int WeaknessValue = Integer.parseInt(input2.nextLine());
-                Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
-                vampire.addWeakness(weakness);
-                System.out.println("Introduce el poder del personaje");
-                vampire.setGold(Integer.parseInt(input2.nextLine()));
-                characters.add(vampire.getName());
-                JSONObject jsonVampire = vampire.toJSONObject();
-                FileManager.save("data/characters/" + vampire.getName() + ".json", jsonVampire);
-            } else if (type.equals("Hombre Lobo")) {
-                Werewolf werewolf = new Werewolf();
-                werewolf.setType(CharacterType.Werewolf);
-                System.out.println("Introduzca el nombre del personaje");
-                werewolf.setName(input2.nextLine());
-                System.out.println("Introduzca la rabia del personaje");
-                werewolf.setRage(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el nombre del don");
-                String name = input2.nextLine();
-                System.out.println("Introduce el ataque del don");
-                int attack = Integer.parseInt(input2.nextLine());
-                System.out.println("Introduce defensa del don");
-                int defense = Integer.parseInt(input2.nextLine());
-                Don don = new Don(name, attack, defense);
-                werewolf.setSpecialAbility(don);
-                System.out.println("Introduzca la altura del personaje");
-                werewolf.setHeight(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduzca el peso del personaje");
-                werewolf.setWeight(Integer.parseInt(input2.nextLine()));
-                // availableWeapons
-                // availableArmors
-                // minions
-                System.out.println("Introduce la salud del personaje");
-                werewolf.setHealth(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el poder del personaje");
-                werewolf.setPower(Integer.parseInt(input2.nextLine()));
-                List<String> modifiers = data.getModifiers();
-                if(!modifiers.isEmpty()){
-                    System.out.println("Elija el numero de modificador de personaje");
-                    int i = 1;
-                    for (String modifier : modifiers){
-                        System.out.println("[" + i + "] " + modifier);
-                        i += 1;
+                case "Hombre Lobo" -> {
+                    Werewolf werewolf = new Werewolf();
+                    werewolf.setType(CharacterType.Werewolf);
+                    System.out.println("Introduzca el nombre del personaje");
+                    werewolf.setName(input2.nextLine());
+                    System.out.println("Introduzca la rabia del personaje");
+                    werewolf.setRage(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el nombre del don");
+                    String name = input2.nextLine();
+                    System.out.println("Introduce el ataque del don");
+                    int attack = Integer.parseInt(input2.nextLine());
+                    System.out.println("Introduce defensa del don");
+                    int defense = Integer.parseInt(input2.nextLine());
+                    Don don = new Don(name, attack, defense);
+                    werewolf.setSpecialAbility(don);
+                    System.out.println("Introduzca la altura del personaje");
+                    werewolf.setHeight(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduzca el peso del personaje");
+                    werewolf.setWeight(Integer.parseInt(input2.nextLine()));
+                    Equipment weapon = chooseWeapon();
+                    werewolf.setWeapons(weapon, null);
+                    Equipment armor = chooseArmor();
+                    werewolf.setActiveArmor(armor);
+                    // minions
+                    System.out.println("Introduce la salud del personaje");
+                    werewolf.setHealth(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el poder del personaje");
+                    werewolf.setPower(Integer.parseInt(input2.nextLine()));
+                    List<String> modifiers = data.getModifiers();
+                    if (!modifiers.isEmpty()) {
+                        System.out.println("Elija el numero de modificador de personaje");
+                        int i = 1;
+                        for (String modifier : modifiers) {
+                            System.out.println("[" + i + "] " + modifier);
+                            i += 1;
+                        }
+                        Modifier modifier = new Modifier(null, 0, "");
+                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i - 1) + ".json");
+                        modifier.fromJSONObject(JSONModifier);
+                        werewolf.setModifier(modifier);
+                    } else {
+                        System.out.println("No existen modificadores. Tienes que crear uno");
+                        createModifier();
+                        Modifier modifier = new Modifier(null, 0, "");
+                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
+                        modifier.fromJSONObject(JSONModifier);
+                        werewolf.setModifier(modifier);
                     }
-                    werewolf.setModifier(mods.get(Integer.parseInt(input2.nextLine()) - 1));
-                } else {
-                    System.out.println("No existen modificadores. Tienes que crear uno");
-                    createModifier();
-                    werewolf.setModifier(mods.getFirst());
+                    System.out.println("Introduce el nombre de la fortaleza");
+                    String PowerUpName = input2.nextLine();
+                    System.out.println("Introduce el valor de la fortaleza");
+                    int PowerUpValue = Integer.parseInt(input2.nextLine());
+                    PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
+                    werewolf.addPowerUp(powerUp);
+                    System.out.println("Introduce el nombre de la debilidad");
+                    String WeaknessName = input2.nextLine();
+                    System.out.println("Introduce el valor de la debilidad");
+                    int WeaknessValue = Integer.parseInt(input2.nextLine());
+                    Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
+                    werewolf.addWeakness(weakness);
+                    System.out.println("Introduce el poder del personaje");
+                    werewolf.setGold(Integer.parseInt(input2.nextLine()));
+                    characters.add(werewolf.getName());
+                    JSONObject jsonWerewolf = werewolf.toJSONObject();
+                    FileManager.save("data/characters/" + werewolf.getName() + ".json", jsonWerewolf);
                 }
-                System.out.println("Introduce el nombre de la fortaleza");
-                String PowerUpName = input2.nextLine();
-                System.out.println("Introduce el valor de la fortaleza");
-                int PowerUpValue = Integer.parseInt(input2.nextLine());
-                PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
-                werewolf.addPowerUp(powerUp);
-                System.out.println("Introduce el nombre de la debilidad");
-                String WeaknessName = input2.nextLine();
-                System.out.println("Introduce el valor de la debilidad");
-                int WeaknessValue = Integer.parseInt(input2.nextLine());
-                Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
-                werewolf.addWeakness(weakness);
-                System.out.println("Introduce el poder del personaje");
-                werewolf.setGold(Integer.parseInt(input2.nextLine()));
-                characters.add(werewolf.getName());
-                JSONObject jsonWerewolf = werewolf.toJSONObject();
-                FileManager.save("data/characters/" + werewolf.getName() + ".json", jsonWerewolf);
-            } else if (type.equals("Cazador")){
-                Hunter hunter = new Hunter();
-                hunter.setType(CharacterType.Hunter);
-                System.out.println("Introduzca el nombre del personaje");
-                hunter.setName(input2.nextLine());
-                System.out.println("Introduzca la voluntad del personaje");
-                hunter.setWillpower(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el nombre del talento");
-                String name = input2.nextLine();
-                System.out.println("Introduce el ataque del talento");
-                int attack = Integer.parseInt(input2.nextLine());
-                System.out.println("Introduce defensa del talento");
-                int defense = Integer.parseInt(input2.nextLine());
-                Talent talent = new Talent(name, attack, defense);
-                hunter.setSpecialAbility(talent);
-                // availableWeapons
-                // availableArmors
-                // minions
-                System.out.println("Introduce la salud del personaje");
-                hunter.setHealth(Integer.parseInt(input2.nextLine()));
-                System.out.println("Introduce el poder del personaje");
-                hunter.setPower(Integer.parseInt(input2.nextLine()));
-                List<String> modifiers = data.getModifiers();
-                if(!modifiers.isEmpty()){
-                    System.out.println("Elija el numero de modificador de personaje");
-                    int i = 1;
-                    for (String modifier : modifiers){
-                        System.out.println("[" + i + "] " + modifier);
-                        i += 1;
+                case "Cazador" -> {
+                    Hunter hunter = new Hunter();
+                    hunter.setType(CharacterType.Hunter);
+                    System.out.println("Introduzca el nombre del personaje");
+                    hunter.setName(input2.nextLine());
+                    System.out.println("Introduzca la voluntad del personaje");
+                    hunter.setWillpower(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el nombre del talento");
+                    String name = input2.nextLine();
+                    System.out.println("Introduce el ataque del talento");
+                    int attack = Integer.parseInt(input2.nextLine());
+                    System.out.println("Introduce defensa del talento");
+                    int defense = Integer.parseInt(input2.nextLine());
+                    Talent talent = new Talent(name, attack, defense);
+                    hunter.setSpecialAbility(talent);
+                    Equipment weapon = chooseWeapon();
+                    hunter.setWeapons(weapon, null);
+                    Equipment armor = chooseArmor();
+                    hunter.setActiveArmor(armor);
+                    // minions
+                    System.out.println("Introduce la salud del personaje");
+                    hunter.setHealth(Integer.parseInt(input2.nextLine()));
+                    System.out.println("Introduce el poder del personaje");
+                    hunter.setPower(Integer.parseInt(input2.nextLine()));
+                    List<String> modifiers = data.getModifiers();
+                    if (!modifiers.isEmpty()) {
+                        System.out.println("Elija el numero de modificador de personaje");
+                        int i = 1;
+                        for (String modifier : modifiers) {
+                            System.out.println("[" + i + "] " + modifier);
+                            i += 1;
+                        }
+                        Modifier modifier = new Modifier(null, 0, "");
+                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i - 1) + ".json");
+                        modifier.fromJSONObject(JSONModifier);
+                        hunter.setModifier(modifier);
+                    } else {
+                        System.out.println("No existen modificadores. Tienes que crear uno");
+                        createModifier();
+                        Modifier modifier = new Modifier(null, 0, "");
+                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
+                        modifier.fromJSONObject(JSONModifier);
+                        hunter.setModifier(modifier);
                     }
-                    hunter.setModifier(mods.get(Integer.parseInt(input2.nextLine()) - 1));
-                } else {
-                    System.out.println("No existen modificadores. Tienes que crear uno");
-                    createModifier();
-                    hunter.setModifier(mods.getFirst());
+                    System.out.println("Introduce el nombre de la fortaleza");
+                    String PowerUpName = input2.nextLine();
+                    System.out.println("Introduce el valor de la fortaleza");
+                    int PowerUpValue = Integer.parseInt(input2.nextLine());
+                    PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
+                    hunter.addPowerUp(powerUp);
+                    System.out.println("Introduce el nombre de la debilidad");
+                    String WeaknessName = input2.nextLine();
+                    System.out.println("Introduce el valor de la debilidad");
+                    int WeaknessValue = Integer.parseInt(input2.nextLine());
+                    Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
+                    hunter.addWeakness(weakness);
+                    System.out.println("Introduce el poder del personaje");
+                    hunter.setGold(Integer.parseInt(input2.nextLine()));
+                    characters.add(hunter.getName());
+                    JSONObject jsonHunter = hunter.toJSONObject();
+                    FileManager.save("data/characters/" + hunter.getName() + ".json", jsonHunter);
                 }
-                System.out.println("Introduce el nombre de la fortaleza");
-                String PowerUpName = input2.nextLine();
-                System.out.println("Introduce el valor de la fortaleza");
-                int PowerUpValue = Integer.parseInt(input2.nextLine());
-                PowerUp powerUp = new PowerUp(PowerUpName, PowerUpValue);
-                hunter.addPowerUp(powerUp);
-                System.out.println("Introduce el nombre de la debilidad");
-                String WeaknessName = input2.nextLine();
-                System.out.println("Introduce el valor de la debilidad");
-                int WeaknessValue = Integer.parseInt(input2.nextLine());
-                Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
-                hunter.addWeakness(weakness);
-                System.out.println("Introduce el poder del personaje");
-                hunter.setGold(Integer.parseInt(input2.nextLine()));
-                characters.add(hunter.getName());
-                JSONObject jsonHunter = hunter.toJSONObject();
-                FileManager.save("data/characters/" + hunter.getName() + ".json", jsonHunter);
-            } else {
-                System.out.println("El personaje debe ser: 'Vampiro', 'Hombre Lobo' o 'Cazador'");
+                default -> System.out.println("El personaje debe ser: 'Vampiro', 'Hombre Lobo' o 'Cazador'");
             }
         } while(!type.equals("Vampiro") && !type.equals("Hombre Lobo") && !type.equals("Cazador"));
     }
@@ -332,6 +339,72 @@ public class Operator extends User {
         Scanner input2 = new Scanner(System.in);
         String nick = input2.nextLine();
         gameData.unbanUser(nick);
+    }
+
+    public Modifier chooseModifier(){
+        GameData data = GameData.getInstance();
+        List<String> modifiers = data.getModifiers();
+        Modifier modifier = new Modifier(null, 0, "");;
+        if(!modifiers.isEmpty()){
+            System.out.println("Elija el numero de modificador de personaje");
+            int i = 1;
+            for (String modifierElement : modifiers){
+                System.out.println("[" + i + "] " + modifierElement);
+                i += 1;
+            }
+            JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i-1) + ".json");
+            modifier.fromJSONObject(JSONModifier);
+        } else {
+            System.out.println("No existen modificadores. Tienes que crear uno");
+            createModifier();
+            JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
+            modifier.fromJSONObject(JSONModifier);
+        }
+        return modifier;
+    }
+
+    public Equipment chooseWeapon(){
+        GameData data = GameData.getInstance();
+        Equipment weapon = new Equipment("", 0, 0, null);
+        List<String> weapons = data.getWeapons();
+        if(!weapons.isEmpty()){
+            System.out.println("Elija el numero de arma");
+            int i = 1;
+            for (String weaponElement : weapons){
+                System.out.println("[" + i + "] " + weapon);
+                i += 1;
+            }
+            JSONObject JSONWeapon = FileManager.load("data/weapons/" + weapons.get(i-1) + ".json");
+            weapon.fromJSONObject(JSONWeapon);
+        } else {
+            System.out.println("No existen armas. Tienes que crear una");
+            createEquipment(EquipmentType.ONEHANDEDWEAPON);
+            JSONObject JSONWeapon = FileManager.load("data/weapons/" + weapons.getFirst() + ".json");
+            weapon.fromJSONObject(JSONWeapon);
+        }
+        return weapon;
+    }
+
+    public Equipment chooseArmor(){
+        GameData data = GameData.getInstance();
+        Equipment armor = new Equipment("", 0, 0, EquipmentType.ARMOR);
+        List<String> armors = data.getArmors();
+        if(!armors.isEmpty()){
+            System.out.println("Elija el numero de armadura");
+            int i = 1;
+            for (String armorElement : armors){
+                System.out.println("[" + i + "] " + armorElement);
+                i += 1;
+            }
+            JSONObject JSONArmor = FileManager.load("data/armors/" + armors.get(i-1) + ".json");
+            armor.fromJSONObject(JSONArmor);
+        } else {
+            System.out.println("No existen armaduras. Tienes que crear una");
+            createEquipment(EquipmentType.ARMOR);
+            JSONObject JSONArmor = FileManager.load("data/armors/" + armors.getFirst() + ".json");
+            armor.fromJSONObject(JSONArmor);
+        }
+        return armor;
     }
 
     public void modifyCharacter(){
@@ -527,7 +600,6 @@ public class Operator extends User {
         System.out.println("Introduce el valor de defensa del equipamiento");
         int defense = Integer.parseInt(input.nextLine());
         System.out.println("Introduce el tipo de equipamiento");
-        String modifierType = input.nextLine();
         Equipment equipment = new Equipment(equipmentName, attack, defense, type);
         JSONObject  json = equipment.toJSONObject();
         if (type == EquipmentType.ONEHANDEDWEAPON || type == EquipmentType.TWOHANDEDWEAPON){
