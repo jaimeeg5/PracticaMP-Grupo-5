@@ -1,19 +1,19 @@
 package characters;
 
+import game.FileManager;
 import game.GameData;
 import game.Jsonable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.io.File;
+import java.util.*;
 
 public abstract class Character implements Jsonable {
     private String name;
     private SpecialAbility specialAbility;
-    private List<Equipment>  availableWeapons = GameData.getInstance().getWeapons();
-    private List<Equipment> availableArmors = GameData.getInstance().getArmors();
+    private List<Equipment>  availableWeapons;
+    private List<Equipment> availableArmors;
     private Equipment[] activeWeapons = new Equipment[2];
     private Equipment activeArmor;
     private List<Minion> minions;
@@ -260,6 +260,19 @@ public abstract class Character implements Jsonable {
 
     public Character() {
         this.specialAbility = new SpecialAbility("", 0, 0);  // Inicializamos con valores por defecto
+        availableWeapons = new ArrayList<>();
+        availableArmors = new ArrayList<>();
+        GameData data = GameData.getInstance();
+        for (String weapon: data.getWeapons()) {
+            Equipment e = new Equipment();
+            e.fromJSONObject(FileManager.load("data/weapons/" + weapon + ".json"));
+            availableWeapons.add(e);
+        }
+        for (String armor: data.getArmors()) {
+            Equipment e = new Equipment();
+            e.fromJSONObject(FileManager.load("data/armors/" + armor + ".json"));
+            availableArmors.add(e);
+        }
     }
 
 
@@ -269,16 +282,6 @@ public abstract class Character implements Jsonable {
         json.put("type", type);
         JSONArray arr = new JSONArray();
         for (Equipment weapon: availableWeapons) {
-            arr.put(weapon.toJSONObject());
-        }
-        json.put("availableWeapons", arr);
-        arr.clear();
-        for (Equipment armor: availableArmors) {
-            arr.put(armor.toJSONObject());
-        }
-        json.put("availableArmors", arr);
-        arr.clear();
-        for (Equipment weapon: activeWeapons) {
             arr.put(weapon.toJSONObject());
         }
         activeArmor.fromJSONObject(json.getJSONObject("activeArmor"));
@@ -317,21 +320,7 @@ public abstract class Character implements Jsonable {
         gold = json.getInt("gold");
         powerupValue = json.getInt("powerUpValue");
         weaknessValue = json.getInt("weaknessValue");
-        JSONArray arr = json.getJSONArray("availableWeapons");
-        availableWeapons.clear();
-        for (int i = 0; i < arr.length(); i++) {
-            Equipment eq = new Equipment();
-            eq.fromJSONObject(arr.getJSONObject(i));
-            availableWeapons.add(eq);
-        }
-        arr = json.getJSONArray("availableArmors");
-        availableArmors.clear();
-        for (int i = 0; i < arr.length(); i++) {
-            Equipment a = new Equipment();
-            a.fromJSONObject(arr.getJSONObject(i));
-            availableArmors.add(a);
-        }
-        arr = json.getJSONArray("activeWeapons");
+        JSONArray arr = json.getJSONArray("activeWeapons");
         for (int i = 0; i < arr.length(); i++) {
             Equipment w = new Equipment();
             w.fromJSONObject(arr.getJSONObject(i));
