@@ -16,6 +16,9 @@ public class FileManager {
                 Files.createDirectory(Paths.get("data/users"));
                 Files.createDirectory(Paths.get("data/combats"));
                 Files.createDirectory(Paths.get("data/characters"));
+                Files.createDirectory(Paths.get("data/modifiers"));
+                Files.createDirectory(Paths.get("data/weapons"));
+                Files.createDirectory(Paths.get("data/armors"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

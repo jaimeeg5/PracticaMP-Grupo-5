@@ -6,9 +6,14 @@ import org.json.JSONObject;
 public class Minion implements Jsonable {
     private String name;
     private int health;
+    private MinionType type;
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setHealth(int health) {
@@ -19,6 +24,9 @@ public class Minion implements Jsonable {
         return health;
     }
 
+    public void setType(MinionType type) {
+        this.type = type;
+    }
     public boolean takeDamage(){
         this.health -= 1;
         return true;
