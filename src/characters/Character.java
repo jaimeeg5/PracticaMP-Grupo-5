@@ -12,8 +12,8 @@ import java.util.Scanner;
 public abstract class Character implements Jsonable {
     private String name;
     private SpecialAbility specialAbility;
-    private List<Equipment>  availableWeapons = GameData.getInstance().getAvailableWeapons();
-    private List<Equipment> availableArmors = GameData.getInstance().getAvailableArmors();
+    private List<Equipment>  availableWeapons = GameData.getInstance().getWeapons();
+    private List<Equipment> availableArmors = GameData.getInstance().getArmors();
     private Equipment[] activeWeapons = new Equipment[2];
     private Equipment activeArmor;
     private List<Minion> minions;
