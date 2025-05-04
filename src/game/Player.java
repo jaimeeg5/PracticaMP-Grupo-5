@@ -297,7 +297,7 @@ public class Player extends User {
         JSONObject json = new JSONObject();
         json.put("nick", getNick());
         json.put("name", getName());
-        json.put("type", "PLAYER");
+        json.put("type", UserType.PLAYER);
         json.put("registerNumber", registerNumber);
         json.put("goldWon", goldWon);
         json.put("goldLost", goldLost);

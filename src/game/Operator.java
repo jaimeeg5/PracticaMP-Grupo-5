@@ -36,7 +36,7 @@ public class Operator extends User {
         int choice;
         menu.setTitle("Elija una opcion:");
         do {
-            String[] menuOptions = {
+            String[] menuOptions = {    // TODO: esto está terrible pero no voy a cambiarlo aun por si acaso hay merges y mierdas
                     "Darse de baja",
                     "Salir del sistema",
                     "Editar un personaje",

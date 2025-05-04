@@ -30,7 +30,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         registeredNumbers = new HashMap<>();
         ranking = new TreeMap<>();
         notifier = new FileModifyEventNotifier(gameDataPath);
-        modifiers = new ArrayList<String>();
+        modifiers = new ArrayList<>();
         characters = new TreeSet<>();
         notifier.subscribe(this);
         notifier.start();
@@ -218,6 +218,7 @@ public class GameData implements FileSystemEventListener, Jsonable {
         String nick = user.getNick();
         passwords.remove(nick);
         bannedUsers.remove(nick);
+        ranking.remove(nick);
 
         FileManager.delete("data/users/" + nick + ".json");
         for (Path path: user.getNotifications()) {

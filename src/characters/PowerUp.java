@@ -1,6 +1,9 @@
 package characters;
 
-public class PowerUp {
+import game.Jsonable;
+import org.json.JSONObject;
+
+public class PowerUp implements Jsonable {
     private String name;
     private int value;
 
@@ -18,5 +21,16 @@ public class PowerUp {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        // TODO:
+        return null;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        // TODO:
     }
 }

@@ -6,7 +6,7 @@ public class Equipment {
     private int defenseValue;
     private EquipmentType type;
 
-    public Equipment(String name, int attack, int defense, EquipmentType type){
+    public Equipment(String name, int attack, int defense, EquipmentType type) implements Jsonable {
         this.name = name;
         this.attackValue = attack;
         this.defenseValue = defense;

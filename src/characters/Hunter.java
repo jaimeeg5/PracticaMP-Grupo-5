@@ -53,7 +53,7 @@ public class Hunter extends Character{
     public int calculateAttackPoints(int powerupValue, int weaknessValue) {
         int attackPower = 0;
         int weaponsDamage = 0;
-        for (Equipment weapon : super.getWeapons()){
+        for (Equipment weapon : super.getActiveWeapons()){
             weaponsDamage += weapon.getAttackValue();
         }
         attackPower = super.getPower() + super.getActiveArmor().getAttackValue() + weaponsDamage + this.willpower + powerupValue - weaknessValue;
@@ -66,7 +66,7 @@ public class Hunter extends Character{
     public int calculateDefensePoints(int powerupValue, int weaknessValue) {
         int defensePower = 0;
         int weaponsDefense = 0;
-        for (Equipment weapon : super.getWeapons()){
+        for (Equipment weapon : super.getActiveWeapons()){
             weaponsDefense += weapon.getDefenseValue();
         }
         defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense + this.willpower + powerupValue - weaknessValue;

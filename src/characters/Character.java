@@ -3,11 +3,11 @@ package characters;
 import equipments.Armor;
 import equipments.Equipment;
 import equipments.EquipmentType;
+import equipments.OneHandedWeapon;
 import game.Jsonable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -17,7 +17,7 @@ public abstract class Character implements Jsonable {
     private SpecialAbility specialAbility;
     private List<Equipment>  availableWeapons;
     private List<Armor> availableArmors;
-    private Equipment[] weapons = new Equipment[2];
+    private Equipment[] activeWeapons = new Equipment[2];
     private Armor activeArmor;
     private List<Minion> minions;
     private int health;
@@ -82,8 +82,8 @@ public abstract class Character implements Jsonable {
         weaknesses.add(weakness);
     }
 
-    public Equipment[] getWeapons() {
-        return weapons;
+    public Equipment[] getActiveWeapons() {
+        return activeWeapons;
     }
 
     public Armor getActiveArmor() {
@@ -149,8 +149,8 @@ public abstract class Character implements Jsonable {
     }
 
     public void setWeapons(Equipment weapon0, Equipment weapon1) {
-        weapons[0] = weapon0;
-        weapons[1] = weapon1;
+        activeWeapons[0] = weapon0;
+        activeWeapons[1] = weapon1;
     }
 
     public void setModifier(Modifier modifier) {
@@ -202,7 +202,7 @@ public abstract class Character implements Jsonable {
         System.out.println("Nombre: " + name);
         System.out.println("Tipo: " + type);
         System.out.println("Habilidad especial: " + specialAbility);
-        System.out.println("Armas activas: " + Arrays.toString(weapons));
+        System.out.println("Armas activas: " + Arrays.toString(activeWeapons));
         System.out.println("Armadura activa: " + activeArmor);
         System.out.println("Esbirros: " + minions);
         System.out.println("Oro: " + gold);
@@ -269,25 +269,93 @@ public abstract class Character implements Jsonable {
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
-        json.put("type", type.toString());
+        json.put("type", type);
+        JSONArray arr = new JSONArray();
+        for (Equipment weapon: availableWeapons) {
+            arr.put(weapon.toJSONObject());
+        }
+        json.put("availableWeapons", arr);
+        arr.clear();
+        for (Equipment armor: availableArmors) {
+            arr.put(armor.toJSONObject());
+        }
+        json.put("availableArmors", arr);
+        arr.clear();
+        for (Equipment weapon: activeWeapons) {
+            arr.put(weapon.toJSONObject());
+        }
+        json.put("activeWeapons", arr);
+        json.put("activeArmor", activeArmor.toJSONObject());
+        arr.clear();
+        for (Minion minion: minions) {
+            arr.put(minion.toJSONObject());
+        }
+        json.put("minions", arr);
+        arr.clear();
+        for (PowerUp pw: powerUps) {
+            arr.put(pw.toJSONObject());
+        }
+        json.put("powerUps", arr);
+        arr.clear();
+        for (Weakness wk: weaknesses) {
+            arr.put(wk.toJSONObject());
+        }
+        json.put("weaknesses", arr);
+        json.put("modifier", modifier.toJSONObject());
+        json.put("power", power);
+        json.put("name", name);
         json.put("health", health);
         json.put("gold", gold);
+        json.put("powerUpValue", powerupValue);
+        json.put("weaknessValue", weaknessValue);
         json.put("specialAbility", specialAbility.toJSONObject());  // Guardamos la habilidad especial
         return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
-        this.type = CharacterType.valueOf(json.getString("type"));
-        this.health = json.getInt("health");
-        this.gold = json.getInt("gold");
-
-        // Cargar SpecialAbility desde el JSON
-        if (json.has("specialAbility")) {
-            JSONObject specialAbilityJson = json.getJSONObject("specialAbility");
-            this.specialAbility = new SpecialAbility("", 0, 0);  // Inicializamos por defecto
-            this.specialAbility.fromJSONObject(specialAbilityJson);
+        type = CharacterType.valueOf(json.getString("type"));
+        JSONArray arr = json.getJSONArray("availableWeapons");
+        availableWeapons.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            Equipment eq = new ;   // TODO: en toJsonObject guardar el tipo de arma y aqui crear un arma en funcion de cual sea
+            availableWeapons.add(eq.fromJSONObject(arr.getJSONObject(i)));
         }
+        availableArmors.clear();
+        for (int i = 0; i < arr.length(); i++) {
+            Armor a = new Armor(0, "", );   // TODO: desisto, a partir de aqui la funcion está mal. Buenas noches gente.
+            arr.put(armor.getName());
+        }
+        json.put("availableArmors", arr);
+        arr.clear();
+        for (Equipment weapon: activeWeapons) {
+            arr.put(weapon.getName());
+        }
+        json.put("activeWeapons", arr);
+        json.put("activeArmor", activeArmor.getName());
+        arr.clear();
+        for (Minion minion: minions) {
+            arr.put(minion.toJSONObject());
+        }
+        json.put("minions", arr);
+        arr.clear();
+        for (PowerUp pw: powerUps) {
+            arr.put(pw.toJSONObject());
+        }
+        json.put("powerUps", arr);
+        arr.clear();
+        for (Weakness wk: weaknesses) {
+            arr.put(wk.toJSONObject());
+        }
+        json.put("weaknesses", arr);
+        json.put("modifier", modifier.toJSONObject());
+        json.put("power", power);
+        json.put("name", name);
+        json.put("health", health);
+        json.put("gold", gold);
+        json.put("powerUpValue", powerupValue);
+        json.put("weaknessValue", weaknessValue);
+        json.put("specialAbility", specialAbility.toJSONObject());
     }
 
 }

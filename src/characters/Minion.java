@@ -1,6 +1,9 @@
 package characters;
 
-public class Minion {
+import game.Jsonable;
+import org.json.JSONObject;
+
+public class Minion implements Jsonable {
     private String name;
     private int health;
 
@@ -19,5 +22,16 @@ public class Minion {
     public boolean takeDamage(){
         this.health -= 1;
         return true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        // TODO:
+        return null;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        // TODO:
     }
 }
