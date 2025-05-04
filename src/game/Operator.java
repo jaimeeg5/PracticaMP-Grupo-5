@@ -120,7 +120,11 @@ public class Operator extends User {
                     vampire.setWeapons(weapon, null);
                     Equipment armor = chooseArmor();
                     vampire.setActiveArmor(armor);
-                    // minions
+                    System.out.println("¿Cuántos esbirros quieres añadir?");
+                    int cantidadMinions = Integer.parseInt(input2.nextLine());
+                    for (int i = 0; i < cantidadMinions; i++) {
+                        createMinion();
+                    }
                     System.out.println("Introduce la salud del personaje");
                     vampire.setHealth(Integer.parseInt(input2.nextLine()));
                     System.out.println("Introduce el poder del personaje");
@@ -168,7 +172,11 @@ public class Operator extends User {
                     werewolf.setWeapons(weapon, null);
                     Equipment armor = chooseArmor();
                     werewolf.setActiveArmor(armor);
-                    // minions
+                    System.out.println("¿Cuántos esbirros quieres añadir?");
+                    int cantidadMinions = Integer.parseInt(input2.nextLine());
+                    for (int i = 0; i < cantidadMinions; i++) {
+                        createMinion();
+                    }
                     System.out.println("Introduce la salud del personaje");
                     werewolf.setHealth(Integer.parseInt(input2.nextLine()));
                     System.out.println("Introduce el poder del personaje");
@@ -230,7 +238,11 @@ public class Operator extends User {
                     hunter.setWeapons(weapon, null);
                     Equipment armor = chooseArmor();
                     hunter.setActiveArmor(armor);
-                    // minions
+                    System.out.println("¿Cuántos esbirros quieres añadir?");
+                    int cantidadMinions = Integer.parseInt(input2.nextLine());
+                    for (int i = 0; i < cantidadMinions; i++) {
+                        createMinion();
+                    }
                     System.out.println("Introduce la salud del personaje");
                     hunter.setHealth(Integer.parseInt(input2.nextLine()));
                     System.out.println("Introduce el poder del personaje");
