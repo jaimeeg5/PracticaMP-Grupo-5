@@ -25,12 +25,15 @@ public class PowerUp implements Jsonable {
 
     @Override
     public JSONObject toJSONObject() {
-        // TODO:
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("value", value);
+        return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
-        // TODO:
+        this.name = json.getString("name");
+        this.value = json.getInt("value");
     }
 }

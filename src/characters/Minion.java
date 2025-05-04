@@ -26,12 +26,15 @@ public class Minion implements Jsonable {
 
     @Override
     public JSONObject toJSONObject() {
-        // TODO:
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("health", health);
+        return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
-        // TODO:
+        this.name = json.getString("name");
+        this.health = json.getInt("health");
     }
 }

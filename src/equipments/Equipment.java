@@ -1,12 +1,15 @@
 package equipments;
 
-public class Equipment {
+import game.Jsonable;
+import org.json.JSONObject;
+
+public class Equipment implements Jsonable {
     private String name;
     private int attackValue;
     private int defenseValue;
     private EquipmentType type;
 
-    public Equipment(String name, int attack, int defense, EquipmentType type) implements Jsonable {
+    public Equipment(String name, int attack, int defense, EquipmentType type){
         this.name = name;
         this.attackValue = attack;
         this.defenseValue = defense;
@@ -39,5 +42,23 @@ public class Equipment {
 
     public void setDefenseValue(int defenseValue) {
         this.defenseValue = defenseValue;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("attackValue", attackValue);
+        json.put("defenseValue", defenseValue);
+        json.put("type", type.name());
+        return json;
+    }
+
+    @Override
+    public void fromJSONObject(JSONObject json) {
+        this.name = json.getString("name");
+        this.attackValue = json.getInt("attackValue");
+        this.defenseValue = json.getInt("defenseValue");
+        this.type = EquipmentType.valueOf(json.getString("type"));
     }
 }

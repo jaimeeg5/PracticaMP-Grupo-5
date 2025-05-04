@@ -18,6 +18,67 @@ public class Operator extends User {
     // TODO Cambiar gamedata en métodos por el de gamedata
     private List<Character> characters = new ArrayList<>();
 
+    /* Quitar lista characters y pillar la de gamedata (Set)
+
+    // Cambia la lista 'characters' por la obtención de los personajes desde GameData
+public void modifyCharacter() {
+    GameData gameData = GameData.getInstance();
+    Scanner input2 = new Scanner(System.in);
+    String atribute;
+    String opt;
+    int num;
+    int i = 0;
+
+    Set<Character> characters = gameData.getCharacters();  // Obtener los personajes de GameData
+    if (!characters.isEmpty()) {
+        for (Character character : characters) {
+            String characterData = "[" + i + "]" + "Tipo: " + character.getType() + " Nombre: " + character.getName() + " Salud: " + character.getHealth();
+            characterData += " Poder: " + character.getPower() + " Fortalezas: " + character.getPowerUps() + " Debilidades: " + character.getWeaknesses();
+            characterData += " Oro: " + character.getGold();
+            System.out.println(characterData);
+            i += 1;
+        }
+        System.out.println("¿Que personaje quieres modificar?");
+        int index = Integer.parseInt(input2.nextLine());
+        Character characterToModify = (Character) characters.toArray()[index];  // Obtener el personaje por índice
+        // Restante lógica de modificación de personaje sigue igual.
+    } else {
+        // Crear un nuevo personaje si no existen
+        // (Este bloque ya está bien definido en tu código)
+    }
+}
+     */
+
+    /*Cambiar gamedata en métodos por el de gamedata
+
+    public void banUsers() {
+    GameData gameData = GameData.getInstance();  // Obtener la instancia correcta de GameData
+    gameData.printPlayers();  // Método que imprime los jugadores
+    System.out.println("Elige el nick del usuario a bloquear");
+    Scanner input2 = new Scanner(System.in);
+    String nick = input2.nextLine();
+    gameData.banUser(nick);  // Usamos GameData para bloquear al usuario
+}
+
+public void unbanUsers() {
+    GameData gameData = GameData.getInstance();  // Obtener la instancia correcta de GameData
+    Set<String> users = gameData.getBannedUsers();  // Obtener los usuarios baneados desde GameData
+    for (String user : users) {
+        System.out.println(user);
+    }
+    System.out.println("Elige el nick del usuario a desbloquear");
+    Scanner input2 = new Scanner(System.in);
+    String nick = input2.nextLine();
+    gameData.unbanUser(nick);  // Usamos GameData para desbloquear al usuario
+}
+
+public void manageCombat() {
+    GameData gd = GameData.getInstance();  // Acceder a la instancia correcta de GameData
+    // El resto de la lógica sigue igual.
+}
+
+     */
+
     public Operator(String nick, String name) {
         super(nick, name);
     }

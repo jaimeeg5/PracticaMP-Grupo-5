@@ -81,11 +81,19 @@ public abstract class User implements FileSystemEventListener, Jsonable {
 
     @Override
     public JSONObject toJSONObject() {
-        return null;
+        JSONObject json = new JSONObject();
+        json.put("nick", getNick());
+        json.put("name", getName());
+        // "notifier" y "pendingNotifications" no se serializan directamente en este caso.
+        // Si se necesita serializar alguna parte del "notifier" o "pendingNotifications", se puede hacer a través de sus implementaciones hijas.
+        return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
-
+        setNick(json.getString("nick"));
+        setName(json.getString("name"));
+        // El "notifier" y "pendingNotifications" no se pueden reconstruir aquí directamente porque dependen de la implementación específica de la subclase.
+        // Si necesitas reconstruir el "notifier", debes hacerlo en las subclases correspondientes.
     }
 }

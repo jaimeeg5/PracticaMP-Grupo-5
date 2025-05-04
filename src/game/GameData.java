@@ -182,6 +182,46 @@ public class GameData implements FileSystemEventListener, Jsonable {
             builder.buildRegisterNumber(json.getString("registerNumber"));
         }
         return builder.build();
+
+
+        /*
+        public User getUser(String nick) {
+    JSONObject json = FileManager.load("data/users/" + nick + ".json");
+    UserType type = UserType.valueOf(json.getString("type"));
+    UserBuilder builder = new UserBuilder(type);
+    builder.buildNick(json.getString("nick"));
+    builder.buildName(json.getString("name"));
+
+    if (type == UserType.PLAYER) {
+        builder.buildRegisterNumber(json.getString("registerNumber"));
+    }
+
+    User user = builder.build();
+
+    // Cargar notificaciones (si existen)
+    List<Path> notifications = loadNotificationsForUser(nick);
+    for (Path notification : notifications) {
+        user.getNotifications().add(notification);
+    }
+
+    return user;
+}
+
+private List<Path> loadNotificationsForUser(String nick) {
+    List<Path> notifications = new LinkedList<>();
+    Path notificationsPath = Paths.get("data/notifications/" + nick);
+    if (Files.exists(notificationsPath)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(notificationsPath)) {
+            for (Path entry : stream) {
+                notifications.add(entry);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    return notifications;
+}
+         */
     }
 
     private String generateRegisterNumber() {
@@ -329,4 +369,129 @@ public class GameData implements FileSystemEventListener, Jsonable {
         saveToDisk();
         return lastCombatId;
     }
+
+
+    /*
+    @Override
+public JSONObject toJSONObject() {
+    JSONObject json = new JSONObject();
+
+    // Serialización de passwords
+    JSONArray passwordsArray = new JSONArray();
+    for (Map.Entry<String, String> entry : passwords.entrySet()) {
+        JSONArray pw = new JSONArray();
+        pw.put(entry.getKey());
+        pw.put(entry.getValue());
+        passwordsArray.put(pw);
+    }
+    json.put("passwords", passwordsArray);
+
+    // Serialización de bannedUsers
+    JSONArray bannedUsersArray = new JSONArray();
+    for (String user : bannedUsers) {
+        bannedUsersArray.put(user);
+    }
+    json.put("bannedUsers", bannedUsersArray);
+
+    // Serialización de registeredNumbers
+    JSONArray registeredNumbersArray = new JSONArray();
+    for (Map.Entry<String, String> entry : registeredNumbers.entrySet()) {
+        JSONArray rn = new JSONArray();
+        rn.put(entry.getKey());
+        rn.put(entry.getValue());
+        registeredNumbersArray.put(rn);
+    }
+    json.put("registeredNumbers", registeredNumbersArray);
+
+    // Serialización de ranking
+    JSONArray rankingArray = new JSONArray();
+    for (Map.Entry<String, Integer> entry : ranking.entrySet()) {
+        JSONArray pl = new JSONArray();
+        pl.put(entry.getKey());
+        pl.put(entry.getValue());
+        rankingArray.put(pl);
+    }
+    json.put("ranking", rankingArray);
+
+    // Serialización de modifiers
+    JSONArray modifiersArray = new JSONArray();
+    for (String modifier : modifiers) {
+        modifiersArray.put(modifier);
+    }
+    json.put("modifiers", modifiersArray);
+
+    // Serialización de lastCombatId
+    json.put("lastCombatId", lastCombatId);
+
+    // Serialización de characters
+    JSONArray charactersArray = new JSONArray();
+    for (String character : characters) {
+        charactersArray.put(character);
+    }
+    json.put("characters", charactersArray);
+
+    // Serialización de notificaciones (no es necesario si solo se guardan localmente por usuario)
+    // Si lo quieres incluir en el JSON global de GameData, añade aquí algo como:
+    // JSONArray notificationsArray = new JSONArray();
+    // for (String character : characters) {
+    //     notificationsArray.put(character);
+    // }
+    // json.put("notifications", notificationsArray);
+
+    return json;
+}
+
+@Override
+public void fromJSONObject(JSONObject json) {
+    // Deserialización de passwords
+    JSONArray passwordsArray = json.getJSONArray("passwords");
+    passwords.clear();
+    for (int i = 0; i < passwordsArray.length(); i++) {
+        JSONArray pw = passwordsArray.getJSONArray(i);
+        passwords.put(pw.getString(0), pw.getString(1));
+    }
+
+    // Deserialización de bannedUsers
+    JSONArray bannedUsersArray = json.getJSONArray("bannedUsers");
+    bannedUsers.clear();
+    for (int i = 0; i < bannedUsersArray.length(); i++) {
+        bannedUsers.add(bannedUsersArray.getString(i));
+    }
+
+    // Deserialización de registeredNumbers
+    JSONArray registeredNumbersArray = json.getJSONArray("registeredNumbers");
+    registeredNumbers.clear();
+    for (int i = 0; i < registeredNumbersArray.length(); i++) {
+        JSONArray rn = registeredNumbersArray.getJSONArray(i);
+        registeredNumbers.put(rn.getString(0), rn.getString(1));
+    }
+
+    // Deserialización de ranking
+    JSONArray rankingArray = json.getJSONArray("ranking");
+    ranking.clear();
+    for (int i = 0; i < rankingArray.length(); i++) {
+        JSONArray pl = rankingArray.getJSONArray(i);
+        ranking.put(pl.getString(0), pl.getInt(1));
+    }
+
+    // Deserialización de modifiers
+    JSONArray modifiersArray = json.getJSONArray("modifiers");
+    modifiers.clear();
+    for (int i = 0; i < modifiersArray.length(); i++) {
+        modifiers.add(modifiersArray.getString(i));
+    }
+
+    // Deserialización de lastCombatId
+    lastCombatId = json.getInt("lastCombatId");
+
+    // Deserialización de characters
+    JSONArray charactersArray = json.getJSONArray("characters");
+    characters.clear();
+    for (int i = 0; i < charactersArray.length(); i++) {
+        characters.add(charactersArray.getString(i));
+    }
+
+    // Puedes cargar las notificaciones de la misma manera si es necesario.
+}
+     */
 }

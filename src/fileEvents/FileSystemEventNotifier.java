@@ -70,7 +70,8 @@ public abstract class FileSystemEventNotifier extends Thread{
             return key.reset(); // devuelve false si key ya no es valida
         }
         catch (InterruptedException e) {
-            System.out.print("take interrumpido");   // TODO: es normal pero puse el print para revisar que funciona como creo y tal, borrarlo al final
+            System.out.print("take interrumpido"); // TODO: es normal pero puse el print para
+            // revisar que funciona como creo y tal, borrarlo al final
             return false;
         }
     }

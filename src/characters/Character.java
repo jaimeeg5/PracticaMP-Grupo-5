@@ -358,4 +358,85 @@ public abstract class Character implements Jsonable {
         json.put("specialAbility", specialAbility.toJSONObject());
     }
 
+
+    /*
+    @Override
+public void fromJSONObject(JSONObject json) {
+    this.type = CharacterType.valueOf(json.getString("type"));
+    this.name = json.getString("name");
+    this.health = json.getInt("health");
+    this.power = json.getInt("power");
+    this.gold = json.getInt("gold");
+    this.powerupValue = json.getInt("powerUpValue");
+    this.weaknessValue = json.getInt("weaknessValue");
+
+    this.availableWeapons = new ArrayList<>();
+    JSONArray weaponArray = json.getJSONArray("availableWeapons");
+    for (int i = 0; i < weaponArray.length(); i++) {
+        JSONObject weaponJson = weaponArray.getJSONObject(i);
+        EquipmentType type = EquipmentType.valueOf(weaponJson.getString("type"));
+        Equipment weapon = switch (type) {
+            case ONEHANDEDWEAPON -> new OneHandedWeapon(weaponJson);
+            case TWOHANDEDWEAPON -> new equipments.TwoHandedWeapon(weaponJson);
+            default -> throw new IllegalArgumentException("Tipo de arma desconocido: " + type);
+        };
+        availableWeapons.add(weapon);
+    }
+
+    this.availableArmors = new ArrayList<>();
+    JSONArray armorArray = json.getJSONArray("availableArmors");
+    for (int i = 0; i < armorArray.length(); i++) {
+        JSONObject armorJson = armorArray.getJSONObject(i);
+        Armor armor = new Armor(armorJson); // Asumiendo constructor Armor(JSONObject)
+        availableArmors.add(armor);
+    }
+
+    this.activeWeapons = new Equipment[2];
+    JSONArray activeWeaponsArray = json.getJSONArray("activeWeapons");
+    for (int i = 0; i < activeWeaponsArray.length(); i++) {
+        JSONObject weaponJson = activeWeaponsArray.getJSONObject(i);
+        if (!weaponJson.isEmpty()) {
+            EquipmentType type = EquipmentType.valueOf(weaponJson.getString("type"));
+            Equipment weapon = switch (type) {
+                case ONEHANDEDWEAPON -> new OneHandedWeapon(weaponJson);
+                case TWOHANDEDWEAPON -> new equipments.TwoHandedWeapon(weaponJson);
+                default -> null;
+            };
+            activeWeapons[i] = weapon;
+        }
+    }
+
+    if (json.has("activeArmor") && !json.isNull("activeArmor")) {
+        this.activeArmor = new Armor(json.getJSONObject("activeArmor"));
+    }
+
+    this.minions = new ArrayList<>();
+    JSONArray minionArray = json.getJSONArray("minions");
+    for (int i = 0; i < minionArray.length(); i++) {
+        JSONObject minionJson = minionArray.getJSONObject(i);
+        Minion minion = new Minion(minionJson); // Asumiendo constructor Minion(JSONObject)
+        minions.add(minion);
+    }
+
+    this.powerUps = new ArrayList<>();
+    JSONArray powerupArray = json.getJSONArray("powerUps");
+    for (int i = 0; i < powerupArray.length(); i++) {
+        JSONObject puJson = powerupArray.getJSONObject(i);
+        PowerUp pu = new PowerUp(puJson); // Asumiendo constructor PowerUp(JSONObject)
+        powerUps.add(pu);
+    }
+
+    this.weaknesses = new ArrayList<>();
+    JSONArray weaknessArray = json.getJSONArray("weaknesses");
+    for (int i = 0; i < weaknessArray.length(); i++) {
+        JSONObject wJson = weaknessArray.getJSONObject(i);
+        Weakness wk = new Weakness(wJson); // Asumiendo constructor Weakness(JSONObject)
+        weaknesses.add(wk);
+    }
+
+    this.modifier = new Modifier(json.getJSONObject("modifier")); // Asumiendo constructor Modifier(JSONObject)
+    this.specialAbility = new SpecialAbility(json.getJSONObject("specialAbility")); // Asumiendo constructor
+}
+     */
+
 }
