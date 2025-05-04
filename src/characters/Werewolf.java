@@ -122,11 +122,17 @@ public class Werewolf extends Character{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
+        json.put("height", height);
+        json.put("weight", weight);
+        json.put("rage", rage);
         return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
         super.fromJSONObject(json);
+        height = json.getInt("height");
+        weight = json.getInt("weight");
+        rage = json.getInt("rage");
     }
 }

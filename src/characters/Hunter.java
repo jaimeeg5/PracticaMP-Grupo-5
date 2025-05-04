@@ -96,11 +96,13 @@ public class Hunter extends Character{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
+        json.put("willpower", willpower);
         return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
         super.fromJSONObject(json);
+        willpower = json.getInt("willpower");
     }
 }
