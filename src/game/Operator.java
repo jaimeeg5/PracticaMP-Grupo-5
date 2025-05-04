@@ -293,6 +293,8 @@ public class Operator extends User {
                 human.setName(input2.nextLine());
                 System.out.println("Introduce la salud del esbirro");
                 human.setHealth(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce la lealtad del esbirro");
+                human.setLoyalty(input2.nextLine());
                 minions.add(human.getName());
                 JSONObject jsonHuman = human.toJSONObject();
                 FileManager.save("data/minions/" + human.getName() + ".json", jsonHuman);
@@ -303,6 +305,8 @@ public class Operator extends User {
                 ghoul.setName(input2.nextLine());
                 System.out.println("Introduce la salud del esbirro");
                 ghoul.setHealth(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce la dependencia del esbirro");
+                ghoul.setDependency(Integer.parseInt(input2.nextLine()));
                 minions.add(ghoul.getName());
                 JSONObject jsonGhoul = ghoul.toJSONObject();
                 FileManager.save("data/minions/" + ghoul.getName() + ".json", jsonGhoul);
@@ -313,6 +317,8 @@ public class Operator extends User {
                 demon.setName(input2.nextLine());
                 System.out.println("Introduce la salud del esbirro");
                 demon.setHealth(Integer.parseInt(input2.nextLine()));
+                System.out.println("Introduce el pacto del esbirro");
+                demon.setPact(input2.nextLine());
                 minions.add(demon.getName());
                 JSONObject jsonDemon = demon.toJSONObject();
                 FileManager.save("data/minions/" + demon.getName() + ".json", jsonDemon);
