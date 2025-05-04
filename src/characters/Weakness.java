@@ -7,6 +7,11 @@ public class Weakness implements Jsonable {
     private String name;
     private int value;
 
+    public Weakness(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }

@@ -4,6 +4,7 @@ import equipments.Armor;
 import equipments.Equipment;
 import equipments.EquipmentType;
 import equipments.OneHandedWeapon;
+import game.GameData;
 import game.Jsonable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +16,8 @@ import java.util.Scanner;
 public abstract class Character implements Jsonable {
     private String name;
     private SpecialAbility specialAbility;
-    private List<Equipment>  availableWeapons;
-    private List<Armor> availableArmors;
+    private List<Equipment>  availableWeapons = GameData.getInstance().getAvailableWeapons();
+    private List<Armor> availableArmors = GameData.getInstance().getAvailableArmors();
     private Equipment[] activeWeapons = new Equipment[2];
     private Armor activeArmor;
     private List<Minion> minions;

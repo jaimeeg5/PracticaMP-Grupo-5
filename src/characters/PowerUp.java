@@ -7,6 +7,11 @@ public class PowerUp implements Jsonable {
     private String name;
     private int value;
 
+    public PowerUp(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }
