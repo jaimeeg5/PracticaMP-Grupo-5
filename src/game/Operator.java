@@ -287,6 +287,7 @@ public class Operator extends User {
             }
         }while(!type.equals("Demonio") && !type.equals("Ghoul") && !type.equals("Humano"));
     }
+
     public void banUsers(){
         GameData gameData = GameData.getInstance();
         gameData.printPlayers();
