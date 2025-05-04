@@ -1,6 +1,8 @@
 package game;
 import characters.*;
 import characters.Character;
+import characters.Equipment;
+import characters.EquipmentType;
 import fileEvents.AddFileEventNotifier;
 import fileEvents.FileSystemEventNotifier;
 import org.json.JSONArray;

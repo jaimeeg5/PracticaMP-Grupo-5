@@ -115,11 +115,15 @@ public class Vampire extends Character{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = super.toJSONObject();
+        json.put("bloodPoints", bloodPoints);
+        json.put("age", age);
         return json;
     }
 
     @Override
     public void fromJSONObject(JSONObject json) {
         super.fromJSONObject(json);
+        bloodPoints = json.getInt("bloodPoints");
+        age = json.getInt("age");
     }
 }
