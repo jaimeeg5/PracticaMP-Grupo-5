@@ -73,13 +73,17 @@ public class Werewolf extends Character{
         int attackPower = 0;
         int weaponsDamage = 0;
         for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDamage += weapon.getAttackValue();
+            if (weapon != null) {
+                weaponsDamage += weapon.getAttackValue();
+            }
         }
         attackPower = super.getPower() + super.getActiveArmor().getAttackValue() + weaponsDamage + this.rage + powerupValue - weaknessValue;
+        /*
         Don ability = (Don) super.getSpecialAbility();
         if (rage >= ability.getRageValue()){
             attackPower += ability.getAttack();
         }
+        */
         return super.calculatePower(attackPower);
     }
 
@@ -88,13 +92,17 @@ public class Werewolf extends Character{
         int defensePower = 0;
         int weaponsDefense = 0;
         for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDefense += weapon.getDefenseValue();
+            if (weapon != null) {
+                weaponsDefense += weapon.getDefenseValue();
+            }
         }
         defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense+ this.rage + powerupValue - weaknessValue;
+        /*
         Don ability = (Don) super.getSpecialAbility();
         if (rage >= ability.getRageValue()){
             defensePower += ability.getDefense();
         }
+        */
         return super.calculatePower(defensePower);
     }
 

@@ -18,6 +18,10 @@ public class Modifier implements Jsonable {
         }
     }
 
+    public Modifier() {
+
+    }
+
     public String getName() {
         return name;
     }

@@ -19,7 +19,7 @@ public abstract class Character implements Jsonable {
     private List<Minion> minions = new ArrayList<>();
     private int health;
     private int power;
-    private Modifier modifier;
+    private Modifier modifier = new Modifier();
     private List<PowerUp> powerUps = new ArrayList<>();
     private List<Weakness> weaknesses = new ArrayList<>();
     private CharacterType type;
@@ -322,6 +322,7 @@ public abstract class Character implements Jsonable {
         health = json.getInt("health");
         power = json.getInt("power");
         gold = json.getInt("gold");
+        modifier.fromJSONObject(json.getJSONObject("modifier"));
         powerupValue = json.getInt("powerUpValue");
         weaknessValue = json.getInt("weaknessValue");
         JSONArray arr = json.getJSONArray("activeWeapons");

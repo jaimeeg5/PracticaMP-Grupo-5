@@ -16,10 +16,6 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     private FileSystemEventNotifier notifier;
     private final List<Path> pendingNotifications;
 
-    public User() {
-        pendingNotifications = new LinkedList<>();
-    }
-
     public void setNotifier(FileSystemEventNotifier notifier) {
         this.notifier = notifier;
     }
@@ -63,6 +59,10 @@ public abstract class User implements FileSystemEventListener, Jsonable {
         return notifier;
     }
 
+    public User() {
+        this.pendingNotifications = new LinkedList<>();
+    }
+
     public User(String nick, String name){
         this.nick = nick;
         this.name = name;
@@ -78,11 +78,12 @@ public abstract class User implements FileSystemEventListener, Jsonable {
 
     public void removeNotification(Path path) {
         pendingNotifications.remove(path);
+        FileManager.delete(path);
     }
 
     @Override
     public void update(WatchEvent<?> event) {
-        Path path = (Path) event;
+        Path path = (Path) event.context();
         pendingNotifications.add(path);
     }
 
@@ -98,7 +99,10 @@ public abstract class User implements FileSystemEventListener, Jsonable {
     public void fromJSONObject(JSONObject json) {
         setNick(json.getString("nick"));
         setName(json.getString("name"));
-        Path dirPath = Paths.get("data/notifications/" + nick);
+    }
+
+    protected void loadNotifications(String notificationsPath) {
+        Path dirPath = Paths.get(notificationsPath);
         pendingNotifications.clear();
         try (DirectoryStream<Path> dir = Files.newDirectoryStream(dirPath)) {
             for (Path file: dir) {

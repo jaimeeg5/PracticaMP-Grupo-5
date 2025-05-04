@@ -53,11 +53,15 @@ public class Hunter extends Character{
         int attackPower = 0;
         int weaponsDamage = 0;
         for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDamage += weapon.getAttackValue();
+            if (weapon != null) {
+                weaponsDamage += weapon.getAttackValue();
+            }
         }
         attackPower = super.getPower() + super.getActiveArmor().getAttackValue() + weaponsDamage + this.willpower + powerupValue - weaknessValue;
+        /*
         Talent ability = (Talent) super.getSpecialAbility();
         attackPower += ability.getAttack();
+         */
         return super.calculatePower(attackPower);
     }
 
@@ -66,11 +70,15 @@ public class Hunter extends Character{
         int defensePower = 0;
         int weaponsDefense = 0;
         for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDefense += weapon.getDefenseValue();
+            if (weapon != null) {
+                weaponsDefense += weapon.getDefenseValue();
+            }
         }
         defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense + this.willpower + powerupValue - weaknessValue;
+        /*
         Talent ability = (Talent) super.getSpecialAbility();
         defensePower += ability.getDefense();
+         */
         return super.calculatePower(defensePower);
     }
 

@@ -1,6 +1,10 @@
 package game;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,7 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Player extends User {
-    private final String registerNumber;
+    private String registerNumber;
     private int goldWon;
     private int goldLost;
     private Character character;
@@ -22,6 +26,7 @@ public class Player extends User {
     public Player(String nick, String name, String registerNumber) {
         super(nick, name);
         this.registerNumber = registerNumber;
+        loadNotifications("data/notifications/" + getNick());
     }
 
     public Player() {
@@ -86,6 +91,7 @@ public class Player extends User {
                     logout();
                     break;
             }
+            FileManager.save("data/users/" + getNick() + ".json", this);
         } while (choice != 6);
     }
 
@@ -228,7 +234,9 @@ public class Player extends User {
                 case BANNED:
                     break;
             }
+            FileManager.delete(path);
         }
+        getNotifications().clear();
     }
 
     private void challengeRejected(JSONObject notification) {
@@ -239,7 +247,22 @@ public class Player extends User {
     }
 
     private void combatReceived(JSONObject notification) {
-
+        System.out.println("Combate recibido");
+        int id = notification.getInt("combat_id");
+        Combat combat = new Combat();
+        combat.fromJSONObject(FileManager.load("data/combats/" + id + ".json"));
+        int gold = combat.getGold();
+        if (combat.getWinner().equals(getNick())) {
+            goldWon += gold;
+            character.setGold(character.getGold() + gold);
+        }
+        else if (!combat.getWinner().equals("Empate")) {
+            goldLost += gold;
+            character.setGold(character.getGold() - gold);
+        }
+        combat.printResult();
+        Menu menu = new Menu();
+        menu.showMenu();
     }
 
     private void challengeReceived(JSONObject notification) {
@@ -271,8 +294,8 @@ public class Player extends User {
                 }
                 FileManager.save("data/users/" + getNick() + ".json", this);
             }
-            FileManager.save("data/combat/" + combat.getId() + ".json", combat);
-
+            FileManager.save("data/combats/" + combat.getId() + ".json", combat);
+            combat.printResult();
             combatNotification.put("type", NotificationType.CHALLENGE_ACCEPTED);
             combatNotification.put("combat_id", combat.getId());
         }
@@ -302,7 +325,6 @@ public class Player extends User {
         json.put("registerNumber", registerNumber);
         json.put("goldWon", goldWon);
         json.put("goldLost", goldLost);
-
         if (character != null) {
             json.put("character", character.toJSONObject());  // Serializamos el character
         }
@@ -316,6 +338,7 @@ public class Player extends User {
         setName(json.getString("name"));
         goldWon = json.getInt("goldWon");
         goldLost = json.getInt("goldLost");
+        registerNumber = json.getString("registerNumber");
 
         // Cargar character desde el JSON
         if (json.has("character")) {
@@ -334,5 +357,7 @@ public class Player extends User {
             }
             character.fromJSONObject(characterJson);
         }
+        loadNotifications("data/notifications/" + getNick());
+        setupNotifier();
     }
 }

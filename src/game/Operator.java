@@ -18,10 +18,12 @@ public class Operator extends User {
 
     public Operator(String nick, String name) {
         super(nick, name);
+        loadNotifications("data/notifications/admin");
     }
 
     public Operator() {
         super();
+        loadNotifications("data/notifications/admin");
     }
 
     @Override
@@ -184,26 +186,8 @@ public class Operator extends User {
                     werewolf.setHealth(Integer.parseInt(input2.nextLine()));
                     System.out.println("Introduce el poder del personaje");
                     werewolf.setPower(Integer.parseInt(input2.nextLine()));
-                    List<String> modifiers = data.getModifiers();
-                    if (!modifiers.isEmpty()) {
-                        System.out.println("Elija el numero de modificador de personaje");
-                        int i = 1;
-                        for (String modifier : modifiers) {
-                            System.out.println("[" + i + "] " + modifier);
-                            i += 1;
-                        }
-                        Modifier modifier = new Modifier(null, 0, "");
-                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i - 1) + ".json");
-                        modifier.fromJSONObject(JSONModifier);
-                        werewolf.setModifier(modifier);
-                    } else {
-                        System.out.println("No existen modificadores. Tienes que crear uno");
-                        createModifier();
-                        Modifier modifier = new Modifier(null, 0, "");
-                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
-                        modifier.fromJSONObject(JSONModifier);
-                        werewolf.setModifier(modifier);
-                    }
+                    Modifier modifier = chooseModifier();
+                    werewolf.setModifier(modifier);
                     System.out.println("Introduce el nombre de la fortaleza");
                     String PowerUpName = input2.nextLine();
                     System.out.println("Introduce el valor de la fortaleza");
@@ -251,25 +235,8 @@ public class Operator extends User {
                     System.out.println("Introduce el poder del personaje");
                     hunter.setPower(Integer.parseInt(input2.nextLine()));
                     List<String> modifiers = data.getModifiers();
-                    if (!modifiers.isEmpty()) {
-                        System.out.println("Elija el numero de modificador de personaje");
-                        int i = 1;
-                        for (String modifier : modifiers) {
-                            System.out.println("[" + i + "] " + modifier);
-                            i += 1;
-                        }
-                        Modifier modifier = new Modifier(null, 0, "");
-                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i - 1) + ".json");
-                        modifier.fromJSONObject(JSONModifier);
-                        hunter.setModifier(modifier);
-                    } else {
-                        System.out.println("No existen modificadores. Tienes que crear uno");
-                        createModifier();
-                        Modifier modifier = new Modifier(null, 0, "");
-                        JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
-                        modifier.fromJSONObject(JSONModifier);
-                        hunter.setModifier(modifier);
-                    }
+                    Modifier modifier = chooseModifier();
+                    hunter.setModifier(modifier);
                     System.out.println("Introduce el nombre de la fortaleza");
                     String PowerUpName = input2.nextLine();
                     System.out.println("Introduce el valor de la fortaleza");
@@ -370,14 +337,18 @@ public class Operator extends User {
         List<String> modifiers = data.getModifiers();
         Modifier modifier = new Modifier(null, 0, "");;
         if(!modifiers.isEmpty()){
-            System.out.println("Elija el numero de modificador de personaje");
-            int i = 1;
-            for (String modifierElement : modifiers){
-                System.out.println("[" + i + "] " + modifierElement);
-                i += 1;
-            }
-            JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.get(i-1) + ".json");
-            modifier.fromJSONObject(JSONModifier);
+            Menu menu = new Menu();
+            String[] modifiersArray = modifiers.toArray(new String[0]);
+            menu.setTitle("Elija el numero de modificador");
+            menu.setOptions(modifiersArray);
+            int choice;
+            do {
+                choice = menu.showMenu(false);
+                if (choice <= modifiersArray.length) {
+                    JSONObject JSONWeapon = FileManager.load("data/modifiers/" + modifiersArray[choice-1] + ".json");
+                    modifier.fromJSONObject(JSONWeapon);
+                }
+            } while (choice > modifiersArray.length);
         } else {
             System.out.println("No existen modificadores. Tienes que crear uno");
             createModifier();
@@ -392,14 +363,18 @@ public class Operator extends User {
         Equipment weapon = new Equipment("", 0, 0, null);
         List<String> weapons = data.getWeapons();
         if(!weapons.isEmpty()){
-            System.out.println("Elija el numero de arma");
-            int i = 1;
-            for (String weaponElement : weapons){
-                System.out.println("[" + i + "] " + weaponElement);
-                i += 1;
-            }
-            JSONObject JSONWeapon = FileManager.load("data/weapons/" + weapons.get(i-1) + ".json");
-            weapon.fromJSONObject(JSONWeapon);
+            Menu menu = new Menu();
+            String[] weaponsArray = weapons.toArray(new String[0]);
+            menu.setTitle("Elija el numero de arma");
+            menu.setOptions(weaponsArray);
+            int choice;
+            do {
+                choice = menu.showMenu(false);
+                if (choice <= weaponsArray.length) {
+                    JSONObject JSONWeapon = FileManager.load("data/weapons/" + weaponsArray[choice-1] + ".json");
+                    weapon.fromJSONObject(JSONWeapon);
+                }
+            } while (choice > weaponsArray.length);
         } else {
             System.out.println("No existen armas. Tienes que crear una");
             Equipment equipment = createEquipment(EquipmentType.ONEHANDEDWEAPON);
@@ -414,14 +389,18 @@ public class Operator extends User {
         Equipment armor = new Equipment("", 0, 0, EquipmentType.ARMOR);
         List<String> armors = data.getArmors();
         if(!armors.isEmpty()){
-            System.out.println("Elija el numero de armadura");
-            int i = 1;
-            for (String armorElement : armors){
-                System.out.println("[" + i + "] " + armorElement);
-                i += 1;
-            }
-            JSONObject JSONArmor = FileManager.load("data/armors/" + armors.get(i-1) + ".json");
-            armor.fromJSONObject(JSONArmor);
+            Menu menu = new Menu();
+            String[] armorsArray = armors.toArray(new String[0]);
+            menu.setTitle("Elija el numero de armadura");
+            menu.setOptions(armorsArray);
+            int choice;
+            do {
+                choice = menu.showMenu(false);
+                if (choice <= armorsArray.length) {
+                    JSONObject JSONWeapon = FileManager.load("data/armors/" + armorsArray[choice-1] + ".json");
+                    armor.fromJSONObject(JSONWeapon);
+                }
+            } while (choice > armorsArray.length);
         } else {
             System.out.println("No existen armaduras. Tienes que crear una");
             armor = createEquipment(EquipmentType.ARMOR);
@@ -549,7 +528,6 @@ public class Operator extends User {
             int choice;
             List<String> activeModifiers = new LinkedList<>();
             String[] existingModifiers = gd.getModifiers().toArray(new String[0]);
-            System.out.println("Modificadores actuales: " + activeModifiers);
             Menu menu = new Menu();
             menu.setTitle("¿Que accion quieres realizar?");
             String[] menuOptions = {
@@ -560,6 +538,7 @@ public class Operator extends User {
             };
             menu.setOptions(menuOptions);
             do {
+                System.out.println("Modificadores actuales: " + activeModifiers);
                 choice = menu.showMenu();
                 int modifierIndex;
                 switch (choice) {
@@ -569,8 +548,10 @@ public class Operator extends User {
                         menuAddModifier.setOptions(existingModifiers);
                         do {
                             modifierIndex = menuAddModifier.showMenu();
-                        } while (modifierIndex != existingModifiers.length + 1);
-                        activeModifiers.add(existingModifiers[modifierIndex]);
+                            if (modifierIndex <= existingModifiers.length) {
+                                activeModifiers.add(existingModifiers[modifierIndex-1]);
+                            }
+                        } while (modifierIndex > existingModifiers.length + 1);
                         break;
                     case 2:
                         String[] activeModifiersArray = activeModifiers.toArray(new String[0]);
@@ -579,8 +560,10 @@ public class Operator extends User {
                         menuDeleteModifier.setOptions(activeModifiersArray);
                         do {
                             modifierIndex = menuDeleteModifier.showMenu();
-                        } while (modifierIndex != activeModifiersArray.length + 1);
-                        activeModifiers.remove(modifierIndex);
+                            if (modifierIndex <= activeModifiersArray.length) {
+                                activeModifiers.remove(activeModifiersArray[modifierIndex-1]);
+                            }
+                        } while (modifierIndex > activeModifiersArray.length + 1);
                         break;
                     case 3:
                         JSONArray arr = new JSONArray(activeModifiers);
@@ -592,7 +575,7 @@ public class Operator extends User {
                         challengeNotification.put("type", NotificationType.CHALLENGE_REJECTED);
                         challengeNotification.put("by", "Un administrador");
                         challengeNotification.put("gold", 0);
-                        FileManager.save("data/notifications/" + challenged + "/" + System.currentTimeMillis() + ".json", notification);
+                        FileManager.save("data/notifications/" + challenger + "/" + System.currentTimeMillis() + ".json", challengeNotification);
                         break;
                     case 5:
                         return;

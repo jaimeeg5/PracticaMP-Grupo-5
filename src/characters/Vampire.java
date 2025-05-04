@@ -65,19 +65,23 @@ public class Vampire extends Character{
     public int calculateAttackPoints(int powerupValue, int weaknessValue) {
         int attackPower = 0;
         int weaponsDamage = 0;
-        for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDamage += weapon.getAttackValue();
+        for (Equipment weapon : getActiveWeapons()){
+            if (weapon != null) {
+                weaponsDamage += weapon.getAttackValue();
+            }
         }
-        attackPower = super.getPower() + super.getActiveArmor().getAttackValue() + weaponsDamage + powerupValue - weaknessValue;
+        attackPower = getPower() + getActiveArmor().getAttackValue() + weaponsDamage + powerupValue - weaknessValue;
         if (bloodPoints >= 5){
             attackPower += 2;
         }
-        Discipline ability = (Discipline) super.getSpecialAbility();
+        /*
+        Discipline ability = (Discipline) getSpecialAbility();
         if (bloodPoints >= ability.getBloodCost()){
             bloodPoints -= ability.getBloodCost();
             attackPower += ability.getAttack();
         }
-        return super.calculatePower(attackPower);
+        */
+        return calculatePower(attackPower);
     }
 
     @Override
@@ -85,17 +89,21 @@ public class Vampire extends Character{
         int defensePower = 0;
         int weaponsDefense = 0;
         for (Equipment weapon : super.getActiveWeapons()){
-            weaponsDefense += weapon.getDefenseValue();
+            if (weapon != null) {
+                weaponsDefense += weapon.getDefenseValue();
+            }
         }
         defensePower = super.getPower() + super.getActiveArmor().getDefenseValue() + weaponsDefense + powerupValue - weaknessValue;
         if (this.bloodPoints >= 5){
             defensePower += 2;
         }
+        /*
         Discipline ability = (Discipline) super.getSpecialAbility();
         if (this.bloodPoints >= ability.getBloodCost()){
             this.bloodPoints -= ability.getBloodCost();
             defensePower += ability.getDefense();
         }
+        */
         return super.calculatePower(defensePower);
     }
 

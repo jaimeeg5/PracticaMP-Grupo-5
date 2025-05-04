@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 public class Menu {
     private String title = "";
-    private String[] options;
+    private String[] options = new String[0];
 
     public static boolean showConfirmationMenu() {
         return showConfirmationMenu("¿Estas seguro?");
@@ -38,6 +38,10 @@ public class Menu {
     }
 
     public int showMenu() {
+        return showMenu(true);
+    }
+
+    public int showMenu(boolean exit) {
         System.out.println(title);
         Scanner input = new Scanner(System.in);
         int choice;
@@ -46,7 +50,9 @@ public class Menu {
             for (int i = 1; i < n; i++) {
                 System.out.println("[" + i + "] " + options[i-1]);
             }
-            System.out.println("[" + n + "] Salir");
+            if (exit) {
+                System.out.println("[" + n + "] Salir");
+            }
             try {
                 choice = Integer.parseInt(input.nextLine());
             } catch (NumberFormatException e) {
