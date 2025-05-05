@@ -76,11 +76,11 @@ public class Combat implements Jsonable{
         JSONObject json = new JSONObject();
         JSONArray turnsArray = new JSONArray();
         for (String turn: turnSummary) {
-            turnsArray.put(0, turn);
+            turnsArray.put(turn);
         }
         JSONArray modifiersArray = new JSONArray();
         for (String modifier: activeModifiers) {
-            turnsArray.put(0, modifier);
+            modifiersArray.put(modifier);
         }
         json.put("id", id);
         json.put("date", date);
