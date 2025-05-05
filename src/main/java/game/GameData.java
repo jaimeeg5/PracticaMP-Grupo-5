@@ -45,14 +45,14 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public static GameData getInstance() {
-        if (false) {//(instance == null) {
+        if (instance == null) {
             synchronized(GameData.class) {
                 if (instance == null) {
                     instance = new GameData();
                 }
             }
         }
-        return new GameData(); // instance;
+        return instance;
     }
 
     public List<String> getWeapons() {
