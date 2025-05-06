@@ -21,4 +21,23 @@ class GameDataTest {
         GameData d2 = GameData.getInstance();
         assertSame(d1, d2);
     }
+
+    @Test
+    void banUser() {
+        GameData gameData = GameData.getInstance();
+        Player player = new Player();
+        player.setNick("Player1");
+        gameData.banUser("Player1");
+        assertSame(true, gameData.isBanned(player.getNick()));
+    }
+
+    @Test
+    void unbanUser() {
+        GameData gameData = GameData.getInstance();
+        Player player = new Player();
+        player.setNick("Player1");
+        gameData.banUser("Player1");
+        gameData.unbanUser("Player1");
+        assertSame(true, !gameData.isBanned(player.getNick()));
+    }
 }
