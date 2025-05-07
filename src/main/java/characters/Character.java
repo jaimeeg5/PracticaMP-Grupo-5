@@ -124,8 +124,8 @@ public abstract class Character implements Jsonable {
     }
 
     public void setHealth(int health) {
-        if (health < 0){
-            this.health = health;
+        if (health <= 0){
+            this.health = 1;
         } else if (health > 5) {
             this.health = 5;
         } else {
