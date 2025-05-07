@@ -13,6 +13,9 @@ class MinionTest {
         minion.setHealth(10);
         assertTrue(minion.takeDamage());
         assertEquals(9, minion.getHealth());
+        minion.setHealth(0);
+        assertTrue(minion.takeDamage());
+        assertEquals(-1, minion.getHealth());
     }
 
     // Prueba si al "pasar" el objeto minion a tipo String devuelve el nombre
