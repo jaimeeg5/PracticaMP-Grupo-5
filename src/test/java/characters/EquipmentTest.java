@@ -10,6 +10,6 @@ class EquipmentTest {
     @Test
     void testToString() {
         Equipment equipment = new Equipment("Equipment1", 5, 5, EquipmentType.ARMOR);
-        assertSame("Equipment1", equipment.toString());
+        assertEquals("Equipment1", equipment.toString());
     }
 }

@@ -11,8 +11,8 @@ class MinionTest {
     void takeDamage() {
         Minion minion = new Minion();
         minion.setHealth(10);
-        assertSame(true, minion.takeDamage());
-        assertSame(9, minion.getHealth());
+        assertTrue(minion.takeDamage());
+        assertEquals(9, minion.getHealth());
     }
 
     // Prueba si al "pasar" el objeto minion a tipo String devuelve el nombre
@@ -20,6 +20,6 @@ class MinionTest {
     void testToString() {
         Minion minion = new Minion();
         minion.setName("Minion1");
-        assertSame("Minion1", minion.toString());
+        assertEquals("Minion1", minion.toString());
     }
 }

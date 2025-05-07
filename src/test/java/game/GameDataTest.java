@@ -9,6 +9,7 @@ class GameDataTest {
 
     @BeforeEach
     void setUp() {
+        FileManager.setup();
     }
 
     @AfterEach
@@ -19,7 +20,7 @@ class GameDataTest {
     void getInstance() {
         GameData d1 = GameData.getInstance();
         GameData d2 = GameData.getInstance();
-        assertSame(d1, d2);
+        assertEquals(d1, d2);
     }
 
     @Test
@@ -28,7 +29,7 @@ class GameDataTest {
         Player player = new Player();
         player.setNick("Player1");
         gameData.banUser("Player1");
-        assertSame(true, gameData.isBanned(player.getNick()));
+        assertTrue(gameData.isBanned(player.getNick()));
     }
 
     @Test
@@ -38,6 +39,6 @@ class GameDataTest {
         player.setNick("Player1");
         gameData.banUser("Player1");
         gameData.unbanUser("Player1");
-        assertSame(true, !gameData.isBanned(player.getNick()));
+        assertFalse(gameData.isBanned(player.getNick()));
     }
 }

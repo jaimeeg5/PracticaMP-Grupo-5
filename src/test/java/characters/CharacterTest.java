@@ -1,17 +1,24 @@
 package characters;
 
+import game.FileManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterTest {
 
+    @BeforeEach
+    void setUp() {
+        FileManager.setup();
+    }
+
     // Probar que si se introduce salud > 5, lo establece automáticamente a 5
     @Test
     void getHealth() {
         Character character = new Vampire();
         character.setHealth(10);
-        assertSame(5, character.getHealth());
+        assertEquals(5, character.getHealth());
     }
 
     // Probar que si se introduce poder > 5, lo establece automáticamente a 5
@@ -19,7 +26,7 @@ class CharacterTest {
     void getPower() {
         Character character = new Vampire();
         character.setPower(10);
-        assertSame(5, character.getPower());
+        assertEquals(5, character.getPower());
     }
 
     // Probar que si se introduce oro < 0, lo establece automáticamente a 0
@@ -27,7 +34,7 @@ class CharacterTest {
     void getGold() {
         Character character = new Vampire();
         character.setGold(-10);
-        assertSame(0, character.getGold());
+        assertEquals(0, character.getGold());
     }
 
     // Probar que el valor de ataque no puede superar el poder máximo

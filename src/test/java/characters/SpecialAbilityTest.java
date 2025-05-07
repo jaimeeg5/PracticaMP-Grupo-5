@@ -10,6 +10,6 @@ class SpecialAbilityTest {
     @Test
     void testToString() {
         SpecialAbility specialAbility = new SpecialAbility("SpecialAbility1", 5, 5);
-        assertSame("SpecialAbility1", specialAbility.toString());
+        assertEquals("SpecialAbility1", specialAbility.toString());
     }
 }
