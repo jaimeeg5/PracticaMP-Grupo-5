@@ -32,8 +32,8 @@ class CharacterTest {
         assertEquals(5, character.getPower());
         character.setPower(-3);
         assertEquals(1, character.getPower());
-        character.setPower(0);
-        assertEquals(1, character.getPower());
+        character.setPower(3);
+        assertEquals(3, character.getPower());
     }
 
     // Probar que si se introduce oro < 0, lo establece automáticamente a 0
@@ -52,8 +52,8 @@ class CharacterTest {
         Character character = new Vampire();
         int power = character.calculatePower(25);
         assertTrue(power <= 25);
-        int power3 = character.calculatePower(0);
-        assertEquals(power3,0);
+        int  power2 = character.calculatePower(0);
+        assertEquals(0, power2);
     }
 
     // Prueba si el personaje sufre daño cuando se llama a takeDamage y no tiene esbirros, y su defensa
@@ -62,10 +62,13 @@ class CharacterTest {
     void takeDamage() {
         Character character = new Vampire();
         character.setHealth(5);
-        assertSame(true, character.takeDamage(10, 5));
-        assertSame(4, character.getHealth());
+        assertTrue(character.takeDamage(10, 5));
+        assertEquals(4, character.getHealth());
         character.setHealth(5);
-        character.takeDamage(4, 5);
-        assertSame(4, character.getHealth());
+        assertTrue(character.takeDamage(5, 5));
+        assertEquals(4, character.getHealth());
+        character.setHealth(5);
+        assertFalse(character.takeDamage(4, 5));
+        assertEquals(5, character.getHealth());
     }
 }
