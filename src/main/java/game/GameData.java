@@ -56,19 +56,32 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public List<String> getWeapons() {
+        if (updated) {
+            loadFromDisk();
+        }
         return weapons;
     }
 
     public List<String> getArmors() {
+        if (updated) {
+            loadFromDisk();
+        }
         return armors;
     }
 
     public List<String> getModifiers() {
+        if (updated) {
+            loadFromDisk();
+        }
         return modifiers;
     }
 
     public void addModifier(String modifier) {
+        if (updated) {
+            loadFromDisk();
+        }
         modifiers.add(modifier);
+        saveToDisk();
     }
 
     public boolean userExists(String user) {
@@ -102,6 +115,9 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public Set<String> getBannedUsers() {
+        if (updated) {
+            loadFromDisk();
+        }
         return bannedUsers;
     }
 
@@ -142,6 +158,9 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public void printRanking() {
+        if (updated) {
+            loadFromDisk();
+        }
         List<Map.Entry<String, Integer>> rankingList = new ArrayList<>(ranking.entrySet());
         rankingList.sort((u1, u2) -> Integer.compare(u2.getValue(), u1.getValue()));
         System.out.println("Ranking de usuarios:");
@@ -166,11 +185,11 @@ public class GameData implements FileSystemEventListener, Jsonable {
             String num = generateRegisterNumber();
             builder.buildRegisterNumber(num);
             registeredNumbers.put(num, nick);
+            ranking.put(nick, 0);
         }
 
         passwords.put(nick, password);
         User u = builder.build();
-        ranking.put(nick, 0);
 
         FileManager.save("data/users/" + nick + ".json", u);
 
@@ -179,10 +198,17 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public void increaseVictory(String user) {
+        if (updated) {
+            loadFromDisk();
+        }
         ranking.put(user, ranking.get(user) + 1);
+        saveToDisk();
     }
 
     public User getUser(String nick) {
+        if (updated) {
+            loadFromDisk();
+        }
         JSONObject json = FileManager.load("data/users/" + nick + ".json");
         UserType type = UserType.valueOf(json.getString("type"));
         User user = switch (type) {
@@ -215,6 +241,9 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public void printPlayers() {
+        if (updated) {
+            loadFromDisk();
+        }
         for (String player: ranking.keySet()) {
             System.out.println(player);
         }
@@ -238,7 +267,11 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public void removeRegisterNumber(String registerNumber) {
+        if (updated) {
+            loadFromDisk();
+        }
         registeredNumbers.remove(registerNumber);
+        saveToDisk();
     }
 
     public void stopUpdates() {
@@ -249,11 +282,33 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public Set<String> getCharacters() {
+        if (updated) {
+            loadFromDisk();
+        }
         return characters;
     }
 
+    public void addCharacter(String character) {
+        if (updated) {
+            loadFromDisk();
+        }
+        characters.add(character);
+        saveToDisk();
+    }
+
     public Set<String> getMinions() {
+        if (updated) {
+            loadFromDisk();
+        }
         return minions;
+    }
+
+    public void addMinion(String m) {
+        if (updated) {
+            loadFromDisk();
+        }
+        minions.add(m);
+        saveToDisk();
     }
 
     @Override
@@ -385,10 +440,18 @@ public class GameData implements FileSystemEventListener, Jsonable {
     }
 
     public void addWeapon(Equipment equipment) {
+        if (updated) {
+            loadFromDisk();
+        }
         weapons.add(equipment.getName());
+        saveToDisk();
     }
 
     public void addArmor(Equipment equipment) {
+        if (updated) {
+            loadFromDisk();
+        }
         armors.add(equipment.getName());
+        saveToDisk();
     }
 }

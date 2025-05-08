@@ -33,7 +33,7 @@ public class GameManager {
         GameData.getInstance().stopUpdates();
     }
 
-    private User login() {
+    protected User login() {
         GameData data = GameData.getInstance();
         String user = Menu.waitForInput("Intoduce apodo.", data::userExists, "Este usuario no existe");
         if (data.isBanned(user)) {
@@ -50,7 +50,7 @@ public class GameManager {
         return data.getUser(user);
     }
 
-    private User register() {
+    protected User register() {
         Menu menu = new Menu();
         menu.setTitle("Elige tipo de usuario");
         String[] menuOptions = {

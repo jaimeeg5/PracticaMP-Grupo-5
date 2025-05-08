@@ -275,10 +275,9 @@ public class Player extends User {
         }
         System.out.println("Has sido desafiado por " + challenger);
         System.out.println("Oro apostado: " + gold);
-        JSONObject combatNotification = new JSONObject();
         if (Menu.showConfirmationMenu("¿Aceptas el desafio?")) {
             GameData data = GameData.getInstance();
-            Combat combat = new Combat((Player) data.getUser(challenger), this, activeModifiers);
+            Combat combat = new Combat((Player) data.getUser(challenger), this, activeModifiers, gold);
             combat.fight();
             String winner = combat.getWinner();
             if (!winner.equals("Empate")) {
@@ -296,18 +295,19 @@ public class Player extends User {
             }
             FileManager.save("data/combats/" + combat.getId() + ".json", combat);
             combat.printResult();
-            combatNotification.put("type", NotificationType.CHALLENGE_ACCEPTED);
-            combatNotification.put("combat_id", combat.getId());
+            notification.put("type", NotificationType.CHALLENGE_ACCEPTED);
+            notification.put("combat_id", combat.getId());
         }
         else {
             gold /= 10;
             goldLost += gold;
             character.setGold(character.getGold() - gold);
-            combatNotification.put("type", NotificationType.CHALLENGE_REJECTED);
-            combatNotification.put("by", getNick());
-            combatNotification.put("gold", gold);
+            notification.clear();
+            notification.put("type", NotificationType.CHALLENGE_REJECTED);
+            notification.put("by", getNick());
+            notification.put("gold", gold);
         }
-        FileManager.save("data/notifications/" + challenger + "/" + System.currentTimeMillis() + ".json", combatNotification);
+        FileManager.save("data/notifications/" + challenger + "/" + System.currentTimeMillis() + ".json", notification);
     }
 
     @Override

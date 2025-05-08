@@ -97,7 +97,6 @@ public class Operator extends User {
 
     public void createCharacter(){
         GameData data = GameData.getInstance();
-        Set<String> characters = data.getCharacters();
         Scanner input2 = new Scanner(System.in);
         String type;
         do {
@@ -150,7 +149,7 @@ public class Operator extends User {
                     vampire.addWeakness(weakness);
                     System.out.println("Introduce el poder del personaje");
                     vampire.setGold(Integer.parseInt(input2.nextLine()));
-                    characters.add(vampire.getName());
+                    data.addCharacter(vampire.getName());
                     JSONObject jsonVampire = vampire.toJSONObject();
                     FileManager.save("data/characters/" + vampire.getName() + ".json", jsonVampire);
                 }
@@ -202,7 +201,7 @@ public class Operator extends User {
                     werewolf.addWeakness(weakness);
                     System.out.println("Introduce el poder del personaje");
                     werewolf.setGold(Integer.parseInt(input2.nextLine()));
-                    characters.add(werewolf.getName());
+                    data.addCharacter(werewolf.getName());
                     JSONObject jsonWerewolf = werewolf.toJSONObject();
                     FileManager.save("data/characters/" + werewolf.getName() + ".json", jsonWerewolf);
                 }
@@ -234,7 +233,6 @@ public class Operator extends User {
                     hunter.setHealth(Integer.parseInt(input2.nextLine()));
                     System.out.println("Introduce el poder del personaje");
                     hunter.setPower(Integer.parseInt(input2.nextLine()));
-                    List<String> modifiers = data.getModifiers();
                     Modifier modifier = chooseModifier();
                     hunter.setModifier(modifier);
                     System.out.println("Introduce el nombre de la fortaleza");
@@ -251,7 +249,7 @@ public class Operator extends User {
                     hunter.addWeakness(weakness);
                     System.out.println("Introduce el poder del personaje");
                     hunter.setGold(Integer.parseInt(input2.nextLine()));
-                    characters.add(hunter.getName());
+                    data.addCharacter(hunter.getName());
                     JSONObject jsonHunter = hunter.toJSONObject();
                     FileManager.save("data/characters/" + hunter.getName() + ".json", jsonHunter);
                 }
@@ -277,7 +275,7 @@ public class Operator extends User {
                 human.setHealth(Integer.parseInt(input2.nextLine()));
                 System.out.println("Introduce la lealtad del esbirro");
                 human.setLoyalty(input2.nextLine());
-                minions.add(human.getName());
+                data.addMinion(human.getName());
                 JSONObject jsonHuman = human.toJSONObject();
                 FileManager.save("data/minions/" + human.getName() + ".json", jsonHuman);
             } else if (type.equals("Ghoul")) {
@@ -289,7 +287,7 @@ public class Operator extends User {
                 ghoul.setHealth(Integer.parseInt(input2.nextLine()));
                 System.out.println("Introduce la dependencia del esbirro");
                 ghoul.setDependency(Integer.parseInt(input2.nextLine()));
-                minions.add(ghoul.getName());
+                data.addMinion(ghoul.getName());
                 JSONObject jsonGhoul = ghoul.toJSONObject();
                 FileManager.save("data/minions/" + ghoul.getName() + ".json", jsonGhoul);
             } else if (type.equals("Demonio")) {
@@ -301,7 +299,7 @@ public class Operator extends User {
                 demon.setHealth(Integer.parseInt(input2.nextLine()));
                 System.out.println("Introduce el pacto del esbirro");
                 demon.setPact(input2.nextLine());
-                minions.add(demon.getName());
+                data.addMinion(demon.getName());
                 JSONObject jsonDemon = demon.toJSONObject();
                 FileManager.save("data/minions/" + demon.getName() + ".json", jsonDemon);
             } else {
@@ -351,9 +349,7 @@ public class Operator extends User {
             } while (choice > modifiersArray.length);
         } else {
             System.out.println("No existen modificadores. Tienes que crear uno");
-            createModifier();
-            JSONObject JSONModifier = FileManager.load("data/modifiers/" + modifiers.getFirst() + ".json");
-            modifier.fromJSONObject(JSONModifier);
+            modifier = createModifier();
         }
         return modifier;
     }
@@ -377,9 +373,7 @@ public class Operator extends User {
             } while (choice > weaponsArray.length);
         } else {
             System.out.println("No existen armas. Tienes que crear una");
-            Equipment equipment = createEquipment(EquipmentType.ONEHANDEDWEAPON);
-            JSONObject JSONWeapon = FileManager.load("data/weapons/" + equipment.getName() + ".json");
-            weapon.fromJSONObject(JSONWeapon);
+            weapon = createEquipment(EquipmentType.ONEHANDEDWEAPON);
         }
         return weapon;
     }
@@ -516,7 +510,8 @@ public class Operator extends User {
 
     public void manageCombat() {
         GameData gd = GameData.getInstance();
-        for (Path path: getNotifications()) {
+        Path[] notifications = getNotifications().toArray(new Path[0]);
+        for (Path path: notifications) {
             JSONObject notification = FileManager.load(path);
             String challenger = notification.getString("challenger");
             String challenged = notification.getString("challenged");

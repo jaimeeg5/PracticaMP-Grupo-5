@@ -23,13 +23,14 @@ public class Combat implements Jsonable{
     private List<String> activeModifiers = new ArrayList<>();
     private int id;
 
-    public Combat(Player challenger, Player challenged, List<String> activeModifiers) {
+    public Combat(Player challenger, Player challenged, List<String> activeModifiers, int gold) {
         this.challenger = challenger;
         this.challenged = challenged;
         this.activeModifiers = activeModifiers;
         this.calcDate = ZonedDateTime.now(ZoneId.systemDefault());
         this.date = calcDate.getDayOfWeek().toString() + " " + calcDate.getDayOfMonth() + "/" +  calcDate.getMonth().toString() + "/" + calcDate.getYear() + " - " + calcDate.getHour() + ":" + calcDate.getMinute();
         this.id = GameData.getInstance().increaseLastCombatId();
+        this.gold = gold;
     }
 
     public Combat() {
