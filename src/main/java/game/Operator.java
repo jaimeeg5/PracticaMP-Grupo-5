@@ -147,7 +147,7 @@ public class Operator extends User {
                     int WeaknessValue = Integer.parseInt(input2.nextLine());
                     Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
                     vampire.addWeakness(weakness);
-                    System.out.println("Introduce el poder del personaje");
+                    System.out.println("Introduce el oro del personaje");
                     vampire.setGold(Integer.parseInt(input2.nextLine()));
                     data.addCharacter(vampire.getName());
                     JSONObject jsonVampire = vampire.toJSONObject();
@@ -199,7 +199,7 @@ public class Operator extends User {
                     int WeaknessValue = Integer.parseInt(input2.nextLine());
                     Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
                     werewolf.addWeakness(weakness);
-                    System.out.println("Introduce el poder del personaje");
+                    System.out.println("Introduce el oro del personaje");
                     werewolf.setGold(Integer.parseInt(input2.nextLine()));
                     data.addCharacter(werewolf.getName());
                     JSONObject jsonWerewolf = werewolf.toJSONObject();
@@ -247,7 +247,7 @@ public class Operator extends User {
                     int WeaknessValue = Integer.parseInt(input2.nextLine());
                     Weakness weakness = new Weakness(WeaknessName, WeaknessValue);
                     hunter.addWeakness(weakness);
-                    System.out.println("Introduce el poder del personaje");
+                    System.out.println("Introduce el oro del personaje");
                     hunter.setGold(Integer.parseInt(input2.nextLine()));
                     data.addCharacter(hunter.getName());
                     JSONObject jsonHunter = hunter.toJSONObject();
@@ -333,7 +333,7 @@ public class Operator extends User {
     public Modifier chooseModifier(){
         GameData data = GameData.getInstance();
         List<String> modifiers = data.getModifiers();
-        Modifier modifier = new Modifier(null, 0, "");;
+        Modifier modifier = new Modifier(null, 0, "");
         if(!modifiers.isEmpty()){
             Menu menu = new Menu();
             String[] modifiersArray = modifiers.toArray(new String[0]);
@@ -603,7 +603,6 @@ public class Operator extends User {
         int attack = Integer.parseInt(input.nextLine());
         System.out.println("Introduce el valor de defensa del equipamiento");
         int defense = Integer.parseInt(input.nextLine());
-        System.out.println("Introduce el tipo de equipamiento");
         Equipment equipment = new Equipment(equipmentName, attack, defense, type);
         JSONObject  json = equipment.toJSONObject();
         if (type == EquipmentType.ONEHANDEDWEAPON || type == EquipmentType.TWOHANDEDWEAPON){
